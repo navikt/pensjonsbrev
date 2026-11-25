@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.RegisterExtension
 import java.time.Clock
 import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration.Companion.seconds
 
 class PrJobWorkerTest {
     @Test
@@ -62,14 +63,14 @@ class PrJobWorkerTest {
                 notifications.notify("Nytt utkast", ready)
                 worker.start()
                 worker.start()
-                val ticket = withTimeout(5000) { entered.await() }
-                assertThat(withTimeout(5000) { notificationStarted.await() }.url).isEqualTo("https://workshop.invalid/arbeidsutkast/${ready.id.value}")
+                val ticket = withTimeout(5.seconds) { entered.await() }
+                assertThat(withTimeout(5.seconds) { notificationStarted.await() }.url).isEqualTo("https://workshop.invalid/arbeidsutkast/${ready.id.value}")
                 notifications.close()
-                withTimeout(5000) { notificationStopped.await() }
+                withTimeout(5.seconds) { notificationStopped.await() }
                 assertThat(worker.isActive).isTrue()
                 assertThat(ticket.draft).isEqualTo(ready.draft)
                 release.complete(Unit)
-                withTimeout(10_000) {
+                withTimeout(10.seconds) {
                     while (handler.latest(ready.id).status != PrStatus.SUCCEEDED ||
                         metrics.find("brevoppskrift.pr.jobs").tag("status", "succeeded").counter()?.count() != 1.0
                     ) {
@@ -113,9 +114,9 @@ class PrJobWorkerTest {
             try {
                 PrJobWorker(blocked, jobs, metrics).use { worker ->
                     worker.start()
-                    withTimeout(5000) { entered.await() }
+                    withTimeout(5.seconds) { entered.await() }
                 }
-                withTimeout(5000) { cancelled.await() }
+                withTimeout(5.seconds) { cancelled.await() }
                 assertThat(jobs.latest(ready.id)?.status).isEqualTo(PrStatus.RUNNING)
                 val resumed = CompletableDeferred<PrTicket>()
                 val service = object : PrService {
@@ -127,11 +128,11 @@ class PrJobWorkerTest {
                 val recovered = PrJobRepository(transactions, Clock.offset(clock, Duration.ofMinutes(4)))
                 PrJobWorker(service, recovered, metrics).use { worker ->
                     worker.start()
-                    val ticket = withTimeout(5000) { resumed.await() }
+                    val ticket = withTimeout(5.seconds) { resumed.await() }
                     assertThat(ticket.id).isEqualTo(queued.id)
                     assertThat(ticket.draft).isEqualTo(ready.draft)
                     assertThat(ticket.attempts).isEqualTo(2)
-                    withTimeout(5000) { while (jobs.latest(ready.id)?.status != PrStatus.SUCCEEDED) delay(10) }
+                    withTimeout(5.seconds) { while (jobs.latest(ready.id)?.status != PrStatus.SUCCEEDED) delay(10) }
                 }
             } finally {
                 metrics.close()
@@ -155,7 +156,7 @@ class PrJobWorkerTest {
             try {
                 PrJobWorker(service, jobs, metrics).use { worker ->
                     worker.start()
-                    withTimeout(5000) { while (jobs.latest(ready.id)?.status != PrStatus.FAILED) delay(10) }
+                    withTimeout(5.seconds) { while (jobs.latest(ready.id)?.status != PrStatus.FAILED) delay(10) }
                     assertThat(jobs.latest(ready.id)?.error).isEqualTo("PR_FAILED")
                 }
             } finally {
