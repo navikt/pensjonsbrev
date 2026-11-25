@@ -224,8 +224,8 @@ object OktBunnfradragNesteAr {
                                         )
                                     }
                                     text(
-                                        bokmal { +"i uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") },
-                                        nynorsk { +"i uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") },
+                                        bokmal { +"i uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") + " *" },
+                                        nynorsk { +"i uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") + " *" },
                                     )
                                 }
                                 cell {
@@ -236,6 +236,13 @@ object OktBunnfradragNesteAr {
                                 }
                             }
                         }
+                    }
+                    showIf(endringUforetrygdOgTillegg.notEqualTo(0)) {
+                        text(
+                            bokmal { +"* Sammenlignet med desember, med mindre du allerede har en endring i uføretrygd fra januar" },
+                            nynorsk { +"* Samanlikna med desember, med mindre du allereie har ei endring i uføretrygd frå januar" },
+                            FontType.ITALIC
+                        )
                     }
                 }
                 showIf(harUforetrygdEllerTilleggUtbetalt) {
@@ -324,6 +331,7 @@ object OktBunnfradragNesteAr {
                     }
                 }
                 paragraph {
+                    newline()
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven " + hjemler.format(HjemmelFormatter(true)) },
                         nynorsk { +"Vedtaket er gjort etter folketrygdlova " + hjemler.format(HjemmelFormatter(true)) },
