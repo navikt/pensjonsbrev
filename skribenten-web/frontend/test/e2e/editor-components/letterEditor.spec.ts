@@ -586,6 +586,54 @@ test.describe("LetterEditor", () => {
 });
 
 test.describe("LetterEditor copy and paste within the editor", () => {
+  test("a selection across a heading and a paragraph survives mouseup and right-click, and copies in full", async ({
+    page,
+  }) => {
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await setupBrevRoute(
+      page,
+      makeBrevResponse(
+        editedLetter({
+          blocks: [title2(_literal("Heading to copy")), paragraph([_literal("Paragraph to copy")])],
+        }),
+      ),
+    );
+    await navigateToEditor(page);
+
+    const heading = page.locator(".editor-surface > .TITLE2 [data-literal-index]");
+    const paragraphText = page.locator(".editor-surface > .PARAGRAPH [data-literal-index]");
+    const headingBox = (await heading.boundingBox())!;
+    const paragraphBox = (await paragraphText.boundingBox())!;
+    const selectedText = () => page.evaluate(() => globalThis.getSelection()?.toString());
+
+    await page.mouse.move(headingBox.x + 1, headingBox.y + headingBox.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(paragraphBox.x + paragraphBox.width - 1, paragraphBox.y + paragraphBox.height / 2, {
+      steps: 5,
+    });
+    await page.mouse.up();
+    await expect.poll(selectedText).toBe("Heading to copy\nParagraph to copy");
+
+    await page.mouse.click(paragraphBox.x + 10, paragraphBox.y + paragraphBox.height / 2, { button: "right" });
+    await expect.poll(selectedText).toBe("Heading to copy\nParagraph to copy");
+
+    const clipboardText = () => page.evaluate(() => navigator.clipboard.readText());
+    // Like the context menu's Copy, this fires the copy event without a keydown.
+    await page.evaluate(() => document.execCommand("copy"));
+    await expect.poll(clipboardText).toBe("Heading to copy\nParagraph to copy");
+
+    await page.evaluate(() => navigator.clipboard.writeText(""));
+    await page.keyboard.press("ControlOrMeta+c");
+    await expect.poll(clipboardText).toBe("Heading to copy\nParagraph to copy");
+
+    await page.keyboard.press("Escape");
+    await paragraphText.click();
+    await expect(paragraphText).toHaveAttribute("contenteditable", "true");
+    await page.keyboard.press("End");
+    await page.keyboard.type("!");
+    await expect(paragraphText).toHaveText("Paragraph to copy!");
+  });
+
   async function setupHeadingAndEmptyLine(
     page: Page,
     heading: ReturnType<typeof title1 | typeof title2 | typeof title3>,

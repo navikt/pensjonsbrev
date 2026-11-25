@@ -3,13 +3,29 @@ import { useEffect } from "react";
 // Solves the browser's native limitation where a text selection
 // cannot cross the boundary of separate contentEditable elements.
 // It makes a group of individual editable spans behave like a single,
-// continuous block of text, but only during a drag-selection.
+// continuous block of text during a drag-selection, and for as long as the
+// resulting selection spans several of them.
 
 export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enabled = true) {
   useEffect(() => {
     if (!host || !enabled) return;
 
     const isInsideHost = (n: Node | null) => !!n && host.contains(n);
+    const literalOf = (n: Node) => (n instanceof Element ? n : n.parentElement)?.closest("[data-literal-index]");
+
+    // Restoring contentEditable makes Chromium shrink such a selection to the literal it starts in.
+    const hasSelectionAcrossLiterals = () => {
+      const selection = document.getSelection();
+      if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return false;
+      const range = selection.getRangeAt(0);
+      return (
+        (isInsideHost(range.startContainer) || isInsideHost(range.endContainer)) &&
+        literalOf(range.startContainer) !== literalOf(range.endContainer)
+      );
+    };
+
+    const isContextClick = (event: MouseEvent) =>
+      event.button === 2 || (event.button === 0 && event.ctrlKey && /Mac/.test(navigator.platform));
 
     // Mark the host(div) as "unified" and remove contentEditable from all children
     const unify = () => {
@@ -25,9 +41,10 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     };
 
     // Restore contentEditable attributes to original values
-    const restore = () => {
+    const restore = (force = false) => {
       if (!host.isConnected) return;
       if (host.dataset.unified !== "1") return;
+      if (!force && hasSelectionAcrossLiterals()) return;
       host.classList.remove("is-drag-selecting");
       delete host.dataset.unified;
       for (const el of host.querySelectorAll<HTMLElement>("[data-ce-orig]")) {
@@ -57,6 +74,11 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
       if (event.key === "Shift") {
         selectingByKeys = true;
       }
+      // Copying keeps the whole selection, while editing and navigating need editable literals.
+      const isModifier = ["Shift", "Control", "Alt", "Meta", "CapsLock"].includes(event.key);
+      const isCopy = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "c";
+      const extendsSelection = event.shiftKey && /^(Arrow|Home$|End$|Page)/.test(event.key);
+      if (!isModifier && !isCopy && !extendsSelection) restore(true);
     };
 
     const onKeyUp = (event: KeyboardEvent) => {
@@ -74,8 +96,15 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
       pointerDownInside = isInsideHost(event.target as Node);
       dragStarted = false;
       if (!pointerDownInside) return;
+      // A new click (but not a shift-click extending the selection) must land in editable text.
+      if (event.button === 0 && !event.shiftKey && !isContextClick(event)) restore(true);
       pointerDownX = event.clientX;
       pointerDownY = event.clientY;
+    };
+
+    // A context click would focus the clicked literal, which places the caret there and drops the selection.
+    const onMouseDown = (event: MouseEvent) => {
+      if (isContextClick(event) && hasSelectionAcrossLiterals()) event.preventDefault();
     };
 
     const onPointerMove = (event: PointerEvent) => {
@@ -89,8 +118,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     // ensure we're unified.
     const onSelectionChange = () => {
       const selection = document.getSelection?.();
-      if (!selection || selection.rangeCount === 0) return;
-      if (selection.isCollapsed) {
+      if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
         restore();
         return;
       }
@@ -105,6 +133,8 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
       // Ensures unification when selection starts outside host
       if (isInsideHost(selection.anchorNode) || isInsideHost(selection.focusNode)) {
         unify();
+      } else {
+        restore();
       }
     };
 
@@ -123,6 +153,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     // use capture to beat other listeners that might interfere
     document.addEventListener("selectionchange", onSelectionChange);
     host.addEventListener("pointerdown", onPointerDown, true);
+    host.addEventListener("mousedown", onMouseDown, true);
     host.addEventListener("pointermove", onPointerMove, true);
     host.addEventListener("keydown", onKeyDown, true);
     host.addEventListener("keyup", onKeyUp, true);
@@ -132,9 +163,10 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     window.addEventListener("blur", onWindowBlur);
 
     return () => {
-      restore();
+      restore(true);
       document.removeEventListener("selectionchange", onSelectionChange);
       host.removeEventListener("pointerdown", onPointerDown, true);
+      host.removeEventListener("mousedown", onMouseDown, true);
       host.removeEventListener("pointermove", onPointerMove, true);
       host.removeEventListener("keydown", onKeyDown, true);
       host.removeEventListener("keyup", onKeyUp, true);
