@@ -43,6 +43,7 @@ enum class FeatureToggles(private val key: String) {
     vedtakOmFjerningAvOmsorgspoeng("vedtakOmFjerningAvOmsorgspoeng"),
     vedtakOmInnvilgelseAvOmsorgspoeng("vedtakOmInnvilgelseAvOmsorgspoeng"),
     okningUforegradV2("okninguforegrad.v2"),
+    eksportUt("eksportUt"),
     epsEndringIBarnetillegg("epsEndringIBarnetillegg");
 
 

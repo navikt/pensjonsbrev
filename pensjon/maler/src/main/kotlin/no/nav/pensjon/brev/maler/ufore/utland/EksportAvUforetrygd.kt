@@ -6,24 +6,20 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EksportAvUforetrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.eksportAvUforetrygdDto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.eksportAvUforetrygdDto.pesysData.*
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brev.template.createTemplate
 
 @TemplateModelHelpers
 object EksportAvUforetrygd : RedigerbarTemplate<EksportAvUforetrygdDto> {
@@ -31,6 +27,7 @@ object EksportAvUforetrygd : RedigerbarTemplate<EksportAvUforetrygdDto> {
     override val kategori = Brevkategori.VEDTAK_EKSPORT
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
+    override val featureToggle = FeatureToggles.eksportUt.toggle
 
     override val template = createTemplate(
         languages = languages(Bokmal),
