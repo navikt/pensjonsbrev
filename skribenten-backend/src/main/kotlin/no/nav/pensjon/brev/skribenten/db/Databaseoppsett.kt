@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.*
 import com.typesafe.config.Config
 import com.zaxxer.hikari.*
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
+import no.nav.pensjon.brev.skribenten.DatabaseConfig
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -54,9 +54,13 @@ internal inline fun <reified T : Any> Table.readJsonBinary(json: ByteArray): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
+interface DatabaseSettings {
+    val database: DatabaseConfig
+}
+
 private val logger = LoggerFactory.getLogger("databaseoppsett")
 
-fun dataSourceFactory(config: SkribentenConfig): HikariDataSource = with(config.database) {
+fun dataSourceFactory(config: DatabaseSettings): HikariDataSource = with(config.database) {
     try {
         initDatabase(
             jdbcUrl = "jdbc:postgresql://$host:$port/$name",

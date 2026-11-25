@@ -12,7 +12,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
@@ -49,6 +48,10 @@ interface PensjonPersonDataService {
     suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto?
 }
 
+interface PensjonPersonDataSettings {
+    val pensjonPersondata: OboClientConfig
+}
+
 class PensjonPersonDataServiceImpl(
     config: OboClientConfig,
     authService: AuthService,
@@ -57,8 +60,8 @@ class PensjonPersonDataServiceImpl(
 ): ServiceStatus, PensjonPersonDataService, Closeable {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, clientEngine: HttpClientEngine, cache: Cache):
-            this(config.services.pensjonPersondata, authService, clientEngine, cache)
+    constructor(config: PensjonPersonDataSettings, authService: AuthService, clientEngine: HttpClientEngine, cache: Cache):
+            this(config.pensjonPersondata, authService, clientEngine, cache)
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private val pensjonPersondataURL = config.url

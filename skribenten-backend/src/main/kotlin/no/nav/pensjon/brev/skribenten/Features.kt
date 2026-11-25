@@ -17,12 +17,16 @@ interface FeatureToggleService : Closeable {
     suspend fun isEnabled(toggle: UnleashToggle): Boolean
 }
 
+interface UnleashSettings {
+    val unleash: UnleashCfg
+}
+
 class UnleashService(config: UnleashCfg) : FeatureToggleService {
     private val unleash: Unleash = initUnleash(config)
 
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig): this(config.unleash)
+    constructor(config: UnleashSettings): this(config.unleash)
 
     override suspend fun isEnabled(toggle: UnleashToggle): Boolean =
         unleash.isEnabled(unleashTogglePrefix + toggle.name, context())

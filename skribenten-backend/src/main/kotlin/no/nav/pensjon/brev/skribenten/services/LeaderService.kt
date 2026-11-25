@@ -14,6 +14,10 @@ import java.net.InetAddress
 data class LeaderElection(val isThisInstanceLeader: Boolean, val thisInstanceName: String, val leaderName: String)
 data class LeaderResponse(val name: String)
 
+interface LeaderSettings {
+    val leader: NoAuthClientConfig?
+}
+
 interface LeaderService {
     suspend fun electedLeader(): LeaderElection?
     val isLeaderElectionEnabled: Boolean

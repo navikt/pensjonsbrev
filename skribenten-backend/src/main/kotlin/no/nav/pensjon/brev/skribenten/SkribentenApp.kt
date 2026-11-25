@@ -40,6 +40,10 @@ import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.SkribentenApp")
 
+interface CorsSettings {
+    val cors: CorsConfig
+}
+
 fun main(args: Array<String>) {
     Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
         if (ex is RejectedExecutionException) {
@@ -134,7 +138,8 @@ fun Application.skribentenApp() {
     skribentenContenNegotiation()
     configureDependencies()
 
-    val skribentenConfig: SkribentenConfig by dependencies
+    val corsSettings: CorsSettings by dependencies
+    val azureADSettings: AzureADSettings by dependencies
 
     install(CORS) {
         allowMethod(HttpMethod.Options)
@@ -144,13 +149,13 @@ fun Application.skribentenApp() {
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.ContentType)
         allowHeader("X-Request-ID")
-        skribentenConfig.cors.host.split(",").forEach { host ->
-            allowHost(host, schemes = skribentenConfig.cors.schemes)
+        corsSettings.cors.host.split(",").forEach { host ->
+            allowHost(host, schemes = corsSettings.cors.schemes)
         }
     }
 
     install(Authentication) {
-        skribentenJwt(skribentenConfig.azureAD)
+        skribentenJwt(azureADSettings.azureAD)
     }
 
     configureRouting()

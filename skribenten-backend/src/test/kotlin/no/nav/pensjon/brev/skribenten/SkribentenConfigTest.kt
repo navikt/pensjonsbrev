@@ -5,6 +5,8 @@ import com.typesafe.config.ConfigParseOptions.defaults
 import com.typesafe.config.ConfigResolveOptions
 import io.ktor.server.config.HoconApplicationConfig
 import io.ktor.server.config.getAs
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -20,17 +22,59 @@ class SkribentenConfigTest {
 
     @Test
     fun `can load typed config`() {
-        val resolved = ConfigFactory.parseResources("application.conf")
-            .withFallback(fakeSubstitutionsFor("application.conf"))
-            .resolve()
-
-        val config = HoconApplicationConfig(resolved).config("skribenten").getAs<SkribentenConfig>()
+        val config = loadConfig()
 
         // PreAuthorizedAppsSerializer decodes the raw JSON string HOCON gives us into a real list.
         assertThat(config.azureAD.preAuthApps).containsExactly(
             AzureADConfig.PreAuthorizedApp("abc:def:hij", "1234"),
             AzureADConfig.PreAuthorizedApp("klm:nop:qrs", "567"),
         )
+    }
+
+    @Test
+    fun `delegated settings follow copied config without changing serialized structure`() {
+        val original = loadConfig().let { config ->
+            config.copy(services = config.services.copy(leader = null))
+        }
+        val config = original.copy(
+            azureAD = original.azureAD.copy(issuer = "https://updated.invalid"),
+            database = original.database.copy(port = "5433"),
+            valkey = original.valkey.copy(enabled = false),
+            services = original.services.copy(
+                pen = OboClientConfig("https://updated-pen.invalid", "updated-scope"),
+                leader = NoAuthClientConfig("http://updated-leader.invalid"),
+            ),
+        )
+
+        assertThat(config.azureAD.issuer).isEqualTo("https://updated.invalid")
+        assertThat(config.database.port).isEqualTo("5433")
+        assertThat(config.valkey.enabled).isFalse()
+        assertThat(config.pen).isSameAs(config.services.pen)
+        assertThat(config.leader).isSameAs(config.services.leader)
+        assertThat(config.pen).isNotEqualTo(original.pen)
+        assertThat(original.leader).isNull()
+
+        val serialized = Json.encodeToJsonElement(SkribentenConfig.serializer(), config)
+        assertThat(serialized.jsonObject.keys).containsExactly(
+            "azureAD", "database", "unleash", "valkey", "groups", "cors", "krypteringsnoekkel", "services",
+        )
+        assertThat(serialized.jsonObject.getValue("services").jsonObject.keys).containsExactly(
+            "pen", "pdl", "saf", "pensjonPersondata", "pensjonRepresentasjon", "krr", "brevbaker",
+            "brevmetadata", "navansatt", "samhandlerProxy", "norg2", "externalApi", "leader", "skjerming",
+            "foerstesidegenerator",
+        )
+
+        val restored = Json.decodeFromJsonElement(SkribentenConfig.serializer(), serialized)
+        assertThat(restored).isEqualTo(config)
+        assertThat(restored.pen).isEqualTo(config.pen)
+        assertThat(restored.leader).isEqualTo(config.leader)
+    }
+
+    private fun loadConfig(): SkribentenConfig {
+        val resolved = ConfigFactory.parseResources("application.conf")
+            .withFallback(fakeSubstitutionsFor("application.conf"))
+            .resolve()
+        return HoconApplicationConfig(resolved).config("skribenten").getAs<SkribentenConfig>()
     }
 
     /**

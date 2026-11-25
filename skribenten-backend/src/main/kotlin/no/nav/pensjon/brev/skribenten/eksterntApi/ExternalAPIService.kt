@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBre
 import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -19,6 +18,10 @@ import no.nav.pensjon.brev.skribenten.routes.toLanguageCode
 import no.nav.pensjon.brev.skribenten.services.toApi
 import org.slf4j.LoggerFactory
 
+interface ExternalApiSettings {
+    val externalApi: ExternalApiConfig
+}
+
 class ExternalAPIService(
     config: ExternalApiConfig,
     private val hentBrevForAlleSaker: HentBrevForAlleSakerService,
@@ -27,8 +30,8 @@ class ExternalAPIService(
 ) {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, hentBrevForAlleSaker: HentBrevForAlleSakerService, brevmalService: BrevmalService, opprettBrevHandler: OpprettBrevHandler) :
-            this(config.services.externalApi, hentBrevForAlleSaker, brevmalService, opprettBrevHandler)
+    constructor(config: ExternalApiSettings, hentBrevForAlleSaker: HentBrevForAlleSakerService, brevmalService: BrevmalService, opprettBrevHandler: OpprettBrevHandler) :
+            this(config.externalApi, hentBrevForAlleSaker, brevmalService, opprettBrevHandler)
 
     private val skribentenWebUrl = config.skribentenWebUrl
 
