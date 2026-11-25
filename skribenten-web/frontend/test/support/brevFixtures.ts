@@ -76,7 +76,6 @@ export const editedLetter = ({
       ],
       deletedContent: [],
       missingFromTemplate: false,
-      templateStatus: "IN_TEMPLATE",
       type: "PARAGRAPH",
     },
     {
@@ -94,7 +93,6 @@ export const editedLetter = ({
       ],
       deletedContent: [],
       missingFromTemplate: false,
-      templateStatus: "IN_TEMPLATE",
       type: "PARAGRAPH",
     },
   ],

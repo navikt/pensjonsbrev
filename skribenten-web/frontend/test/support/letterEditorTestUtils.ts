@@ -23,7 +23,6 @@ import {
   type VariableValue,
 } from "~/types/brevbakerTypes";
 import { type Nullable } from "~/types/Nullable";
-import { type EditBlockTemplateStatus } from "~/types/skribenten-api";
 
 import { brevResponse, editedLetter } from "./brevFixtures";
 
@@ -68,7 +67,7 @@ export function withMissingFromTemplate<T extends AnyBlock>(block: T, missingFro
   return {
     ...block,
     missingFromTemplate,
-    templateStatus: missingFromTemplate ? "MISSING_FROM_TEMPLATE" : "IN_TEMPLATE",
+    decision: missingFromTemplate ? { type: "MISSING_FROM_RENDERED", status: "PENDING" } : null,
   };
 }
 
@@ -86,7 +85,6 @@ function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
   deletedContent: number[];
   content: TextContent[];
   missingFromTemplate: boolean;
-  templateStatus: EditBlockTemplateStatus;
 } {
   if ("content" in contentOrArgs && !("text" in contentOrArgs)) {
     const args = contentOrArgs as TitleArgs;
@@ -99,7 +97,6 @@ function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
       deletedContent: [],
       content: withParent(args.content, id),
       missingFromTemplate: false,
-      templateStatus: "IN_TEMPLATE",
     };
   }
   const id = randomId();
@@ -112,7 +109,6 @@ function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
     deletedContent: [],
     content: withParent(content, id),
     missingFromTemplate: false,
-    templateStatus: "IN_TEMPLATE",
   };
 }
 
