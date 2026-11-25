@@ -32,14 +32,11 @@ interface FoerstesidegeneratorSettings {
     val foerstesidegenerator: OboClientConfig
 }
 
-class FoerstesidegeneratorClient(config: OboClientConfig, authService: AuthService, clientEngine: HttpClientEngine) : Closeable {
-
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: FoerstesidegeneratorSettings, authService: AuthService, engine: HttpClientEngine) : this(config.foerstesidegenerator, authService, engine)
+class FoerstesidegeneratorClient(config: FoerstesidegeneratorSettings, authService: AuthService, clientEngine: HttpClientEngine) : Closeable {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val foerstesidegeneratorUrl = config.url
-    private val foerstesidegeneratorScope = config.scope
+    private val foerstesidegeneratorUrl = config.foerstesidegenerator.url
+    private val foerstesidegeneratorScope = config.foerstesidegenerator.scope
 
     private val client = lagHttpClient(clientEngine) {
         defaultRequest {

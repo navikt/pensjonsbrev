@@ -27,18 +27,15 @@ interface PensjonRepresentasjonSettings {
 }
 
 class PensjonRepresentasjonService(
-    config: OboClientConfig,
+    config: PensjonRepresentasjonSettings,
     authService: AuthService,
     private val cache: Cache,
     engine: HttpClientEngine,
 ): Closeable {
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: PensjonRepresentasjonSettings, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.pensjonRepresentasjon, authService, cache, engine)
-
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val pensjonPersondataURL = config.url
-    private val scope = config.scope
+    private val pensjonPersondataURL = config.pensjonRepresentasjon.url
+    private val scope = config.pensjonRepresentasjon.scope
 
     private val client = lagHttpClient(engine) {
         defaultRequest {

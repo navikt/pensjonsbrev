@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.skribenten
 
+import com.typesafe.config.ConfigFactory
 import io.ktor.server.application.Application
-import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.config.HoconApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.config.mergeWith
 import io.ktor.server.plugins.di.DependencyKey
@@ -20,6 +21,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenSettings
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorSettings
 import no.nav.pensjon.brev.skribenten.services.KrrSettings
 import no.nav.pensjon.brev.skribenten.services.LeaderSettings
+import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import no.nav.pensjon.brev.skribenten.services.NavansattSettings
 import no.nav.pensjon.brev.skribenten.services.Norg2Settings
 import no.nav.pensjon.brev.skribenten.services.PdlSettings
@@ -32,9 +34,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.Isolated
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.testcontainers.postgresql.PostgreSQLContainer
 
 /**
@@ -81,10 +86,19 @@ class DependenciesTest {
         "skribenten.database.maxPoolSize" to "2",
     )
 
-    @Test
-    fun `alle registrerte avhengigheter kan resolves`() = testApplication {
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    @Execution(ExecutionMode.SAME_THREAD)
+    fun `alle registrerte avhengigheter kan resolves`(leaderEnabled: Boolean) = testApplication {
         environment {
-            config = ApplicationConfig("application-test.conf").mergeWith(databaseConfig())
+            config = HoconApplicationConfig(
+                ConfigFactory.parseResources("application-test.conf")
+                    .withoutPath("skribenten.services.leader")
+                    .resolve()
+            ).mergeWith(databaseConfig())
+            if (leaderEnabled) {
+                config = config.mergeWith(MapApplicationConfig("skribenten.services.leader.url" to "http://localhost:9999/fake"))
+            }
         }
 
         lateinit var app: Application
@@ -117,6 +131,8 @@ class DependenciesTest {
                 registry.resolve<FoerstesidegeneratorSettings>(),
             )
         ).allSatisfy { assertThat(it).isSameAs(config) }
+        assertThat(config.leader != null).isEqualTo(leaderEnabled)
+        assertThat(registry.resolve<NaisLeaderService>().isLeaderElectionEnabled).isEqualTo(leaderEnabled)
         val keys = registry.resolver.registrerteNoekler()
 
         assertTrue(keys.size >= MINIMUM_ANTALL_DEKLARASJONER) {

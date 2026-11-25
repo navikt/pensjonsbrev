@@ -24,15 +24,12 @@ interface KrrSettings {
     val krr: OboClientConfig
 }
 
-class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine) : ServiceStatus, Closeable {
-
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: KrrSettings, authService: AuthService, engine: HttpClientEngine): this(config.krr, authService, engine)
+class KrrService(config: KrrSettings, authService: AuthService, engine: HttpClientEngine) : ServiceStatus, Closeable {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val client = lagHttpClient(engine) {
         defaultRequest {
-            url(config.url)
+            url(config.krr.url)
         }
         install(ContentNegotiation) {
             jackson {
@@ -40,7 +37,7 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
             }
         }
         installRetry(logger)
-        onBehalfOfClient(config.scope, authService)
+        onBehalfOfClient(config.krr.scope, authService)
     }
 
     @Suppress("EnumEntryName")

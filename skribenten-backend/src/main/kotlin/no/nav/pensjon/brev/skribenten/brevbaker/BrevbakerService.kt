@@ -83,14 +83,11 @@ interface BrevbakerSettings {
     val brevbaker: OboClientConfig
 }
 
-class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, val cache: Cache, engine: HttpClientEngine) : BrevbakerService, ServiceStatus, Closeable {
+class BrevbakerServiceHttp(config: BrevbakerSettings, authService: AuthService, val cache: Cache, engine: HttpClientEngine) : BrevbakerService, ServiceStatus, Closeable {
     private val logger = LoggerFactory.getLogger(BrevbakerServiceHttp::class.java)!!
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: BrevbakerSettings, authService: AuthService, cache: Cache, engine: HttpClientEngine) : this(config.brevbaker, authService, cache, engine)
-
-    private val brevbakerUrl = config.url
-    private val scope = config.scope
+    private val brevbakerUrl = config.brevbaker.url
+    private val scope = config.brevbaker.scope
     private val client = lagHttpClient(engine) {
         defaultRequest {
             url(brevbakerUrl)

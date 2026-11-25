@@ -57,14 +57,11 @@ interface SafSettings {
     val saf: SafConfig
 }
 
-class SafServiceHttp(config: SafConfig, authService: AuthService, engine: HttpClientEngine) : SafService, ServiceStatus, Closeable {
-    private val safUrl = config.url
-    private val safRestUrl = config.restUrl
-    private val safScope = config.scope
+class SafServiceHttp(config: SafSettings, authService: AuthService, engine: HttpClientEngine) : SafService, ServiceStatus, Closeable {
+    private val safUrl = config.saf.url
+    private val safRestUrl = config.saf.restUrl
+    private val safScope = config.saf.scope
     private val logger = LoggerFactory.getLogger(this::class.java)
-
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SafSettings, authService: AuthService, engine: HttpClientEngine): this(config.saf, authService, engine)
 
     private val client = lagHttpClient(engine) {
         defaultRequest {

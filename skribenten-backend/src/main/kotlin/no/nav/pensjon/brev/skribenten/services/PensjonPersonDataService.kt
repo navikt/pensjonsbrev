@@ -53,19 +53,15 @@ interface PensjonPersonDataSettings {
 }
 
 class PensjonPersonDataServiceImpl(
-    config: OboClientConfig,
+    config: PensjonPersonDataSettings,
     authService: AuthService,
     clientEngine: HttpClientEngine,
     private val cache: Cache,
 ): ServiceStatus, PensjonPersonDataService, Closeable {
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: PensjonPersonDataSettings, authService: AuthService, clientEngine: HttpClientEngine, cache: Cache):
-            this(config.pensjonPersondata, authService, clientEngine, cache)
-
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val pensjonPersondataURL = config.url
-    private val scope = config.scope
+    private val pensjonPersondataURL = config.pensjonPersondata.url
+    private val scope = config.pensjonPersondata.scope
     private val client = lagHttpClient(clientEngine) {
         defaultRequest {
             url(pensjonPersondataURL)

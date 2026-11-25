@@ -24,10 +24,10 @@ interface LeaderService {
 }
 
 class NaisLeaderService(
-    config: NoAuthClientConfig?,
+    config: LeaderSettings,
     clientEngine: HttpClientEngine,
 ) : LeaderService, Closeable {
-    private val url: String? = config?.url
+    private val url: String? = config.leader?.url
 
     private val client = lagHttpClient(clientEngine) {
         install(ContentNegotiation) {

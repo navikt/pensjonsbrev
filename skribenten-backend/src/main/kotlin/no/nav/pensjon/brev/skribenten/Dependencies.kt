@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
 import io.ktor.server.application.Application
 import io.ktor.server.config.getAs
@@ -81,7 +80,6 @@ import no.nav.pensjon.brev.skribenten.saksbehandler.LeggTilFavorittHandler
 import no.nav.pensjon.brev.skribenten.saksbehandler.MarkerNyhetsvarselHandler
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.KrrService
-import no.nav.pensjon.brev.skribenten.services.LeaderSettings
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import no.nav.pensjon.brev.skribenten.services.NavansattServiceHttp
 import no.nav.pensjon.brev.skribenten.services.Norg2ServiceHttp
@@ -113,9 +111,7 @@ fun Application.configureDependencies() {
 
         provide<FeatureToggleService>(UnleashService::class)
 
-        // Gjort her og ikke i NaisLeaderService med vilje. Siden configen her er nullable, vil Ktor DI bruke
-        // feil konstruktør hvis vi gjør det likt som elles
-        provide { config: LeaderSettings, engine: HttpClientEngine -> NaisLeaderService(config.leader, engine) }
+        provide(NaisLeaderService::class)
 
         provide(SafServiceHttp::class)
         provide(PentHttpClient::class)

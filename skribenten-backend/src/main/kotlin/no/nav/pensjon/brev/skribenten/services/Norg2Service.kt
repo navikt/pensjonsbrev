@@ -26,13 +26,10 @@ interface Norg2Settings {
 }
 
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
-class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache, engine: HttpClientEngine) : Norg2Service, Closeable {
+class Norg2ServiceHttp(config: Norg2Settings, val cache: Cache, engine: HttpClientEngine) : Norg2Service, Closeable {
     private val logger = LoggerFactory.getLogger(Norg2ServiceHttp::class.java)
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: Norg2Settings, cache: Cache, engine: HttpClientEngine): this(config.norg2, cache, engine)
-
-    private val norgUrl = config.url
+    private val norgUrl = config.norg2.url
 
     private val client = lagHttpClient(engine) {
         defaultRequest {

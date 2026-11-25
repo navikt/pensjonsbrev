@@ -34,18 +34,15 @@ interface NavansattSettings {
 }
 
 class NavansattServiceHttp(
-    config: OboClientConfig,
+    config: NavansattSettings,
     authService: AuthService,
     private val cache: Cache,
     engine: HttpClientEngine,
 ) : NavansattService, ServiceStatus, Closeable {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: NavansattSettings, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.navansatt, authService, cache, engine)
-
-    private val navansattUrl = config.url
-    private val navansattScope = config.scope
+    private val navansattUrl = config.navansatt.url
+    private val navansattScope = config.navansatt.scope
 
     private val client = lagHttpClient(engine) {
         defaultRequest {

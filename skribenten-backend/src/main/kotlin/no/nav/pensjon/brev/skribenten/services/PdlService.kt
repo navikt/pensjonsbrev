@@ -43,13 +43,9 @@ interface PdlSettings {
     val pdl: OboClientConfig
 }
 
-class PdlServiceHttp(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine) : PdlService, ServiceStatus, Closeable {
-
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: PdlSettings, authService: AuthService, engine: HttpClientEngine): this(config.pdl, authService, engine)
-
-    private val pdlUrl = config.url
-    private val pdlScope = config.scope
+class PdlServiceHttp(config: PdlSettings, authService: AuthService, engine: HttpClientEngine) : PdlService, ServiceStatus, Closeable {
+    private val pdlUrl = config.pdl.url
+    private val pdlScope = config.pdl.scope
 
     private val client = lagHttpClient(engine) {
         defaultRequest {

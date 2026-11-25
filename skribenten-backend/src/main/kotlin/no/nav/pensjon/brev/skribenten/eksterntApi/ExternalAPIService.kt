@@ -23,17 +23,13 @@ interface ExternalApiSettings {
 }
 
 class ExternalAPIService(
-    config: ExternalApiConfig,
+    config: ExternalApiSettings,
     private val hentBrevForAlleSaker: HentBrevForAlleSakerService,
     private val brevmalService: BrevmalService,
     private val opprettBrevHandler: OpprettBrevService,
 ) {
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: ExternalApiSettings, hentBrevForAlleSaker: HentBrevForAlleSakerService, brevmalService: BrevmalService, opprettBrevHandler: OpprettBrevHandler) :
-            this(config.externalApi, hentBrevForAlleSaker, brevmalService, opprettBrevHandler)
-
-    private val skribentenWebUrl = config.skribentenWebUrl
+    private val skribentenWebUrl = config.externalApi.skribentenWebUrl
 
     companion object {
         private val logger = LoggerFactory.getLogger(ExternalAPIService::class.java)

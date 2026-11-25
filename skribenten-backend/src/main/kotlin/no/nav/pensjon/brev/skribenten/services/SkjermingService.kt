@@ -30,16 +30,13 @@ interface SkjermingSettings {
 }
 
 class SkjermingServiceHttp(
-    config: OboClientConfig,
+    config: SkjermingSettings,
     authService: AuthService,
     private val cache: Cache,
     engine: HttpClientEngine,
 ) : SkjermingService, Closeable {
-    private val url: String = config.url
-    private val scope: String = config.scope
-
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkjermingSettings, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.skjerming, authService, cache, engine)
+    private val url: String = config.skjerming.url
+    private val scope: String = config.skjerming.scope
 
     private val client = lagHttpClient(engine) {
         defaultRequest { url(this@SkjermingServiceHttp.url) }

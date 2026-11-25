@@ -7,7 +7,12 @@ import org.junit.jupiter.api.Test
 class LeaderServiceTest {
 
     private val leaderResponse = LeaderResponse("the-elected-leader")
-    private val config = NoAuthClientConfig("http://mocked-leader-service")
+    private val config = object : LeaderSettings {
+        override val leader = NoAuthClientConfig("http://mocked-leader-service")
+    }
+    private val disabledConfig = object : LeaderSettings {
+        override val leader: NoAuthClientConfig? = null
+    }
 
     @Test
     fun `given a url leader election is enabled`() {
@@ -17,7 +22,7 @@ class LeaderServiceTest {
 
     @Test
     fun `given no url leader election is disabled`() {
-        val leaderService = NaisLeaderService(null, mockEngine(leaderResponse))
+        val leaderService = NaisLeaderService(disabledConfig, mockEngine(leaderResponse))
         assertThat(leaderService.isLeaderElectionEnabled).isFalse()
     }
 
@@ -46,7 +51,7 @@ class LeaderServiceTest {
 
     @Test
     fun `answers with null if leader election is disabled`(): Unit = httpClientTest(leaderResponse) { engine ->
-        val leaderService = NaisLeaderService(null, engine)
+        val leaderService = NaisLeaderService(disabledConfig, engine)
 
         val leaderElection = leaderService.electedLeader()
         assertThat(leaderElection).isNull()

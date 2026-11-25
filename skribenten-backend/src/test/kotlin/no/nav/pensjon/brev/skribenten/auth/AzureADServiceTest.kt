@@ -130,7 +130,9 @@ class AzureADServiceTest {
 
     private fun createService(handler: (suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData) = { respond("") }) =
         AzureADService(
-            jwtConfig = jwtConfig,
+            config = object : AzureADSettings {
+                override val azureAD = jwtConfig
+            },
             engine = MockEngine.invoke(handler),
             cache = InMemoryCache()
         )

@@ -40,17 +40,14 @@ interface SamhandlerSettings {
 }
 
 class SamhandlerServiceHttp(
-    config: OboClientConfig,
+    config: SamhandlerSettings,
     authService: AuthService,
     private val cache: Cache,
     engine: HttpClientEngine,
 ) : SamhandlerService, ServiceStatus, Closeable {
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SamhandlerSettings, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.samhandlerProxy, authService, cache, engine)
-
-    private val samhandlerProxyUrl = config.url
-    private val samhandlerProxyScope = config.scope
+    private val samhandlerProxyUrl = config.samhandlerProxy.url
+    private val samhandlerProxyScope = config.samhandlerProxy.scope
 
     private val samhandlerProxyClient = lagHttpClient(engine) {
         defaultRequest {

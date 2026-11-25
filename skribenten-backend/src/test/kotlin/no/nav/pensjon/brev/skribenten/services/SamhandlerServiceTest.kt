@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class SamhandlerServiceTest {
-    private val config = OboClientConfig(url = "http://samhandler.test", scope = "test-scope")
+    private val config = object : SamhandlerSettings {
+        override val samhandlerProxy = OboClientConfig(url = "http://samhandler.test", scope = "test-scope")
+    }
 
     private val samhandler = SamhandlerServiceHttp.SamhandlerEnkel(
         navn = "Advokat Handler AS",

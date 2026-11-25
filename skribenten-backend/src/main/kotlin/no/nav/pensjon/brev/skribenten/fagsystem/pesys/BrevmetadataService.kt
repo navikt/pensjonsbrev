@@ -30,14 +30,11 @@ interface BrevmetadataSettings {
 }
 
 class BrevmetadataServiceHttp(
-    config: NoAuthClientConfig,
+    config: BrevmetadataSettings,
     engine: HttpClientEngine,
 ) : BrevmetadataService, ServiceStatus, Closeable {
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: BrevmetadataSettings, engine: HttpClientEngine): this(config.brevmetadata, engine)
-
-    private val brevmetadataUrl = config.url
+    private val brevmetadataUrl = config.brevmetadata.url
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
     private val httpClient = lagHttpClient(engine) {
         defaultRequest {
