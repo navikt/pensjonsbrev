@@ -8,6 +8,10 @@ import no.nav.pensjon.brev.brevoppskrift.model.SourceId
 import no.nav.pensjon.brev.brevoppskrift.model.AttachmentReference
 import no.nav.pensjon.brev.brevoppskrift.auth.AuthorName
 import no.nav.pensjon.brev.brevoppskrift.model.DraftId
+import no.nav.pensjon.brev.brevoppskrift.integrasjoner.PrJobRepository
+import no.nav.pensjon.brev.brevoppskrift.integrasjoner.PrStatus
+import no.nav.pensjon.brev.brevoppskrift.integrasjoner.PrUrl
+import no.nav.pensjon.brev.brevoppskrift.integrasjoner.PrLeaseToken
 import no.nav.pensjon.brev.brevoppskrift.draftObjectMapper
 import no.nav.pensjon.brev.brevoppskrift.TestPostgres
 import kotlinx.coroutines.runBlocking
@@ -19,6 +23,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import java.util.UUID
+import java.time.Clock
+import java.time.Duration
 import java.util.concurrent.Callable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
@@ -26,6 +32,90 @@ import java.util.concurrent.TimeUnit
 
 @Execution(ExecutionMode.SAME_THREAD)
 class DraftRepositoryTest {
+    @Test
+    fun `PR submission captures READY revision and lease claim is exclusive`(): Unit = runBlocking {
+        val created = repository.create(exampleDraft(), null, AuthorName("Synthetic author"))
+        val jobs = PrJobRepository(transactions)
+        assertThat(runCatching { jobs.create(created.id, DraftRevision(1)) }.exceptionOrNull()).isInstanceOf(IllegalArgumentException::class.java)
+        val ready = repository.status(created.id, DraftRevision(1), DraftStatus.READY, AuthorName("Synthetic editor"))
+        assertThat(runCatching { jobs.create(ready.id, DraftRevision(1)) }.exceptionOrNull()).isInstanceOf(RevisionConflict::class.java)
+        val submissions = concurrently({ jobs.create(ready.id, ready.revision) }, { jobs.create(ready.id, ready.revision) }).map { it.getOrThrow() }
+        val queued = submissions.first()
+        assertThat(submissions).containsOnly(queued)
+        assertThat(jobs.create(ready.id, ready.revision)).isEqualTo(queued)
+        repository.update(ready.id, ready.revision, ready.draft.copy(metadata = ready.draft.metadata.copy(name = "LaterChange")), AuthorName("Synthetic editor"))
+        val claims = concurrently({ jobs.claim() }, { jobs.claim() }).map { it.getOrThrow() }.filterNotNull()
+        assertThat(claims).hasSize(1)
+        val ticket = claims.single()
+        assertThat(ticket.draft).isEqualTo(ready.draft)
+        jobs.finish(ticket.copy(lease = PrLeaseToken(UUID.randomUUID())), PrUrl("https://github.com/navikt/pensjonsbrev/pull/1"), null)
+        assertThat(jobs.latest(ready.id)?.status).isEqualTo(PrStatus.RUNNING)
+        jobs.finish(ticket, PrUrl("https://github.com/navikt/pensjonsbrev/pull/1"), null)
+        assertThat(jobs.latest(ready.id)?.status).isEqualTo(PrStatus.SUCCEEDED)
+        assertThat(jobs.claim()).isNull()
+    }
+
+    @Test
+    fun `expired PR leases recover but stop after three attempts`(): Unit = runBlocking {
+        val created = repository.create(exampleDraft(), null, AuthorName("Synthetic author"))
+        val ready = repository.status(created.id, DraftRevision(1), DraftStatus.READY, AuthorName("Synthetic author"))
+        val clock = Clock.systemUTC()
+        val original = PrJobRepository(transactions, clock)
+        original.create(ready.id, ready.revision)
+        val first = requireNotNull(original.claim())
+        repeat(2) { attempt ->
+            val worker = PrJobRepository(transactions, Clock.offset(clock, Duration.ofMinutes((attempt + 1) * 4L)))
+            assertThat(requireNotNull(worker.claim()).attempts).isEqualTo(attempt + 2)
+        }
+        val final = PrJobRepository(transactions, Clock.offset(clock, Duration.ofMinutes(12)))
+        assertThat(final.claim()).isNull()
+        assertThat(final.latest(ready.id)?.status).isEqualTo(PrStatus.FAILED)
+        original.finish(first, PrUrl("https://github.com/navikt/pensjonsbrev/pull/1"), null)
+        assertThat(final.latest(ready.id)?.status).isEqualTo(PrStatus.FAILED)
+    }
+
+    @Test
+    fun `ambiguous GitHub timeouts retry the same snapshot after a delay`(): Unit = runBlocking {
+        val created = repository.create(exampleDraft(), null, AuthorName("Synthetic author"))
+        val ready = repository.status(created.id, DraftRevision(1), DraftStatus.READY, AuthorName("Synthetic author"))
+        val clock = Clock.systemUTC()
+        val jobs = PrJobRepository(transactions, clock)
+        val queued = jobs.create(ready.id, ready.revision)
+        val first = requireNotNull(jobs.claim())
+        jobs.finish(first, null, "GITHUB_TIMEOUT")
+        assertThat(jobs.latest(ready.id)?.status).isEqualTo(PrStatus.PENDING)
+        assertThat(jobs.claim()).isNull()
+        val later = PrJobRepository(transactions, Clock.offset(clock, Duration.ofSeconds(31)))
+        val retry = requireNotNull(later.claim())
+        assertThat(retry.id).isEqualTo(queued.id)
+        assertThat(retry.draft).isEqualTo(first.draft)
+        later.finish(retry, PrUrl("https://github.com/navikt/pensjonsbrev/pull/1"), null)
+    }
+
+    @Test
+    fun `transient PR failures stop after three attempts and permanent failures do not retry`(): Unit = runBlocking {
+        val created = repository.create(exampleDraft(), null, AuthorName("Synthetic author"))
+        val ready = repository.status(created.id, created.revision, DraftStatus.READY, AuthorName("Synthetic author"))
+        val clock = Clock.systemUTC()
+        val jobs = PrJobRepository(transactions, clock)
+        jobs.create(ready.id, ready.revision)
+        for (attempt in 0..2) {
+            val worker = PrJobRepository(transactions, Clock.offset(clock, Duration.ofMinutes(attempt.toLong())))
+            val ticket = requireNotNull(worker.claim())
+            assertThat(ticket.attempts).isEqualTo(attempt + 1)
+            worker.finish(ticket, null, if (attempt == 0) "GITHUB_429" else "GITHUB_503")
+        }
+        assertThat(jobs.latest(ready.id)?.status).isEqualTo(PrStatus.FAILED)
+        val later = PrJobRepository(transactions, Clock.offset(clock, Duration.ofMinutes(4)))
+        assertThat(later.claim()).isNull()
+        val changed = repository.update(ready.id, ready.revision, ready.draft, AuthorName("Synthetic author"))
+        later.create(changed.id, changed.revision)
+        later.finish(requireNotNull(later.claim()), null, "INVALID_SOURCE")
+        assertThat(later.latest(changed.id)?.error).isEqualTo("INVALID_SOURCE")
+        assertThat(later.latest(changed.id)?.status).isEqualTo(PrStatus.FAILED)
+        assertThat(later.claim()).isNull()
+    }
+
     @Test
     fun `existing primitive PostgreSQL row and JSONB load through semantic columns`(): Unit = runBlocking {
         val json = requireNotNull(javaClass.getResourceAsStream("/semantic-draft-v1.json")).use { draftObjectMapper.readTree(it) }
