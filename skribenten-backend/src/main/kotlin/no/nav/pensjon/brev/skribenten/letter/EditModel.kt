@@ -118,13 +118,14 @@ object Edit {
                 // TODO: Slett denne når frontend også er oppdatert til å bruke status som enum og ikkje missingFromTemplate-boolean
                 fun fromJson(decision: DecisionRequest?, missingFromTemplate: Boolean?): DecisionRequest? =
                     when (missingFromTemplate) {
-                        true -> DecisionRequest(Type.MISSING_FROM_RENDERED, Decision.ACCEPTED)
+                        true -> decision ?: DecisionRequest(Type.MISSING_FROM_RENDERED, Decision.PENDING)
                         false if decision?.type == Type.MISSING_FROM_RENDERED -> DecisionRequest(
                             Type.MISSING_FROM_RENDERED,
                             Decision.PENDING
                         )
 
-                        else -> null
+                        false -> null
+                        null -> decision
                     }
             }
         }

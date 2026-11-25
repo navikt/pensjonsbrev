@@ -49,9 +49,20 @@ class EditModelJacksonTest {
     }
 
     @Test
-    fun `blokk med missingFromTemplate true gir ACCEPTED`() {
+    fun `blokk med missingFromTemplate true gir PENDING`() {
         assertThat(readBlock(paragraphJson(""","missingFromTemplate":true""")).decision)
-            .isEqualTo(DecisionRequest(DecisionRequest.Type.MISSING_FROM_RENDERED, DecisionRequest.Decision.ACCEPTED))
+            .isEqualTo(DecisionRequest(DecisionRequest.Type.MISSING_FROM_RENDERED, DecisionRequest.Decision.PENDING))
+    }
+
+    @Test
+    fun `missingFromTemplate true beholder eksplisitt beslutning`() {
+        DecisionRequest.Decision.entries.forEach { status ->
+            val json = paragraphJson(
+                ""","decision":{"type":"MISSING_FROM_RENDERED","status":"$status"},"missingFromTemplate":true"""
+            )
+            assertThat(readBlock(json).decision)
+                .isEqualTo(DecisionRequest(DecisionRequest.Type.MISSING_FROM_RENDERED, status))
+        }
     }
 
     @Test
@@ -81,12 +92,12 @@ class EditModelJacksonTest {
                 assertThat(tree["decision"]["status"].asText()).isEqualTo(status.name)
                 assertThat(tree["missingFromTemplate"].asBoolean()).isTrue()
                 assertThat(readBlock(objectMapper.writeValueAsString(block)).decision)
-                    .isEqualTo(decision.copy(status = DecisionRequest.Decision.ACCEPTED))
+                    .isEqualTo(decision)
                 tree.put("missingFromTemplate", false)
                 assertThat(readBlock(objectMapper.writeValueAsString(tree)).decision)
                     .isEqualTo(decision.copy(status = DecisionRequest.Decision.PENDING))
                 tree.remove("missingFromTemplate")
-                assertThat(readBlock(objectMapper.writeValueAsString(tree)).decision).isNull()
+                assertThat(readBlock(objectMapper.writeValueAsString(tree)).decision).isEqualTo(decision)
             }
         }
     }
