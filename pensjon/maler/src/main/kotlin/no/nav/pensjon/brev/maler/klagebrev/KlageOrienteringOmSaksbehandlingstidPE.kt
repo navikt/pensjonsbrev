@@ -6,10 +6,8 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
-import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidPE.Klageren.*
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
@@ -17,7 +15,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.saksbehandlervalg
@@ -47,7 +44,7 @@ object KlageOrienteringOmSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedigerb
 
 
     ) {
-        val klageren = saksbehandlervalg("klageren", "Velg hvem som er Klageren:").enum<Klageren>()
+        val harFullmektig = saksbehandlervalg("harFullmektig", "Velg om klageren har en fullmektig").bool()
         val foreloepigVedtak = saksbehandlervalg("foreloepigVedtak", "Velg om det klages på et foreløpig vedtak (utland)").bool()
 
         title { text(bokmal { +"Klage - " + fritekst("ytelse") + " - orientering om saksbehandlingstid" }) }
@@ -56,18 +53,17 @@ object KlageOrienteringOmSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedigerb
 
             paragraph {
                 text(bokmal { +"Klageren: " }, BOLD)
-                showIf(klageren.isOneOf(BRUKER)) {
-                    text(bokmal { +felles.bruker.fulltNavn() + " " })
-                    text(bokmal { +felles.bruker.foedselsnummer.format() })
-                }.orShowIf(klageren.isOneOf(VERGEFULLMEKTIG)) {
-                    text(bokmal { +fritekst("navn / fødselsnummer") })
-                }.orShowIf(klageren.isOneOf(ADVOKATFULLMEKTIG)) {
-                    text(bokmal { +fritekst("navn / firmanavn / organisasjonsnummer") })
+                text(bokmal { +felles.bruker.fulltNavn() + " " })
+                text(bokmal { +felles.bruker.foedselsnummer.format() })
+            }
+            showIf(harFullmektig) {
+                paragraph {
+                    text(bokmal { +"Ved fullmektig: " }, BOLD)
+                    text(bokmal { +fritekst("navn") })
                 }
             }
-
             paragraph {
-                text(bokmal { +"Klagemotpart: " })
+                text(bokmal { +"Klagemotpart: " }, BOLD)
                 text(bokmal { +"Nav familie- og pensjonsytelser" })
             }
 
@@ -106,11 +102,5 @@ object KlageOrienteringOmSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedigerb
                 })
             }
         }
-    }
-
-    enum class Klageren(override val displayText: String, override val rekkefoelge: Int) : SaksbehandlerValgEnum {
-        BRUKER("Bruker", 1),
-        VERGEFULLMEKTIG("Verge/Fullmektig", 2),
-        ADVOKATFULLMEKTIG("Advokatfirma/Fullmektig", 3)
     }
 }
