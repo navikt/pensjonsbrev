@@ -132,10 +132,11 @@ object Edit {
 
         @Deprecated(
             "Use decision instead",
-            replaceWith = ReplaceWith("decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED")
+            replaceWith = ReplaceWith("decision?.status == DecisionRequest.Decision.PENDING")
         )
         val missingFromTemplate: Boolean
-            get() = decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED
+            get() = decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED &&
+                    decision?.status == DecisionRequest.Decision.PENDING
 
         @JsonIgnore
         fun isChangedType() = type != (originalType ?: type)

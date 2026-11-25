@@ -90,7 +90,8 @@ class EditModelJacksonTest {
 
                 assertThat(tree["decision"]["type"].asText()).isEqualTo(decision.type.name)
                 assertThat(tree["decision"]["status"].asText()).isEqualTo(status.name)
-                assertThat(tree["missingFromTemplate"].asBoolean()).isTrue()
+                assertThat(tree["missingFromTemplate"].asBoolean())
+                    .isEqualTo(status == DecisionRequest.Decision.PENDING)
                 assertThat(readBlock(objectMapper.writeValueAsString(block)).decision)
                     .isEqualTo(decision)
                 tree.put("missingFromTemplate", false)
