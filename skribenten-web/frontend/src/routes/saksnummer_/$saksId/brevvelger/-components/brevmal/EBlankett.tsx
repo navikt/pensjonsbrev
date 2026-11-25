@@ -120,8 +120,8 @@ export default function EBlankett({
     setValgtMottaker(id);
     setValue("mottakerText", mottakere.find((mottaker) => mottaker.id === id)?.adresse ?? "", {
       shouldDirty: true,
-      shouldValidate: true,
     });
+    methods.clearErrors("mottakerText");
   };
 
   useEffect(() => {
@@ -214,11 +214,16 @@ export default function EBlankett({
             </VStack>
             <Textarea
               data-testid="mottaker-text-textfield"
-              {...methods.register("mottakerText", { onChange: () => setValgtMottaker("") })}
+              {...methods.register("mottakerText")}
               autoComplete="off"
               error={methods.formState.errors.mottakerText?.message}
               hideLabel
               label="Mottaker"
+              onChange={(event) => {
+                setValgtMottaker("");
+                setValue("mottakerText", event.target.value, { shouldDirty: true });
+                methods.clearErrors("mottakerText");
+              }}
               size="small"
             />
           </VStack>

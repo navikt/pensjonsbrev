@@ -165,6 +165,8 @@ test("Norge tilbyr alle mottakere og lar saksbehandler redigere eller tømme adr
   await recipient.selectOption("almannastovan");
   await recipient.selectOption("");
   await expect(textarea).toHaveValue("");
+  await expect(textarea).not.toHaveAttribute("aria-invalid", "true");
+  await page.getByTestId("order-letter").click();
   await expect(textarea).toHaveAttribute("aria-invalid", "true");
 });
 
@@ -208,6 +210,7 @@ for (const { landkode, ids } of [
       await customRecipient.check();
       await expect(customRecipient).toBeChecked();
       await expect(textarea).toHaveValue("");
+      await expect(textarea).not.toHaveAttribute("aria-invalid", "true");
       await page.getByTestId("order-letter").click();
       await expect(textarea).toHaveAttribute("aria-invalid", "true");
       await expect(page.getByTestId("order-letter-success-message")).not.toBeVisible();
@@ -253,6 +256,89 @@ for (const { landkode, ids } of [
     await expect(page.getByTestId("order-letter-success-message")).toBeVisible();
   });
 }
+
+test("Mottaker valideres bare når Fortsett trykkes etter redigering og valg", async ({ page }) => {
+  let orders = 0;
+  await page.route(orderUrl, async (route) => {
+    orders++;
+    await route.fulfill({ path: "test/e2e/fixtures/bestillBrevEblankett.json", contentType: "application/json" });
+  });
+  await page.goto("/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815");
+  const country = page.getByRole("combobox", { name: "Land", exact: true });
+  const recipient = page.getByRole("combobox", { name: "Velg mottaker", exact: true });
+  const textarea = page.getByRole("textbox", { name: "Mottaker", exact: true });
+  const error = page.getByText("Vennligst fyll inn mottaker", { exact: true });
+  const proceed = page.getByTestId("order-letter");
+
+  await proceed.click();
+  await expect(error).toBeVisible();
+  await textarea.fill("Mottaker");
+  await expect(error).not.toBeVisible();
+  await textarea.clear();
+  await expect(error).not.toBeVisible();
+  await proceed.click();
+  await expect(error).toBeVisible();
+  expect(orders).toBe(0);
+
+  await recipient.selectOption("almannastovan");
+  await expect(error).not.toBeVisible();
+  await recipient.selectOption("");
+  await expect(textarea).toHaveValue("");
+  await expect(error).not.toBeVisible();
+  await proceed.click();
+  await expect(error).toBeVisible();
+  expect(orders).toBe(0);
+
+  for (const code of ["GRL", "GBR"]) {
+    await country.selectOption(code);
+    await expect(error).not.toBeVisible();
+    await page.getByRole("radio", { name: "Egendefinert", exact: true }).check();
+    await expect(textarea).toHaveValue("");
+    await expect(error).not.toBeVisible();
+    await proceed.click();
+    await expect(error).toBeVisible();
+    expect(orders).toBe(0);
+
+    await textarea.fill("Egen mottaker");
+    await expect(error).not.toBeVisible();
+    await textarea.clear();
+    await expect(error).not.toBeVisible();
+    await proceed.click();
+    await expect(error).toBeVisible();
+    expect(orders).toBe(0);
+  }
+});
+
+test("Landbytte tømmer mottaker uten feilmelding før Fortsett trykkes", async ({ page }) => {
+  let orders = 0;
+  await page.route(orderUrl, async (route) => {
+    orders++;
+    await route.fulfill({ path: "test/e2e/fixtures/bestillBrevEblankett.json", contentType: "application/json" });
+  });
+  await page.goto("/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815");
+  const country = page.getByRole("combobox", { name: "Land", exact: true });
+  const textarea = page.getByRole("textbox", { name: "Mottaker", exact: true });
+  const error = page.getByText("Vennligst fyll inn mottaker", { exact: true });
+
+  for (const code of ["BEL", "", "SWE"]) {
+    await country.selectOption("FRO");
+    await expect(textarea).toHaveValue(recipients.almannastovan);
+    await country.selectOption(code);
+    await expect(textarea).toHaveValue("");
+    await expect(error).not.toBeVisible();
+    await expect(textarea).not.toHaveAttribute("aria-invalid", "true");
+    await page.getByTestId("order-letter").click();
+    await expect(error).toBeVisible();
+    await expect(textarea).toHaveAttribute("aria-invalid", "true");
+    expect(orders).toBe(0);
+  }
+
+  await country.selectOption("BEL");
+  await expect(error).not.toBeVisible();
+  await page.getByTestId("order-letter").click();
+  await expect(error).toBeVisible();
+  expect(orders).toBe(0);
+});
 
 test("Land uten mottakere tømmer adressen og lar saksbehandler skrive en ny mottaker", async ({ page }) => {
   await page.route(orderUrl, (route) =>
