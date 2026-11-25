@@ -5,9 +5,13 @@ import no.nav.pensjon.brev.brevoppskrift.lagring.DraftRecord
 import org.slf4j.LoggerFactory
 import java.io.Closeable
 
+interface NotificationSettings {
+    val webUrl: WorkshopUrl
+}
+
 class DraftNotifications(
     private val service: NotificationService?,
-    private val webUrl: WorkshopUrl,
+    private val config: NotificationSettings,
 ) : Closeable {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val logger = LoggerFactory.getLogger("brevoppskrift.notifications")
@@ -18,7 +22,7 @@ class DraftNotifications(
         val service = service ?: return
         scope.launch {
             try {
-                withTimeout(3000) { service.send(Notification(type, record.draft.metadata.name, count, if (record.archivedAt == null) "${webUrl.value}/arbeidsutkast/${record.id.value}" else null)) }
+                withTimeout(3000) { service.send(Notification(type, record.draft.metadata.name, count, if (record.archivedAt == null) "${config.webUrl.value}/arbeidsutkast/${record.id.value}" else null)) }
             } catch (cancelled: CancellationException) {
                 if (cancelled !is TimeoutCancellationException) throw cancelled
                 logger.warn("Slack notification timed out")

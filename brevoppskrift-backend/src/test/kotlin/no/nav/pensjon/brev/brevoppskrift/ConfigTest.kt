@@ -5,11 +5,34 @@ import com.typesafe.config.ConfigResolveOptions
 import io.ktor.server.config.HoconApplicationConfig
 import io.ktor.server.config.getAs
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import no.nav.pensjon.brev.brevoppskrift.integrasjoner.WorkshopUrl
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class ConfigTest {
+    @Test
+    fun `delegated settings follow copied config without changing its serialized structure`() {
+        val original = loadConfig()
+        val config = original.copy(
+            azure = original.azure.copy(issuer = "https://updated.invalid"),
+            database = original.database.copy(port = 5433),
+            integrations = IntegrationsConfig(WorkshopUrl("https://updated-workshop.invalid")),
+        )
+        assertThat(config.issuer).isEqualTo(config.azure.issuer)
+        assertThat(config.port).isEqualTo(config.database.port)
+        assertThat(config.webUrl).isEqualTo(config.integrations.webUrl)
+        val serialized = Json.encodeToJsonElement(BrevoppskriftConfig.serializer(), config)
+        assertThat(serialized.jsonObject.keys).containsExactly("azure", "database", "integrations")
+        val restored = Json.decodeFromJsonElement(BrevoppskriftConfig.serializer(), serialized)
+        assertThat(restored).isEqualTo(config)
+        assertThat(restored.issuer).isEqualTo(config.issuer)
+        assertThat(restored.port).isEqualTo(config.port)
+        assertThat(restored.webUrl).isEqualTo(config.webUrl)
+    }
+
     @Test
     fun `typed HOCON configuration keeps defaults and optional integrations disabled`() {
         val config = loadConfig()

@@ -16,7 +16,6 @@ import no.nav.pensjon.brev.brevoppskrift.lagring.DraftRepository
 import no.nav.pensjon.brev.brevoppskrift.lagring.openDatabase
 import no.nav.pensjon.brev.brevoppskrift.lagring.Transactional
 import no.nav.pensjon.brev.brevoppskrift.lagring.SourceCatalogueRepository
-import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import org.jetbrains.exposed.v1.jdbc.Database
 import com.zaxxer.hikari.HikariDataSource
@@ -25,7 +24,7 @@ import java.net.URI
 
 fun Application.configureDependencies() {
     val config = environment.config.config("brevoppskrift").getAs<BrevoppskriftConfig>()
-    configureDependencies(config, JwkProviderBuilder(URI(config.azure.jwksUri).toURL()).timeouts(5_000, 5_000).build())
+    configureDependencies(config, JwkProviderBuilder(URI(config.jwksUri).toURL()).timeouts(5_000, 5_000).build())
 }
 
 internal fun Application.configureDependencies(
@@ -43,7 +42,7 @@ internal fun Application.configureDependencies(
         provide { jwks }
         provide<PrometheusMeterRegistry> { createMetrics() }
         cleanup<PrometheusMeterRegistry> { it.close() }
-        provide { config: BrevoppskriftConfig, metrics: MeterRegistry -> openDatabase(config.database, metrics) }
+        provide<HikariDataSource>(::openDatabase)
         provide { dataSource: HikariDataSource -> Database.connect(dataSource) }
         provide(Transactional::class)
         provide(DraftRepository::class)
@@ -54,7 +53,6 @@ internal fun Application.configureDependencies(
         provide<NotificationService?> { null }
         provide<PrService?> { prService }
         provide(AiSuggestions::class)
-        provide<WorkshopUrl> { config.integrations.webUrl }
         provide(DraftNotifications::class)
         provide(PrJobWorker::class)
         provide(PrJobHandler::class)

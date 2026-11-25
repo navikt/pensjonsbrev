@@ -4,6 +4,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import no.nav.pensjon.brev.brevoppskrift.TestPostgres
+import no.nav.pensjon.brev.brevoppskrift.IntegrationsConfig
 import no.nav.pensjon.brev.brevoppskrift.MAX_DRAFT_BYTES
 import no.nav.pensjon.brev.brevoppskrift.api.*
 import no.nav.pensjon.brev.brevoppskrift.createMetrics
@@ -121,7 +122,7 @@ class DraftHandlerTest {
             val repository = DraftRepository(Transactional(Database.connect(dataSource)))
             val metrics = createMetrics()
             try {
-                DraftNotifications(null, WorkshopUrl("https://workshop.invalid")).use { notifications ->
+                DraftNotifications(null, IntegrationsConfig(WorkshopUrl("https://workshop.invalid"))).use { notifications ->
                     body(DraftHandler(repository, KotlinDraftGenerator(catalogue), catalogue, notifications, metrics), repository)
                 }
             } finally {
@@ -153,7 +154,7 @@ class DraftHandlerTest {
             }
             val metrics = createMetrics()
             try {
-                DraftNotifications(null, WorkshopUrl("https://workshop.invalid")).use { notifications ->
+                DraftNotifications(null, IntegrationsConfig(WorkshopUrl("https://workshop.invalid"))).use { notifications ->
                     val handler = DraftHandler(repository, generator, catalogue, notifications, metrics)
                     for (changed in listOf(
                         imported.copy(source = null),
@@ -198,7 +199,7 @@ class DraftHandlerTest {
             }
             val metrics = createMetrics()
             try {
-                DraftNotifications(notifications, WorkshopUrl("https://workshop.invalid")).use { sender ->
+                DraftNotifications(notifications, IntegrationsConfig(WorkshopUrl("https://workshop.invalid"))).use { sender ->
                     val handler = DraftHandler(repository, generator, catalogue, sender, metrics)
                     val record = handler.create(CreateDraftRequest(draft = exampleDraft()), AuthorName("Synthetic author"))
                     assertThat(withTimeout(5000) { observed.await() }).isEqualTo(1)

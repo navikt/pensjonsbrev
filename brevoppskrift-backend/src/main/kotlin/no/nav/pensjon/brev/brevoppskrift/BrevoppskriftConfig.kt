@@ -8,6 +8,8 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import no.nav.pensjon.brev.brevoppskrift.lagring.DatabaseConfig
+import no.nav.pensjon.brev.brevoppskrift.lagring.DatabaseSettings
+import no.nav.pensjon.brev.brevoppskrift.auth.AzureSettings
 import no.nav.pensjon.brev.brevoppskrift.auth.EntraAudience
 import no.nav.pensjon.brev.brevoppskrift.auth.EntraClientId
 import no.nav.pensjon.brev.brevoppskrift.auth.EntraGroupId
@@ -18,17 +20,17 @@ data class BrevoppskriftConfig(
     val azure: AzureConfig,
     val database: DatabaseConfig,
     val integrations: IntegrationsConfig = IntegrationsConfig(),
-)
+) : AzureSettings by azure, DatabaseSettings by database, NotificationSettings by integrations
 
 @Serializable
 data class AzureConfig(
-    val issuer: String,
-    val audience: EntraAudience,
-    val jwksUri: String,
+    override val issuer: String,
+    override val audience: EntraAudience,
+    override val jwksUri: String,
     @Serializable(with = PreAuthorizedAppsSerializer::class)
-    val preAuthApps: List<PreAuthorizedApp>,
-    val editorGroupId: EntraGroupId,
-) {
+    override val preAuthApps: List<PreAuthorizedApp>,
+    override val editorGroupId: EntraGroupId,
+) : AzureSettings {
     init {
         require(listOf(issuer, audience.value, jwksUri, editorGroupId.value).all { it.isNotBlank() }) {
             "Azure configuration must not be blank"
@@ -53,5 +55,5 @@ object PreAuthorizedAppsSerializer : KSerializer<List<AzureConfig.PreAuthorizedA
 
 @Serializable
 data class IntegrationsConfig(
-    val webUrl: WorkshopUrl = WorkshopUrl("https://pensjon-brevoppskrift.intern.dev.nav.no"),
-)
+    override val webUrl: WorkshopUrl = WorkshopUrl("https://pensjon-brevoppskrift.intern.dev.nav.no"),
+) : NotificationSettings

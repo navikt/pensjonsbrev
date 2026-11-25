@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.brevoppskrift.integrasjoner
 
 import kotlinx.coroutines.*
 import no.nav.pensjon.brev.brevoppskrift.TestPostgres
+import no.nav.pensjon.brev.brevoppskrift.IntegrationsConfig
 import no.nav.pensjon.brev.brevoppskrift.api.*
 import no.nav.pensjon.brev.brevoppskrift.application.PrJobHandler
 import no.nav.pensjon.brev.brevoppskrift.createMetrics
@@ -43,18 +44,18 @@ class PrJobWorkerTest {
             val ready = drafts.status(created.id, DraftRevision(1), DraftStatus.READY, AuthorName("Synthetic author"))
             val queued = handler.submit(ready.id, RevisionRequest(ready.revision))
             assertThat(handler.submit(ready.id, RevisionRequest(ready.revision))).isEqualTo(queued)
-            val notificationStarted = CompletableDeferred<Unit>()
+            val notificationStarted = CompletableDeferred<Notification>()
             val notificationStopped = CompletableDeferred<Unit>()
             val notifications = DraftNotifications(object : NotificationService {
                 override suspend fun send(notification: Notification) {
-                    notificationStarted.complete(Unit)
+                    notificationStarted.complete(notification)
                     try {
                         awaitCancellation()
                     } finally {
                         notificationStopped.complete(Unit)
                     }
                 }
-            }, WorkshopUrl("https://workshop.invalid"))
+            }, IntegrationsConfig(WorkshopUrl("https://workshop.invalid")))
             val metrics = createMetrics()
             val worker = PrJobWorker(service, jobs, metrics)
             try {
@@ -62,7 +63,7 @@ class PrJobWorkerTest {
                 worker.start()
                 worker.start()
                 val ticket = withTimeout(5000) { entered.await() }
-                withTimeout(5000) { notificationStarted.await() }
+                assertThat(withTimeout(5000) { notificationStarted.await() }.url).isEqualTo("https://workshop.invalid/arbeidsutkast/${ready.id.value}")
                 notifications.close()
                 withTimeout(5000) { notificationStopped.await() }
                 assertThat(worker.isActive).isTrue()

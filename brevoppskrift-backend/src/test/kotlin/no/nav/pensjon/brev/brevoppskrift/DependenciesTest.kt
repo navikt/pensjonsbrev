@@ -20,6 +20,8 @@ import io.ktor.server.testing.testApplication
 import no.nav.pensjon.brev.brevoppskrift.api.DraftGenerator
 import no.nav.pensjon.brev.brevoppskrift.api.DraftPreview
 import no.nav.pensjon.brev.brevoppskrift.api.SourceCatalogue
+import no.nav.pensjon.brev.brevoppskrift.auth.AzureSettings
+import no.nav.pensjon.brev.brevoppskrift.lagring.DatabaseSettings
 import no.nav.pensjon.brev.brevoppskrift.katalog.BuildSourceCatalogue
 import no.nav.pensjon.brev.brevoppskrift.kotlin.KotlinDraftGenerator
 import no.nav.pensjon.brev.brevoppskrift.preview.HtmlDraftPreview
@@ -61,6 +63,7 @@ class DependenciesTest {
                 startApplication()
                 dataSource = app.dependencies.resolve()
                 metrics = app.dependencies.resolve()
+                assertThat(metrics.find("hikaricp.connections.max").tag("pool", "brevoppskrift").gauge()).isNotNull()
                 assertThat(app.dependencies.resolve<Database>()).isNotNull()
                 assertThat(app.dependencies.resolve<Transactional>()).isNotNull()
                 assertThat(app.dependencies.resolve<Transactional>().transaction { SourceCatalogueTable.selectAll().count() }).isGreaterThan(0)
@@ -70,6 +73,9 @@ class DependenciesTest {
                 assertThat(app.dependencies.resolve<PrJobHandler>().enabled).isFalse()
                 assertThat(app.dependencies.resolve<PrService?>()).isNull()
                 val config = app.dependencies.resolve<BrevoppskriftConfig>()
+                assertThat(app.dependencies.resolve<AzureSettings>()).isSameAs(config)
+                assertThat(app.dependencies.resolve<DatabaseSettings>()).isSameAs(config)
+                assertThat(app.dependencies.resolve<NotificationSettings>()).isSameAs(config)
                 assertThat(config.azure.preAuthApps.single().clientId.value).isEqualTo("bff")
                 assertThat(app.dependencies.resolve<JwkProvider>()).isNotNull()
                 assertThat(app.dependencies.resolve<DraftRepository>().ready()).isTrue()

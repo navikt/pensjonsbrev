@@ -13,6 +13,7 @@ import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.response.responseType
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.brevoppskrift.auth.draftAuthentication
+import no.nav.pensjon.brev.brevoppskrift.auth.AzureSettings
 import no.nav.pensjon.brev.brevoppskrift.api.Problem
 import no.nav.pensjon.brev.brevoppskrift.integrasjoner.PrJobWorker
 
@@ -29,7 +30,7 @@ fun Application.brevoppskriftModule() {
 }
 
 fun Application.configureApplication() {
-    val config: BrevoppskriftConfig by dependencies
+    val config: AzureSettings by dependencies
     val jwks: JwkProvider by dependencies
     val prWorker: PrJobWorker by dependencies
     val metrics: PrometheusMeterRegistry by dependencies
@@ -48,7 +49,7 @@ fun Application.configureApplication() {
         }
     }
     attributes[DefaultContentTypesAttribute] = listOf(ContentType.Application.Json)
-    install(Authentication) { draftAuthentication(config.azure, jwks) }
+    install(Authentication) { draftAuthentication(config, jwks) }
     configureErrors(metrics)
     configureRouting()
     monitor.subscribe(ApplicationStarted) { prWorker.start() }

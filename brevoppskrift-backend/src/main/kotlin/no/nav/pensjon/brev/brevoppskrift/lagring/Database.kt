@@ -7,16 +7,26 @@ import io.micrometer.core.instrument.MeterRegistry
 import kotlinx.serialization.Serializable
 import org.flywaydb.core.Flyway
 
+interface DatabaseSettings {
+    val jdbcUrl: String?
+    val username: String
+    val password: String
+    val host: String?
+    val port: Int
+    val name: String?
+    val maxPoolSize: Int
+}
+
 @Serializable
 data class DatabaseConfig(
-    val jdbcUrl: String? = null,
-    val username: String,
-    val password: String,
-    val host: String? = null,
-    val port: Int = 5432,
-    val name: String? = null,
-    val maxPoolSize: Int = 3,
-) {
+    override val jdbcUrl: String? = null,
+    override val username: String,
+    override val password: String,
+    override val host: String? = null,
+    override val port: Int = 5432,
+    override val name: String? = null,
+    override val maxPoolSize: Int = 3,
+) : DatabaseSettings {
     init {
         require(jdbcUrl?.isNotBlank() ?: (!host.isNullOrBlank() && !name.isNullOrBlank())) {
             "Database requires jdbcUrl or host and name"
@@ -26,7 +36,7 @@ data class DatabaseConfig(
     }
 }
 
-fun openDatabase(config: DatabaseConfig, metrics: MeterRegistry? = null): HikariDataSource {
+fun openDatabase(config: DatabaseSettings, metrics: MeterRegistry? = null): HikariDataSource {
     val dataSource = HikariDataSource(
         HikariConfig().apply {
             jdbcUrl = config.jdbcUrl ?: "jdbc:postgresql://${config.host}:${config.port}/${config.name}"
