@@ -20,6 +20,11 @@ on:
         description: "gradle build target path"
         required: true
         type: string
+      buildTask:
+        description: "Gradle task to build the target"
+        required: false
+        type: string
+        default: buildNeeded
       extraModulesToBuild:
         description: "Additional Gradle tasks to prepare dependencies before the build"
         required: false
@@ -87,7 +92,7 @@ jobs:
           ./gradlew ${{ inputs.extraModulesToBuild }}
       - name: "compile and run tests"
         run: |
-          ./gradlew :${{ inputs.gradleTarget }}:buildNeeded
+          ./gradlew :${{ inputs.gradleTarget }}:${{ inputs.buildTask }}
         env:
           NODE_AUTH_TOKEN: ${{ github.token }}
       - name: "Build and publish container image to GAR"
