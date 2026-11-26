@@ -32,8 +32,8 @@ export function copyAsSemanticHtml(event: React.ClipboardEvent<HTMLElement>) {
 
   const clipboard = root.ownerDocument.createElement("div");
   clipboard.append(range.cloneContents());
-  const includesActions = clipboard.querySelector(".missing-from-template-actions") !== null;
-  for (const control of clipboard.querySelectorAll(".missing-from-template-actions, button")) control.remove();
+  const includesActions = clipboard.querySelector(".missing-in-rendered-actions") !== null;
+  for (const control of clipboard.querySelectorAll(".missing-in-rendered-actions, button")) control.remove();
   wrapInSelectedAncestors(clipboard, range, root);
   toSemanticHtml(clipboard);
 

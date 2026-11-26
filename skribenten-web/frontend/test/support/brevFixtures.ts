@@ -75,7 +75,6 @@ export const editedLetter = ({
         newLiteral({ id: -1_114_690_237, parentId: 272_720_182, text: "." }),
       ],
       deletedContent: [],
-      missingFromTemplate: false,
       type: "PARAGRAPH",
     },
     {
@@ -92,7 +91,6 @@ export const editedLetter = ({
         newLiteral({ id: 1_838_606_639, parentId: 822_540_105, text: " weeks." }),
       ],
       deletedContent: [],
-      missingFromTemplate: false,
       type: "PARAGRAPH",
     },
   ],

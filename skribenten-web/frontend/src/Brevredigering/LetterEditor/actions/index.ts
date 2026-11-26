@@ -3,7 +3,7 @@ import { create } from "./common";
 import { cursorPosition, updateFocus } from "./cursorPosition";
 import { deleteSelection } from "./deleteSelection";
 import { merge } from "./merge";
-import { keepMissingFromTemplateBlock, removeMissingFromTemplateBlock } from "./missingFromTemplate";
+import { keepMissingInRenderedBlock, removeMissingInRenderedBlock } from "./missingInRendered";
 import { paste, pasteReplacingSelection } from "./paste";
 import { split } from "./split";
 import { switchFontType } from "./switchFontType";
@@ -36,13 +36,13 @@ const Actions = {
   insertTableColumnRight,
   insertTableRowAbove,
   insertTableRowBelow,
-  keepMissingFromTemplateBlock,
+  keepMissingInRenderedBlock,
   merge,
   moveTableRow,
   paste,
   pasteReplacingSelection,
   promoteRowToHeader,
-  removeMissingFromTemplateBlock,
+  removeMissingInRenderedBlock,
   removeTable,
   removeTableColumn,
   removeTableRow,

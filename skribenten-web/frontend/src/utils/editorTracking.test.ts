@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { trackMissingFromTemplateAction } from "~/utils/editorTracking";
+import { trackMissingInRenderedAction } from "~/utils/editorTracking";
 
 const trackMock = vi.fn();
 
@@ -11,9 +11,9 @@ beforeEach(() => {
 
 const sisteKall = () => trackMock.mock.calls.at(-1) as [string, Record<string, unknown>];
 
-describe("trackMissingFromTemplateAction", () => {
+describe("trackMissingInRenderedAction", () => {
   it("sender med redigeringsflate og øvrige felter", () => {
-    trackMissingFromTemplateAction("blokk beholdt", "attestant-redigering", {
+    trackMissingInRenderedAction("blokk beholdt", "attestant-redigering", {
       brevkode: "UT_UNG_UFOER_AUTO",
       antallGjenstaaende: 2,
     });
@@ -26,7 +26,7 @@ describe("trackMissingFromTemplateAction", () => {
   });
 
   it("lar ikke kalleren overstyre redigeringsflate", () => {
-    trackMissingFromTemplateAction("blokk slettet", "saksbehandler-redigering", {
+    trackMissingInRenderedAction("blokk slettet", "saksbehandler-redigering", {
       redigeringsflate: "attestant-redigering",
     });
 
