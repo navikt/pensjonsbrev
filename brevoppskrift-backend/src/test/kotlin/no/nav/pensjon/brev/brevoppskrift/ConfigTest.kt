@@ -8,11 +8,33 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import no.nav.pensjon.brev.brevoppskrift.integrasjoner.WorkshopUrl
+import no.nav.pensjon.brev.brevoppskrift.integrasjoner.SlackWebhookUrl
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class ConfigTest {
+    @Test
+    fun `Vertex and Slack can be independently configured while partial Vertex configuration fails`() {
+        val slack = loadConfig(environment + ("SLACK_WEBHOOK_URL" to "https://hooks.slack.com/services/synthetic"))
+        assertThat(slack.slackWebhookUrl).isNotNull()
+        assertThat(slack.vertex.projectId).isNull()
+        val vertexEnvironment = environment + mapOf("VERTEX_PROJECT_ID" to "synthetic-project", "VERTEX_LOCATION" to "europe-west4", "VERTEX_MODEL" to "synthetic-model")
+        val vertex = loadConfig(vertexEnvironment)
+        assertThat(vertex.vertex.projectId?.value).isEqualTo("synthetic-project")
+        assertThat(vertex.slackWebhookUrl).isNull()
+        for (key in listOf("VERTEX_PROJECT_ID", "VERTEX_LOCATION", "VERTEX_MODEL")) {
+            assertThatThrownBy { loadConfig(vertexEnvironment - key) }.hasStackTraceContaining("Vertex requires")
+        }
+        for (model in listOf("../model", ".", "..")) {
+            assertThatThrownBy { loadConfig(vertexEnvironment + ("VERTEX_MODEL" to model)) }.hasStackTraceContaining("Vertex requires")
+        }
+        for (url in listOf("http://hooks.slack.com/services/synthetic", "https://other.invalid/services/synthetic", "https://hooks.slack.com:443/services/synthetic", "https://user@hooks.slack.com/services/synthetic", "https://hooks.slack.com/services/synthetic?secret=x")) {
+            assertThatThrownBy { SlackWebhookUrl(url) }.hasMessage("Slack requires an HTTPS hooks.slack.com services URL")
+        }
+        assertThat(SlackWebhookUrl("https://hooks.slack.com/services/synthetic").toString()).isEqualTo("[redacted]")
+    }
+
     @Test
     fun `delegated settings follow copied config without changing its serialized structure`() {
         val original = loadConfig()

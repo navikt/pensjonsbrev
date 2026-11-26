@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.brevoppskrift
 
 import com.auth0.jwk.JwkProvider
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.server.application.Application
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.getAs
@@ -16,13 +17,14 @@ fun Application.testModule(
     productionAuthoring: Boolean = false,
     integrations: IntegrationsConfig = IntegrationsConfig(),
     prService: PrService? = null,
+    integrationEngine: HttpClientEngine? = null,
 ) {
     val config = ApplicationConfig("application-test.conf").config("brevoppskrift").getAs<BrevoppskriftConfig>()
     val testConfig = config.copy(azure = azure, database = database, integrations = integrations)
     if (productionAuthoring) {
-        configureDependencies(testConfig, jwks, prService = prService)
+        configureDependencies(testConfig, jwks, prService = prService, integrationEngine = integrationEngine)
     } else {
-        configureDependencies(testConfig, jwks, prService = prService) {
+        configureDependencies(testConfig, jwks, prService = prService, integrationEngine = integrationEngine) {
             provide<SourceCatalogue> {
                 object : SourceCatalogue {
                     override fun list() = emptyList<TemplateSource>()

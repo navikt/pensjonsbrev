@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.brevoppskrift
 
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
 import io.ktor.server.application.Application
 import io.ktor.server.config.getAs
 import io.ktor.server.plugins.di.dependencies
@@ -17,6 +19,7 @@ import no.nav.pensjon.brev.brevoppskrift.lagring.openDatabase
 import no.nav.pensjon.brev.brevoppskrift.lagring.Transactional
 import no.nav.pensjon.brev.brevoppskrift.lagring.SourceCatalogueRepository
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import io.micrometer.core.instrument.MeterRegistry
 import org.jetbrains.exposed.v1.jdbc.Database
 import com.zaxxer.hikari.HikariDataSource
 import no.nav.pensjon.brev.brevoppskrift.preview.HtmlDraftPreview
@@ -31,6 +34,7 @@ internal fun Application.configureDependencies(
     config: BrevoppskriftConfig,
     jwks: JwkProvider,
     prService: PrService? = null,
+    integrationEngine: HttpClientEngine? = null,
     authoringServices: DependencyRegistry.() -> Unit = {
         provide<BuildSourceCatalogue>(BuildSourceCatalogue::persistent)
         provide(KotlinDraftGenerator::class)
@@ -49,8 +53,14 @@ internal fun Application.configureDependencies(
         provide(SourceCatalogueRepository::class)
         provide(PrJobRepository::class)
         authoringServices()
-        provide<AiService?> { null }
-        provide<NotificationService?> { null }
+        provide<HttpClientEngine> { CIO.create() }
+        provide<AiService?> {
+            val settings = resolve<ExternalIntegrationSettings>()
+            if (settings.vertex.projectId != null) VertexAi(integrationEngine ?: resolve<HttpClientEngine>(), resolve<MeterRegistry>(), settings.vertex) else null
+        }
+        provide<NotificationService?> {
+            resolve<ExternalIntegrationSettings>().slackWebhookUrl?.let { SlackNotifications(integrationEngine ?: resolve<HttpClientEngine>(), resolve<MeterRegistry>(), it) }
+        }
         provide<PrService?> { prService }
         provide(AiSuggestions::class)
         provide(DraftNotifications::class)

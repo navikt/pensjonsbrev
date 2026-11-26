@@ -20,7 +20,7 @@ data class BrevoppskriftConfig(
     val azure: AzureConfig,
     val database: DatabaseConfig,
     val integrations: IntegrationsConfig = IntegrationsConfig(),
-) : AzureSettings by azure, DatabaseSettings by database, NotificationSettings by integrations
+) : AzureSettings by azure, DatabaseSettings by database, NotificationSettings by integrations, ExternalIntegrationSettings by integrations
 
 @Serializable
 data class AzureConfig(
@@ -56,4 +56,19 @@ object PreAuthorizedAppsSerializer : KSerializer<List<AzureConfig.PreAuthorizedA
 @Serializable
 data class IntegrationsConfig(
     override val webUrl: WorkshopUrl = WorkshopUrl("https://pensjon-brevoppskrift.intern.dev.nav.no"),
-) : NotificationSettings
+    override val vertex: VertexConfig = VertexConfig(),
+    override val slackWebhookUrl: SlackWebhookUrl? = null,
+) : NotificationSettings, ExternalIntegrationSettings
+
+@Serializable
+data class VertexConfig(
+    val projectId: VertexProjectId? = null,
+    val location: VertexLocation? = null,
+    val model: VertexModelId? = null,
+) {
+    init {
+        require(listOf(projectId, location, model).all { it == null } ||
+            listOf(projectId?.value, location?.value, model?.value).all { it != null && it !in setOf(".", "..") && Regex("[A-Za-z0-9_.-]+").matches(it) }
+        ) { "Vertex requires valid projectId, location and model" }
+    }
+}

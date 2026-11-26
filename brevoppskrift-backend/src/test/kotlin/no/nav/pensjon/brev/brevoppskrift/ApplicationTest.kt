@@ -7,6 +7,8 @@ import com.auth0.jwt.algorithms.Algorithm
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.application.Application
 import io.ktor.client.request.bearerAuth
@@ -60,6 +62,51 @@ import java.util.concurrent.atomic.AtomicInteger
 @Isolated
 @Execution(ExecutionMode.SAME_THREAD)
 class ApplicationTest {
+    @Test
+    fun `enabled AI remains editor only and returns proposals without modifying drafts`() = testApplication {
+        var calls = 0
+        val engine = MockEngine { request ->
+            calls++
+            respond(if (request.url.host == "metadata.google.internal") """{"access_token":"synthetic-token"}""" else ExternalServicesTest.aiResponse("synthetic proposal"))
+        }
+        application {
+            testModule(azure, jwks, postgres.database(), integrations = IntegrationsConfig(vertex = ExternalServicesTest.vertex), integrationEngine = engine)
+        }
+        try {
+            val capabilities = draftObjectMapper.readTree(client.get("/api/v1/integrasjoner") { bearerAuth(token()) }.bodyAsText())
+            assertThat(capabilities["ai"].asBoolean()).isTrue()
+            assertThat(capabilities["slack"].asBoolean()).isFalse()
+            assertThat(capabilities["pullRequests"].asBoolean()).isFalse()
+            val reader = client.post("/api/v1/ki/klarsprak") {
+                bearerAuth(token())
+                contentType(ContentType.Application.Json)
+                setBody("""{"text":"synthetic","language":"NB"}""")
+            }
+            assertThat(reader.status).isEqualTo(HttpStatusCode.Forbidden)
+            assertThat(calls).isZero()
+            val invalid = client.post("/api/v1/ki/klarsprak") {
+                bearerAuth(token(groups = listOf("editors")))
+                contentType(ContentType.Application.Json)
+                setBody("""{"text":"","language":"NB"}""")
+            }
+            assertThat(invalid.status).isEqualTo(HttpStatusCode.BadRequest)
+            assertThat(draftObjectMapper.readTree(invalid.bodyAsText())["code"].asText()).isEqualTo("INVALID_AI_REQUEST")
+            assertThat(calls).isZero()
+            val before = client.get("/api/v1/utkast") { bearerAuth(token()) }.bodyAsText()
+            val proposal = client.post("/api/v1/ki/klarsprak") {
+                bearerAuth(token(groups = listOf("editors")))
+                contentType(ContentType.Application.Json)
+                setBody("""{"text":"synthetic","language":"NB"}""")
+            }
+            assertThat(proposal.status).isEqualTo(HttpStatusCode.OK)
+            assertThat(draftObjectMapper.readTree(proposal.bodyAsText())["text"].asText()).isEqualTo("synthetic proposal")
+            assertThat(calls).isEqualTo(2)
+            assertThat(client.get("/api/v1/utkast") { bearerAuth(token()) }.bodyAsText()).isEqualTo(before)
+        } finally {
+            engine.close()
+        }
+    }
+
     @Test
     fun `PR routes process one current READY snapshot and do not expose internal tickets`() = testApplication {
         val entered = CompletableDeferred<PrTicket>()
