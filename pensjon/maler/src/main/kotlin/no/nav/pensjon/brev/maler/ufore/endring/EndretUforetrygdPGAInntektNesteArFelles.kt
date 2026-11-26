@@ -449,7 +449,7 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                     }
                 )
             }
-            showIf(data.uforetrygd.bunnfradrag.greaterThanOrEqual(data.uforetrygd.inntektstak)) {
+            showIf(data.uforetrygd.bunnfradrag.lessThan(data.uforetrygd.inntektstak)) {
                 paragraph {
                     text(
                         bokmal {
