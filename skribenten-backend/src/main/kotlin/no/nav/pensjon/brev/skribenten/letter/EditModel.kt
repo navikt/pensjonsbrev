@@ -2,7 +2,6 @@
 
 package no.nav.pensjon.brev.skribenten.letter
 
-import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -113,30 +112,7 @@ object Edit {
             enum class Decision {
                 ACCEPTED, PENDING
             }
-
-            companion object {
-                // TODO: Slett denne når frontend også er oppdatert til å bruke status som enum og ikkje missingFromTemplate-boolean
-                fun fromJson(decision: DecisionRequest?, missingFromTemplate: Boolean?): DecisionRequest? =
-                    when (missingFromTemplate) {
-                        true -> decision ?: DecisionRequest(Type.MISSING_FROM_RENDERED, Decision.PENDING)
-                        false if decision?.type == Type.MISSING_FROM_RENDERED -> DecisionRequest(
-                            Type.MISSING_FROM_RENDERED,
-                            Decision.ACCEPTED
-                        )
-
-                        false -> null
-                        null -> decision
-                    }
-            }
         }
-
-        @Deprecated(
-            "Use decision instead",
-            replaceWith = ReplaceWith("decision?.status == DecisionRequest.Decision.PENDING")
-        )
-        val missingFromTemplate: Boolean?
-            get() = decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED &&
-                    decision?.status == DecisionRequest.Decision.PENDING
 
         @JsonIgnore
         fun isChangedType() = type != (originalType ?: type)
@@ -151,27 +127,7 @@ object Edit {
             override val originalType: Type? = null,
             override val parentId: Int? = null,
             override val decision: DecisionRequest? = null,
-        ) : Block(Type.TITLE1) {
-            @JsonCreator
-            constructor(
-                id: Int?,
-                editable: Boolean,
-                content: List<ParagraphContent.Text>,
-                deletedContent: List<Int>?,
-                originalType: Type?,
-                parentId: Int?,
-                decision: DecisionRequest?,
-                missingFromTemplate: Boolean?,
-            ) : this(
-                id,
-                editable,
-                content,
-                deletedContent ?: emptyList(),
-                originalType,
-                parentId,
-                DecisionRequest.fromJson(decision, missingFromTemplate)
-            )
-        }
+        ) : Block(Type.TITLE1)
 
         data class Title2(
             override val id: Int?,
@@ -181,27 +137,7 @@ object Edit {
             override val originalType: Type? = null,
             override val parentId: Int? = null,
             override val decision: DecisionRequest? = null,
-        ) : Block(Type.TITLE2) {
-            @JsonCreator
-            constructor(
-                id: Int?,
-                editable: Boolean,
-                content: List<ParagraphContent.Text>,
-                deletedContent: List<Int>?,
-                originalType: Type?,
-                parentId: Int?,
-                decision: DecisionRequest?,
-                missingFromTemplate: Boolean?,
-            ) : this(
-                id,
-                editable,
-                content,
-                deletedContent ?: emptyList(),
-                originalType,
-                parentId,
-                DecisionRequest.fromJson(decision, missingFromTemplate)
-            )
-        }
+        ) : Block(Type.TITLE2)
 
         data class Title3(
             override val id: Int?,
@@ -211,27 +147,7 @@ object Edit {
             override val originalType: Type? = null,
             override val parentId: Int? = null,
             override val decision: DecisionRequest? = null,
-        ) : Block(Type.TITLE3) {
-            @JsonCreator
-            constructor(
-                id: Int?,
-                editable: Boolean,
-                content: List<ParagraphContent.Text>,
-                deletedContent: List<Int>?,
-                originalType: Type?,
-                parentId: Int?,
-                decision: DecisionRequest?,
-                missingFromTemplate: Boolean?,
-            ) : this(
-                id,
-                editable,
-                content,
-                deletedContent ?: emptyList(),
-                originalType,
-                parentId,
-                DecisionRequest.fromJson(decision, missingFromTemplate)
-            )
-        }
+        ) : Block(Type.TITLE3)
 
         data class Paragraph(
             override val id: Int?,
@@ -241,27 +157,7 @@ object Edit {
             override val originalType: Type? = null,
             override val parentId: Int? = null,
             override val decision: DecisionRequest? = null,
-        ) : Block(Type.PARAGRAPH) {
-            @JsonCreator
-            constructor(
-                id: Int?,
-                editable: Boolean,
-                content: List<ParagraphContent>,
-                deletedContent: List<Int>?,
-                originalType: Type?,
-                parentId: Int?,
-                decision: DecisionRequest?,
-                missingFromTemplate: Boolean?,
-            ) : this(
-                id,
-                editable,
-                content,
-                deletedContent ?: emptyList(),
-                originalType,
-                parentId,
-                DecisionRequest.fromJson(decision, missingFromTemplate)
-            )
-        }
+        ) : Block(Type.PARAGRAPH)
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")

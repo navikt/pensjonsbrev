@@ -4747,7 +4747,6 @@ export interface components {
             id?: number | null;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
-            missingFromTemplate?: boolean | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -4763,7 +4762,6 @@ export interface components {
             id?: number | null;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
-            missingFromTemplate?: boolean | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -4779,7 +4777,6 @@ export interface components {
             id?: number | null;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
-            missingFromTemplate?: boolean | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -4795,7 +4792,6 @@ export interface components {
             id?: number | null;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
-            missingFromTemplate?: boolean | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}

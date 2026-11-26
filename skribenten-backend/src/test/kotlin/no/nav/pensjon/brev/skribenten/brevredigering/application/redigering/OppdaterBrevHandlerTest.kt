@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.letter.letter
@@ -95,9 +96,9 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
             assertThat(it.redigertBrev.asV1().blocks[0].content).isEqualTo(listOf(Literal(2, text = "red pill", editedText = "blue pill", parentId = 1)))
             assertThat(it.redigertBrev.asV1().blocks[1].content).isEqualTo(listOf(Literal(4, "green pill", parentId = 3)))
             assertThat(it.redigertBrev.asV1().blocks[2].content).isEqualTo(listOf(Literal(6, "red pill", parentId = 5)))
-            assertThat(it.redigertBrev.asV1().blocks[0].missingFromTemplate).isTrue
-            assertThat(it.redigertBrev.asV1().blocks[1].missingFromTemplate).isNotEqualTo(true)
-            assertThat(it.redigertBrev.asV1().blocks[2].missingFromTemplate).isNotEqualTo(true)
+            assertThat(it.redigertBrev.asV1().blocks[0].decision?.status).isEqualTo(Edit.Block.DecisionRequest.Decision.PENDING)
+            assertThat(it.redigertBrev.asV1().blocks[1].decision).isNull()
+            assertThat(it.redigertBrev.asV1().blocks[2].decision).isNull()
         }
     }
 

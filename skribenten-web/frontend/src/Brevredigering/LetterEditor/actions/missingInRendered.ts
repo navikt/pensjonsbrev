@@ -26,7 +26,6 @@ export const keepMissingInRenderedBlock: Action<LetterEditorState, [blockIndex: 
     if (block == null) return;
 
     block.id = null;
-    block.missingFromTemplate = false;
     if (block.decision?.type === "MISSING_FROM_RENDERED" && block.decision.status === "PENDING") {
       block.decision.status = "ACCEPTED";
     }
