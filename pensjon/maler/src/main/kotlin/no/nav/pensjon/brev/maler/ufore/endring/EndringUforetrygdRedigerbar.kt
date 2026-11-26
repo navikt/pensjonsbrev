@@ -479,8 +479,8 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.grunnlag_persongrunnlagsliste_personbostedsland()).notEqualTo("nor") and (pe.grunnlag_persongrunnlagsliste_personbostedsland()).notEqualTo(""))) {
                 paragraph {
                     text(
-                        bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling " + ifElse(endringIBelopUt, "med nytt beløp ", "") + " i " + fritekst("måned og år") + "." },
-                        nynorsk { +"Uføretrygda blir utbetalt seinast den 20. i kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di " + ifElse(endringIBelopUt, "med nytt beløp ", "") + " i " + fritekst("måned og år") + "." },
+                        bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling " + ifElse(endringIBelopUt, "med nytt beløp ", "") + "i " + fritekst("måned og år") + "." },
+                        nynorsk { +"Uføretrygda blir utbetalt seinast den 20. i kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di " + ifElse(endringIBelopUt, "med nytt beløp ", "") + "i " + fritekst("måned og år") + "." },
                     )
                 }
             }
