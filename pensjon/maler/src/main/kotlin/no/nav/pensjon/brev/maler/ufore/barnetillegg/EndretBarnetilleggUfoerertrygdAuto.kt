@@ -246,7 +246,13 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                     and btfbNetto.equalTo(0)
                     and btfbJusteringsbelopperAr.equalTo(0)
                     and (btsbNetto.notEqualTo(0) or not(btsbInnvilget)))) {
-                includePhrase(TBU1286_2_Generated(pe))
+                paragraph {
+                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
+                        text(bokmal { + "Barnetillegget for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg. "})
+                    }.orShow {
+                        text(bokmal { + "Barnetillegget blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg."})
+                    }
+                }
             }
 
             showIf(btsbInnvilget and btfbInnvilget
