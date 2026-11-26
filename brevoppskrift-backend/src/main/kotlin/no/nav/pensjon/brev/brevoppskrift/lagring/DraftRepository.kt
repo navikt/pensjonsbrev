@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.brevoppskrift.model.DraftId
 import no.nav.pensjon.brev.brevoppskrift.model.DraftRevision
 import no.nav.pensjon.brev.brevoppskrift.model.SourceId
 import no.nav.pensjon.brev.brevoppskrift.auth.AuthorName
+import no.nav.pensjon.brev.brevoppskrift.api.sourceIdentityIssues
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.core.vendors.ForUpdateOption
 import kotlinx.coroutines.CancellationException
@@ -78,6 +79,7 @@ class DraftRepository(private val transactions: Transactional) {
 
     suspend fun update(id: DraftId, expectedRevision: DraftRevision, draft: Draft, author: AuthorName): DraftRecord =
         mutate(id, expectedRevision) { current ->
+            if (sourceIdentityIssues(draft, current.draft).isNotEmpty()) throw SourceConflict()
             DraftTable.update({ DraftTable.id eq id }) {
                 it[document] = draft
                 it[metadata] = draft.metadata
