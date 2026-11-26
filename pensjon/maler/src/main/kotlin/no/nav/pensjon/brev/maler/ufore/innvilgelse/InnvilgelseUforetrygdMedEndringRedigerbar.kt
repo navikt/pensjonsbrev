@@ -14,10 +14,10 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU5005_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.ufore.fraser.Barnetillegg
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.InntektBarnetillegg
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -963,13 +963,7 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
 
             showIf((barnetilleggFellesInnvilget or barnetilleggSerkullInnvilget)) {
                 showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv().greaterThan(0))) {
-                    includePhrase(TBU5005_Generated)
-                    paragraph {
-                        text(
-                            bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." },
-                            nynorsk { + "Om du planlegg å flytte eller opphalde deg i eit anna land må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjeld også om barnet du forsørgjer skal opphalde seg i eit anna land. " },
-                        )
-                    }
+                    includePhrase(Barnetillegg.BarnetilleggPavirkesAvUtlandsopphold)
                 }
             }
 
