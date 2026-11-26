@@ -28,7 +28,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object DelvisEksportAvUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdFlyttingUtlandDto> {
+object  DelvisEksportAvUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdFlyttingUtlandDto> {
 
     override val featureToggle = FeatureToggles.brevmalUtDelvisEksport.toggle
 

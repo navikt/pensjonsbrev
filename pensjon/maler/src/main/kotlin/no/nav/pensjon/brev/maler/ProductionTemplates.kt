@@ -87,6 +87,7 @@ import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmO
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbarV2
 import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.utland.EksportAvUforetrygd
 import no.nav.pensjon.brev.maler.vedlegg.alltidValgbare.skjemaForBankopplysninger
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -208,7 +209,8 @@ object ProductionTemplates : AllTemplates {
         VedtakOmOktMinsteIFURedigerbar,
         EPSEndringIBarnetilleggRedigerbar,
         OktBunnfradragNesteArRedigerbar,
-        InntektOgAldersovergangNesteArRedigerbar
+        InntektOgAldersovergangNesteArRedigerbar,
+        EksportAvUforetrygd
     )
 
     override fun hentAutobrevmaler() = autobrev
