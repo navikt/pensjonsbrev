@@ -163,9 +163,11 @@ test("Norge tilbyr alle mottakere og lar saksbehandler redigere eller tømme adr
   const country = page.getByRole("combobox", { name: "Land", exact: true });
   const recipient = page.getByRole("combobox", { name: "Velg mottaker", exact: true });
   const textarea = page.getByRole("textbox", { name: "Mottaker", exact: true });
+  const counter = page.locator(".aksel-textarea__counter");
   await expect(country).toHaveValue("NOR");
   await expect(recipient).toHaveValue("");
   await expect(textarea).toHaveValue("");
+  await expect(counter).toHaveText("200 tegn igjen");
   await expect(recipient.locator("option")).toHaveText([
     "Velg mottaker",
     "Almannaverkið (Færøyene)",
@@ -181,16 +183,19 @@ test("Norge tilbyr alle mottakere og lar saksbehandler redigere eller tømme adr
   for (const [id, address] of Object.entries(recipients)) {
     await recipient.selectOption(id);
     await expect(textarea).toHaveValue(address);
+    await expect(counter).toHaveText(`${200 - address.length} tegn igjen`);
     await expect(textarea).not.toHaveAttribute("aria-invalid", "true");
     await expect(country).toHaveValue("NOR");
   }
 
   await textarea.fill("Manuelt endret mottaker");
+  await expect(counter).toHaveText("177 tegn igjen");
   await expect(recipient).toHaveValue("");
   await expect(textarea).toHaveValue("Manuelt endret mottaker");
   await recipient.selectOption("almannaverkid");
   await recipient.selectOption("");
   await expect(textarea).toHaveValue("");
+  await expect(counter).toHaveText("200 tegn igjen");
   await expect(textarea).not.toHaveAttribute("aria-invalid", "true");
   await page.getByTestId("order-letter").click();
   await expect(textarea).toHaveAttribute("aria-invalid", "true");
@@ -282,6 +287,46 @@ for (const { landkode, ids } of [
     await expect(page.getByTestId("order-letter-success-message")).toBeVisible();
   });
 }
+
+test("Mottaker kan ikke være lengre enn 200 tegn", async ({ page }) => {
+  let orders = 0;
+  await page.route(orderUrl, async (route) => {
+    orders++;
+    await route.fulfill({ path: "test/e2e/fixtures/bestillBrevEblankett.json", contentType: "application/json" });
+  });
+  await page.goto("/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815");
+  const textarea = page.getByRole("textbox", { name: "Mottaker", exact: true });
+  const counter = page.locator(".aksel-textarea__counter");
+  const error = page.getByText("Mottaker kan ikke være lengre enn 200 tegn", { exact: true });
+  const proceed = page.getByTestId("order-letter");
+  const validRecipient = `${"a".repeat(198)}\nø`;
+  const tooLongRecipient = `${validRecipient}b`;
+
+  await textarea.fill(tooLongRecipient);
+  await expect(counter).toHaveText("1 tegn for mye");
+  await expect(error).not.toBeVisible();
+  await proceed.click();
+  await expect(error).toBeVisible();
+  await expect(textarea).toHaveAttribute("aria-invalid", "true");
+  expect(orders).toBe(0);
+
+  await textarea.fill(`${tooLongRecipient}c`);
+  await expect(error).not.toBeVisible();
+  await proceed.click();
+  await expect(error).toBeVisible();
+  expect(orders).toBe(0);
+
+  await textarea.fill(validRecipient);
+  await expect(counter).toHaveText("0 tegn igjen");
+  await expect(error).not.toBeVisible();
+  const request = page.waitForRequest(
+    (request) => request.url().endsWith("/bestillBrev/exstream/eblankett") && request.method() === "POST",
+  );
+  await proceed.click();
+  expect((await request).postDataJSON().mottakerText).toBe(validRecipient);
+  await expect(page.getByTestId("order-letter-success-message")).toBeVisible();
+  expect(orders).toBe(1);
+});
 
 test("Mottaker valideres bare når Fortsett trykkes etter redigering og valg", async ({ page }) => {
   let orders = 0;

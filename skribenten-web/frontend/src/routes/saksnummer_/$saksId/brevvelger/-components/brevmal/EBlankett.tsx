@@ -20,7 +20,7 @@ import { byggEBlankettOnSubmitRequest } from "./TemplateUtils";
 
 const eblankettValidationSchema = z.object({
   landkode: z.string().min(1, "Obligatorisk"),
-  mottakerText: z.string().min(1, "Vennligst fyll inn mottaker"),
+  mottakerText: z.string().min(1, "Vennligst fyll inn mottaker").max(200, "Mottaker kan ikke være lengre enn 200 tegn"),
   enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
@@ -122,6 +122,7 @@ export default function EBlankett({
 
   const { getValues, setValue } = methods;
   const landkode = useWatch({ control: methods.control, name: "landkode" });
+  const mottakerText = useWatch({ control: methods.control, name: "mottakerText" });
   const [valgtMottaker, setValgtMottaker] = useState("");
   const tilgjengeligeMottakere = mottakere.filter((mottaker) => landkode === "NOR" || mottaker.landkode === landkode);
 
@@ -232,12 +233,14 @@ export default function EBlankett({
               hideLabel
               id={mottakerId}
               label="Rediger mottaker"
+              maxLength={200}
               onChange={(event) => {
                 setValgtMottaker("");
                 setValue("mottakerText", event.target.value, { shouldDirty: true });
                 methods.clearErrors("mottakerText");
               }}
               size="small"
+              value={mottakerText}
             />
           </VStack>
           <SelectEnhet />
