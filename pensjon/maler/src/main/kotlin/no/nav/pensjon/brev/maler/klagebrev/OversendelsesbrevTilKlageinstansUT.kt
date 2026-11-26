@@ -76,7 +76,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
         val inntekt = saksbehandlervalg("inntekt", "Velg begrunnelsen for inntektsreduksjon:").enum<ReduksjonPaaGrunnAvInntektValg>()
         val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
         val ufoertidspunkt = saksbehandlervalg("ufoertidspunkt", "Velg uføretidspunkt:").enum<Ufoertidspunkt>()
-
+        val ufoeretidspunktMedregnes = saksbehandlervalg("ufoeretidspunktMedregnes", "Velg om tid etter uføretidspunktet skal medregnes").bool()
 
         title { text(bokmal { +"Oversendelse til $NAV_KLAGEINSTANS - Uføretrygd" }) }
 
@@ -133,7 +133,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             showIf(paragraf.isOneOf(Oversittetklagefrist)) {
                 includePhrase(OversittetKlagefrist)
             }.orShowIf(paragraf.isOneOf(Paragraf.EosArtikkel57)) {
-                includePhrase(EoesArtikkel57)
+                includePhrase(EoesArtikkel57(ufoeretidspunktMedregnes))
             }.orShowIf(paragraf.isOneOf(Paragraf.Medlemskap)) {
                 includePhrase(Medlemskap)
             }.orShowIf(paragraf.isOneOf(Paragraf.HensiktsmessigBehandlingOgTiltak)) {

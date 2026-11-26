@@ -1024,7 +1024,9 @@ object OversendelsesbrevTilKlageinstansTekst {
     }
 
     //EØS artikkel 57 Trygdetid eller botid under ett år
-    object EoesArtikkel57 : RedigerbarOutlinePhrase<LangBokmal>() {
+    data class EoesArtikkel57(
+        val ufoeretidspunktMedregnes: Expression<Boolean>
+    ) : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
             paragraph {
@@ -1085,27 +1087,30 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(KlippInnFraVedtak)
 
             paragraph { text(bokmal { +"Klager fyller ikke minstekravet til trygdetid i Norge før uføretidspunktet, og kan derfor ikke få vurdert rett til uføretrygd gjennom sammenlegging av trygdetid i Norge og i andre EØS-land." }) }
-            paragraph { text(bokmal { +fritekst("Hvis det er anført at også tid etter uføretidspunktet skal medregnes, fordi folketrygdloven § 12-2 andre ledd bokstav b ikke sier noe om tid <før uføretidspunktet>:") }) }
-            paragraph {
-                text(bokmal {
-                    +"Formålet med EØS-forordningen artikkel 57 er å forenkle administrasjonen og å unngå at medlemslandene forpliktes til å utbetale minipensjoner basert på trygdetid som samlet er kortere enn ett år. "
-                    +"Unntaket er hvis landets lovgivning gir slik rett. "
-                    +"Folketrygdloven åpner ikke for å utbetale uføretrygd basert på kortere trygdetid enn ett år."
-                })
-            }
-            paragraph {
-                text(bokmal {
-                    +"Vi viser til Arbeids- og velferdsetatens retningslinjer i R45-00 punkt 12.4.5. "
-                    +"Av retningslinjene kommer det fram at Nav mener artikkel 57 nr. 1 ikke refererer til selve ordlyden i nasjonal lovgivning slik Trygderetten tar utgangspunkt i, men at det er snakk om tid tilbakelagt etter nasjonal lovgivning, og som skal medregnes når trygdetilfellet inntreffer. "
-                    +"Bestemmelsen peker direkte på beregningsregelen i artikkel 52 nr. 1 bokstav b. Sett i kontekst er det trygdetiden som skal inngå i pro rata-brøken som må utgjøre minst ett år. "
-                    +"Trygdetiden i pro rata-brøken er alltid faktisk trygdetid, det vil si den tiden vedkommende har opparbeidet seg før uføretidspunktet."
-                })
-            }
-            paragraph {
-                text(bokmal {
-                    +"I lys av dette, er det etter Navs syn uføretidspunktet som er skjæringstidspunktet ved anvendelsen av artikkel 57. "
-                    +"Det er derfor ikke aktuelt å vurdere sammenlegging etter folketrygdloven § 12-2 andre ledd bokstav b særskilt, ved å ta hensyn til tid etter uføretidspunktet."
-                })
+
+            showIf(ufoeretidspunktMedregnes) {
+                paragraph { text(bokmal { +fritekst("Hvis det er anført at også tid etter uføretidspunktet skal medregnes, fordi folketrygdloven § 12-2 andre ledd bokstav b ikke sier noe om tid <før uføretidspunktet>:") }) }
+                paragraph {
+                    text(bokmal {
+                        +"Formålet med EØS-forordningen artikkel 57 er å forenkle administrasjonen og å unngå at medlemslandene forpliktes til å utbetale minipensjoner basert på trygdetid som samlet er kortere enn ett år. "
+                        +"Unntaket er hvis landets lovgivning gir slik rett. "
+                        +"Folketrygdloven åpner ikke for å utbetale uføretrygd basert på kortere trygdetid enn ett år."
+                    })
+                }
+                paragraph {
+                    text(bokmal {
+                        +"Vi viser til Arbeids- og velferdsetatens retningslinjer i R45-00 punkt 12.4.5. "
+                        +"Av retningslinjene kommer det fram at Nav mener artikkel 57 nr. 1 ikke refererer til selve ordlyden i nasjonal lovgivning slik Trygderetten tar utgangspunkt i, men at det er snakk om tid tilbakelagt etter nasjonal lovgivning, og som skal medregnes når trygdetilfellet inntreffer. "
+                        +"Bestemmelsen peker direkte på beregningsregelen i artikkel 52 nr. 1 bokstav b. Sett i kontekst er det trygdetiden som skal inngå i pro rata-brøken som må utgjøre minst ett år. "
+                        +"Trygdetiden i pro rata-brøken er alltid faktisk trygdetid, det vil si den tiden vedkommende har opparbeidet seg før uføretidspunktet."
+                    })
+                }
+                paragraph {
+                    text(bokmal {
+                        +"I lys av dette, er det etter Navs syn uføretidspunktet som er skjæringstidspunktet ved anvendelsen av artikkel 57. "
+                        +"Det er derfor ikke aktuelt å vurdere sammenlegging etter folketrygdloven § 12-2 andre ledd bokstav b særskilt, ved å ta hensyn til tid etter uføretidspunktet."
+                    })
+                }
             }
         }
     }
