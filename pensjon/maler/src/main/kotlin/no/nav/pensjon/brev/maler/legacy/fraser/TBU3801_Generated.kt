@@ -17,26 +17,15 @@ data class TBU3801_Generated(
 ) : OutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
 		paragraph {
-			text (
-				bokmal { + "Endringer i " },
-			)
-
-			//PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
 			showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
 				text (
-					bokmal { + "inntektene til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
+					bokmal { + "Endringer i inntektene til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") +" på $NAV_URL."  },
 				)
-			}
-
-			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-			showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
+			}.orShowIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()){
 				text (
-					bokmal { + "inntekten din " },
+					bokmal { + "Endringer i inntekten din kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") +" på $NAV_URL."},
 				)
 			}
-			text (
-				bokmal { + "kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") +" på $NAV_URL." },
-			)
 		}
     }
 }
