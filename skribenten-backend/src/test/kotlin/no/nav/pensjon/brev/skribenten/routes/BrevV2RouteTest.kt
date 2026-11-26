@@ -264,7 +264,7 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
             contentType(ContentType.Application.Json)
             setBody(mapper.writeValueAsString(ApiV2.OppdaterBrevRequest(SaksbehandlervalgMap(), edited)))
         }.status).isEqualTo(HttpStatusCode.OK)
-        assertThat(client.delete("/brev/$brevId/reservasjon").status).isEqualTo(HttpStatusCode.OK)
+        assertThat(client.delete("/brev/$brevId/reservasjon").status).isEqualTo(HttpStatusCode.NoContent)
         val foer = mapper.readValue<ApiV2.BrevResponse>(client.get(v2Path).bodyAsText())
 
         val v1Kall: List<Pair<HttpMethod, String>> = listOf(
