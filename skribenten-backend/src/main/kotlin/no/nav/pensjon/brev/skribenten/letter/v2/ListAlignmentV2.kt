@@ -40,7 +40,7 @@ internal object ListAlignmentV2 {
         }
     }
 
-    private fun matchedRenderedIndices(edited: List<EditV2.Identifiable>, rendered: List<EditV2.Identifiable>): Set<Int> {
+    fun matchedRenderedIndices(edited: List<EditV2.Identifiable>, rendered: List<EditV2.Identifiable>): Set<Int> {
         val editedIds = edited.mapNotNull { it.id }
         val renderedWithIds = rendered.mapIndexedNotNull { index, element -> element.id?.let { index to it } }
         val renderedIds = renderedWithIds.map { it.second }

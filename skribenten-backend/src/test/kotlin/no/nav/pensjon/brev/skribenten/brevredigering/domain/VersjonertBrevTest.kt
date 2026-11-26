@@ -7,6 +7,8 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
+import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2
+import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
@@ -85,10 +87,10 @@ class VersjonertBrevTest {
         val v1Markup = VersjonertMarkup.V1(v1Brev.toMarkup())
         val v2Markup = VersjonertMarkup.V2(v2Brev.toMarkup())
 
-        assertThat(VersjonertBrev.V1(v1Brev).merge(v1Markup)).isInstanceOf(VersjonertBrev.V1::class.java)
-        assertThat(VersjonertBrev.V2(v2Brev).merge(v2Markup)).isInstanceOf(VersjonertBrev.V2::class.java)
-        assertThatThrownBy { VersjonertBrev.V1(v1Brev).merge(v2Markup) }.isInstanceOf(FeilMarkupVersjonException::class.java)
-        assertThatThrownBy { VersjonertBrev.V2(v2Brev).merge(v1Markup) }.isInstanceOf(FeilMarkupVersjonException::class.java)
+        assertThat(VersjonertBrev.V1(v1Brev).merge(v1Markup, previousRender = null)).isInstanceOf(VersjonertBrev.V1::class.java)
+        assertThat(VersjonertBrev.V2(v2Brev).merge(v2Markup, previousRender = null)).isInstanceOf(VersjonertBrev.V2::class.java)
+        assertThatThrownBy { VersjonertBrev.V1(v1Brev).merge(v2Markup, previousRender = null) }.isInstanceOf(FeilMarkupVersjonException::class.java)
+        assertThatThrownBy { VersjonertBrev.V2(v2Brev).merge(v1Markup, previousRender = null) }.isInstanceOf(FeilMarkupVersjonException::class.java)
     }
 
     @Test
@@ -124,5 +126,27 @@ class VersjonertBrevTest {
         })
 
         assertThat(brev.innholdEndresAv(VersjonertMarkup.V1(letter(ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))))))).isTrue()
+    }
+
+    @Test
+    fun `v2-innhold endres ikke av samme rendring naar brevet har blokk som er ny i malen`() {
+        val forrigeRendring = letterV2(MarkupV2.paragraph(1, MarkupV2.literal(11, "Første")))
+        val rendring = letterV2(
+            MarkupV2.paragraph(1, MarkupV2.literal(11, "Første")),
+            MarkupV2.itemList(2, MarkupV2.item(21, MarkupV2.literal(211, "Punkt"))),
+        )
+        val forrigeBrev = EditV2.Letter.from(forrigeRendring)
+        val brev = VersjonertBrev.V2(forrigeBrev).merge(VersjonertMarkup.V2(rendring), previousRender = VersjonertBrev.V2(forrigeBrev))
+
+        assertThat((brev as VersjonertBrev.V2).brev.blocks.last().decision).isEqualTo(EditV2.Block.DecisionRequest.newInRenderedPending)
+        assertThat(brev.innholdEndresAv(VersjonertMarkup.V2(rendring))).isFalse()
+    }
+
+    @Test
+    fun `v2-merge feiler naar forrige rendring har annen markup-versjon`() {
+        val rendring = VersjonertMarkup.V2(v2Brev.toMarkup())
+
+        assertThatThrownBy { VersjonertBrev.V2(v2Brev).merge(rendring, previousRender = VersjonertBrev.V1(v1Brev)) }
+            .isInstanceOf(FeilMarkupVersjonException::class.java)
     }
 }
