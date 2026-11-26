@@ -13,8 +13,17 @@ env:
     value: "8080"
   - name: BREVBAKER_API_URL
     value: "http://pensjon-brevbaker"
+  - name: BREVOPPSKRIFT_BACKEND_URL
+    value: "http://brevoppskrift-backend"
+  - name: BREVOPPSKRIFT_BACKEND_SCOPE
+    value: "api://dev-gcp.pensjonsbrev.brevoppskrift-backend/.default"
+  - name: PUBLIC_ORIGIN
+    value: "https://pensjon-brevoppskrift.intern.dev.nav.no"
 
 outboundApps:
   - application: pensjon-brevbaker
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+  - application: brevoppskrift-backend
     namespace: pensjonsbrev
     cluster: dev-gcp
