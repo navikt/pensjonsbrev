@@ -63,7 +63,9 @@ const BrevmalAlternativer = (props: {
         if (!hasOptional) {
           return (
             <VStack gap="space-12">
-              <Heading size="xsmall">Overstyring</Heading>
+              <Heading level="3" size="xsmall">
+                Overstyring
+              </Heading>
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
                 fieldsToRender="required"
@@ -78,7 +80,9 @@ const BrevmalAlternativer = (props: {
         if (!hasRequired) {
           return (
             <VStack gap="space-12">
-              <Heading size="xsmall">Tekstvalg</Heading>
+              <Heading level="3" size="xsmall">
+                Tekstvalg
+              </Heading>
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
                 fieldsToRender="optional"

@@ -1,19 +1,21 @@
 import { ExternalLinkIcon, LeaveIcon, MenuGridIcon } from "@navikt/aksel-icons";
 import { ActionMenu, Box, InternalHeader, Spacer, Theme } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { Link as RouterLink } from "@tanstack/react-router";
+import { Link as RouterLink, useMatch } from "@tanstack/react-router";
 
 import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
 import { NotificationBell } from "~/components/notifications/NotificationBell";
 import { useUserInfo } from "~/hooks/useUserInfo";
 
 export function AppHeader() {
+  const letterEditor = useMatch({ from: "/saksnummer_/$saksId/brev/$brevId", shouldThrow: false });
+  const attestantEditor = useMatch({ from: "/saksnummer_/$saksId/attester/$brevId/redigering", shouldThrow: false });
   const showNotificationBell = useQuery(getFeatureToggle("nyhetsvarsling")).data?.enabled === true;
 
   return (
     <Box asChild borderColor="neutral-subtleA" borderWidth="0 0 1 0" height="var(--header-height)">
       <InternalHeader>
-        <InternalHeader.Title as="h1">
+        <InternalHeader.Title as={letterEditor || attestantEditor ? "div" : "h1"}>
           <RouterLink
             css={{ color: "inherit", textDecoration: "inherit" }}
             params={(current) => current}

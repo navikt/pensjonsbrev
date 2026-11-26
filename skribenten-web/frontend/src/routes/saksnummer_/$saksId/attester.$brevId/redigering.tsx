@@ -453,7 +453,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 brevmalPanel={
                   <FormProvider {...form}>
                     <VStack gap="space-32" paddingBlock="space-16 space-0">
-                      <Heading size="small">{props.brev.info.brevtittel}</Heading>
+                      <Heading level="2" size="small">
+                        {props.brev.info.brevtittel}
+                      </Heading>
                       <VStack gap="space-16">
                         <OppsummeringAvMottaker
                           mottaker={props.brev.info.mottaker ?? null}

@@ -453,7 +453,7 @@ function RedigerBrev({
                     brevId={brev.info.id}
                     brevmalPanel={
                       <VStack gap="space-12" paddingBlock="space-16 space-0">
-                        <Heading size="small" spacing>
+                        <Heading level="2" size="small" spacing>
                           {brevmal.data?.name}
                         </Heading>
                         <BrevmalAlternativer
