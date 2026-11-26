@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afpprivat
 
+import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.InnvilgelseAvAfpFraser
 import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.RettTilAaKlageAfpPrivat
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettigheterPersonopplysninger
@@ -13,6 +14,7 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -22,8 +24,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * Vedtak — innvilgelse av AFP i privat sektor (autobrev).
  *
  * Konvertert fra Exstream-malen `PE_AF_04_115`. Brevkroppen er felles med
- * den redigerbare malen `InnvilgelseAvAfp` (PE_AF_04_111) og ligger i
- * [InnvilgelseAvAfpInnhold].
+ * den redigerbare malen `InnvilgelseAvAfp` (PE_AF_04_111) og er satt sammen
+ * av fraser fra [InnvilgelseAvAfpFraser].
  */
 @TemplateModelHelpers
 object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
@@ -47,18 +49,44 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
         }
 
         outline {
-            includePhrase(
-                InnvilgelseAvAfpInnhold(
-                    virkningFom = virkningFom,
-                    totalPensjon = afpBeregning.totalPensjon,
-                    kronetilleggBrutto = afpBeregning.kronetilleggBrutto,
-                    kompensasjonstilleggBrutto = afpBeregning.kompensasjonstilleggBrutto,
-                    brukerUnder70Aar = brukerUnder70Aar,
-                    bosattINorge = bosattINorge,
-                    forsteEtterbetalingsDato = forsteEtterbetalingsDato,
-                    harEtterbetaling = harEtterbetaling,
-                ),
-            )
+            includePhrase(InnvilgelseAvAfpFraser.VedtakOverskrift)
+            includePhrase(InnvilgelseAvAfpFraser.InnvilgetBeloep(totalPensjon = afpBeregning.totalPensjon, virkningFom = virkningFom))
+            ifNotNull(afpBeregning.kronetilleggBrutto) { brutto ->
+                showIf(brutto.greaterThan(0)) {
+                    includePhrase(InnvilgelseAvAfpFraser.Kronetillegg(brutto))
+                }
+            }
+            includePhrase(InnvilgelseAvAfpFraser.Utbetalingstidspunkt)
+
+            includePhrase(InnvilgelseAvAfpFraser.BegrunnelseOverskrift)
+            includePhrase(InnvilgelseAvAfpFraser.BegrunnelseAfpTilskottsloven)
+
+            showIf(brukerUnder70Aar) {
+                includePhrase(InnvilgelseAvAfpFraser.AfpOgAlderspensjonOverskrift)
+                includePhrase(InnvilgelseAvAfpFraser.SammenMedAlderspensjon)
+                includePhrase(InnvilgelseAvAfpFraser.MinsteUttaksgrad)
+                includePhrase(InnvilgelseAvAfpFraser.Pensjonskalkulator)
+                includePhrase(InnvilgelseAvAfpFraser.ArbeidsinntektOgOpptjening)
+            }
+
+            showIf(harEtterbetaling) {
+                includePhrase(InnvilgelseAvAfpFraser.EtterbetalingOverskrift)
+                ifNotNull(forsteEtterbetalingsDato) { dato ->
+                    includePhrase(InnvilgelseAvAfpFraser.Etterbetaling(dato))
+                }
+            }
+
+            includePhrase(InnvilgelseAvAfpFraser.SkattOverskrift)
+            showIf(bosattINorge) {
+                includePhrase(InnvilgelseAvAfpFraser.SkattepliktBosattINorge(afpBeregning.kompensasjonstilleggBrutto))
+                includePhrase(InnvilgelseAvAfpFraser.SjekkSkattekort)
+                includePhrase(InnvilgelseAvAfpFraser.SeSkattPaaDinPensjon)
+            }.orShow {
+                includePhrase(InnvilgelseAvAfpFraser.SkattepliktBosattUtland(afpBeregning.kompensasjonstilleggBrutto))
+                includePhrase(InnvilgelseAvAfpFraser.SkattespoersmaalUtland)
+                includePhrase(InnvilgelseAvAfpFraser.SeSkattPaaDinPensjon)
+            }
+
             includePhrase(RettigheterPersonopplysninger)
             includePhrase(RettTilAaKlageAfpPrivat)
             includePhrase(HarDuSpoersmaal.alder)

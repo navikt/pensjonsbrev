@@ -33,9 +33,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 /**
  * Vedtak — innvilgelse av avtalefestet pensjon (AFP) i offentlig sektor (gammel AFP).
  *
- * Konvertert fra Exstream-malen `PE_AF_04_001`. Privat-sektor varianten av
- * AFP (`PE_AF_04_111` / `PE_AF_04_115`) ligger i [no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfp] /
- * [no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpAuto] og bruker felles innhold [no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpInnhold].
+ * Konvertert fra Exstream-malen `PE_AF_04_001`. Brevet bruker fraser fra [AfpOffentligSektorInnhold] og [AfpFraser].
+ * Privat-sektor varianten av AFP (`PE_AF_04_111` / `PE_AF_04_115`) ligger i
+ * [no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfp] / [no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpAuto].
  *
  * Brevet er redigerbart og styres av saksbehandler i Skribenten.
  */
