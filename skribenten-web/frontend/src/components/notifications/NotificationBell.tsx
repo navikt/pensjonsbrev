@@ -1,5 +1,5 @@
 import { BellIcon, ExternalLinkIcon, SparklesIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Button, Heading, HStack, InternalHeader, Link, Modal, Theme, VStack } from "@navikt/ds-react";
+import { BodyShort, Box, Button, Heading, HStack, InternalHeader, Modal, Theme, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useId, useState } from "react";
 
@@ -192,19 +192,20 @@ const AnnouncementItem = ({
             Se hvordan
           </Button>
         )}
-        <BodyShort size="small" weight="semibold">
-          <Link
-            aria-describedby={titleId}
-            href={announcement.documentationUrl}
-            rel="noopener noreferrer"
-            target="_blank"
-            underline={false}
-          >
-            <ExternalLinkIcon aria-hidden fontSize="1.25rem" />
-            Les mer her
-            <span className="aksel-sr-only"> (åpnes i ny fane)</span>
-          </Link>
-        </BodyShort>
+        <Button
+          aria-describedby={titleId}
+          as="a"
+          href={announcement.documentationUrl}
+          icon={<ExternalLinkIcon aria-hidden />}
+          rel="noopener noreferrer"
+          role="link"
+          size="small"
+          target="_blank"
+          variant="tertiary"
+        >
+          Les mer
+          <span className="aksel-sr-only"> (åpnes i ny fane)</span>
+        </Button>
       </HStack>
     </VStack>
   );
