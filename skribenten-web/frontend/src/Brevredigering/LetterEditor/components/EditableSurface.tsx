@@ -21,15 +21,10 @@ import { type Focus, type LiteralIndex, type SelectionIndex } from "~/Brevredige
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
 import {
   applyModelSelectionToDom,
-  areAnyContentEditableSiblingsPlacedHigher,
-  areAnyContentEditableSiblingsPlacedLower,
   closestEditableLiteralEl,
   type DomSelectionSnapshot,
   ensureAdjacentLineVisible,
-  ensureLineVisibleInScrollContainer,
   findIndexElementInRoot,
-  findOnLineAbove,
-  findOnLineBelow,
   getCaretRect,
   getCleanOffsetInLiteral,
   getCleanTextLength,
@@ -56,8 +51,6 @@ import { isMac } from "~/Brevredigering/LetterEditor/utils";
 import { type EditedDocument, FontType, type LiteralValue, TITLE_INDEX } from "~/types/brevbakerTypes";
 import { trackEvent } from "~/utils/innblikk";
 import { getPasteMetadata, hasPasteContent } from "~/utils/pasteTracking";
-
-const Y_COORD_SAFETY_MARGIN = 10;
 
 const isTextMutatingKey = (event: React.KeyboardEvent<HTMLElement>): boolean =>
   !event.ctrlKey &&
@@ -133,21 +126,6 @@ function isSameSelection(a: SelectionIndex | undefined, b: SelectionIndex | unde
   );
 }
 
-function areDirectlyAdjacentInlineLiterals(first: HTMLElement, second: HTMLElement): boolean {
-  if (first.parentElement !== second.parentElement) return false;
-  let cursor: ChildNode | null = first.nextSibling;
-  while (cursor && cursor !== second) {
-    if (cursor.nodeType === Node.ELEMENT_NODE) {
-      const el = cursor as HTMLElement;
-      if (el.hasAttribute("data-variable") || el.tagName === "BR" || el.hasAttribute("data-diff-deleted")) {
-        return false;
-      }
-    }
-    cursor = cursor.nextSibling;
-  }
-  return cursor === second;
-}
-
 function prevCodePointOffset(str: string, offset: number): number {
   if (offset <= 0) return 0;
   if (offset >= 2) {
@@ -186,23 +164,18 @@ function wordBoundaryForward(str: string, offset: number): number {
   return i;
 }
 
-export type EditableSurfaceProps<T extends React.ElementType = "div"> = {
-  as?: T;
+export type EditableSurfaceProps = {
   surfaceRef?: React.Ref<HTMLDivElement>;
-  isTitleSurface?: boolean;
-} & Omit<React.ComponentPropsWithoutRef<T>, "as">;
+} & React.ComponentPropsWithoutRef<"div">;
 
-export function EditableSurface<T extends React.ElementType = "div">({
-  as,
+export function EditableSurface({
   surfaceRef,
-  isTitleSurface = false,
   onKeyDown: externalOnKeyDown,
   onFocus: externalOnFocus,
   children,
   tabIndex,
   ...rest
-}: EditableSurfaceProps<T>) {
-  const Component: React.ElementType = as ?? "div";
+}: EditableSurfaceProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const lastAppliedDomSelectionRef = useRef<DomSelectionSnapshot | null>(null);
   const hasCompletedInitialLayoutRef = useRef(false);
@@ -214,6 +187,7 @@ export function EditableSurface<T extends React.ElementType = "div">({
   const fritekstMouseDownRef = useRef<{ element: HTMLElement; wasInside: boolean } | null>(null);
   const shiftKeyDownRef = useRef(false);
   const lastKeyWasTabRef = useRef(false);
+  const lastKeyWasArrowRef = useRef(false);
   // While the browser composes (dead key or IME), its caret counts text the model doesn't have yet, so it isn't synced.
   const isComposingRef = useRef(false);
 
@@ -285,10 +259,12 @@ export function EditableSurface<T extends React.ElementType = "div">({
   useEffect(() => {
     const onDocKeyDown = (event: KeyboardEvent) => {
       lastKeyWasTabRef.current = event.key === "Tab";
+      lastKeyWasArrowRef.current = event.key.startsWith("Arrow") && !event.shiftKey;
       shiftKeyDownRef.current = event.shiftKey || event.key === "Shift";
     };
     const onDocPointerDown = () => {
       lastKeyWasTabRef.current = false;
+      lastKeyWasArrowRef.current = false;
     };
     const clearPointer = () => {
       pointerDownInsideRef.current = false;
@@ -328,6 +304,14 @@ export function EditableSurface<T extends React.ElementType = "div">({
       } else {
         if (!domSelection.isCollapsed) {
           lastAppliedDomSelectionRef.current = applyModelSelectionToDom(root, mapped.focus, undefined, false);
+        }
+        if (lastKeyWasArrowRef.current && !isSameLiteral(cur.focus, mapped.focus)) {
+          const literal = getLiteralFromState(cur.redigertBrev, mapped.focus);
+          if (literal && isUneditedFritekst(literal)) {
+            lastKeyWasArrowRef.current = false;
+            applyAction(updateFocus, setEditorState, { ...mapped.focus, selectAll: true });
+            return;
+          }
         }
         if (
           cur.selection === undefined &&
@@ -405,7 +389,6 @@ export function EditableSurface<T extends React.ElementType = "div">({
     literalEl: HTMLElement;
     literalIndex: LiteralIndex;
     content: LiteralValue | undefined;
-    erFritekst: boolean;
     hasDiffDecoration: boolean;
     cursorPosition: number;
     selection: SelectionIndex | undefined;
@@ -421,7 +404,6 @@ export function EditableSurface<T extends React.ElementType = "div">({
     if (!el || !isEditableLiteralEl(el)) return null;
 
     const content = getLiteralFromState(editorStateRef.current.redigertBrev, literalIndex);
-    const erFritekst = content ? isUneditedFritekst(content) : el.hasAttribute("data-fritekst");
     const hasDiffDecoration =
       el.dataset.diffVersion !== undefined ||
       (diffHash !== undefined && el.querySelector("[data-diff-deletion],[data-diff-insertion]") != null);
@@ -429,7 +411,6 @@ export function EditableSurface<T extends React.ElementType = "div">({
       literalEl: el,
       literalIndex,
       content,
-      erFritekst,
       hasDiffDecoration,
       cursorPosition: effective.focus.cursorPosition,
       selection: effective.selection,
@@ -753,141 +734,24 @@ export function EditableSurface<T extends React.ElementType = "div">({
     }
   };
 
-  const handleArrowLeft = (
-    event: React.KeyboardEvent<HTMLElement>,
+  const handleVerticalArrow = (
+    event: React.KeyboardEvent<HTMLDivElement>,
     literalEl: HTMLElement,
-    literalIndex: LiteralIndex,
-    cursorPosition: number,
-    selection: SelectionIndex | undefined,
-    erFritekst: boolean,
+    f: LiteralIndex,
+    direction: "up" | "down",
   ) => {
-    if (event.shiftKey) return;
-
-    const scope = hostRef.current?.closest(".editor") ?? document;
-    const allSpans = [...scope.querySelectorAll<HTMLSpanElement>("[data-literal]")];
-    const thisSpanIndex = allSpans.indexOf(literalEl as HTMLSpanElement);
-    if (thisSpanIndex < 0) return;
-
-    if (selection && erFritekst) {
-      event.preventDefault();
-      applyAction(updateFocus, setEditorState, { ...literalIndex, cursorPosition: 0 });
-      return;
-    }
-
-    const startInLiteral = selection ? selection.start.cursorPosition : cursorPosition;
-    if (startInLiteral !== 0) return;
-
-    const previousSpanIndex = thisSpanIndex - 1;
-    if (previousSpanIndex < 0) {
-      event.preventDefault();
-      return;
-    }
-
-    const nextSpan = allSpans[previousSpanIndex];
-    const prevCleanLen = getCleanTextLength(nextSpan);
-    const targetOffset = areDirectlyAdjacentInlineLiterals(nextSpan, literalEl)
-      ? Math.max(0, prevCleanLen - 1)
-      : prevCleanLen;
-
-    event.preventDefault();
-    const nextIdx = parseLiteralIndex(nextSpan);
-    if (!nextIdx) return;
-    if (nextSpan.hasAttribute("data-fritekst")) {
-      selectFullLiteralInModel(nextSpan);
-    } else {
-      applyAction(updateFocus, setEditorState, {
-        ...nextIdx,
-        cursorPosition: targetOffset,
-      });
-    }
-  };
-
-  const handleArrowRight = (
-    event: React.KeyboardEvent<HTMLElement>,
-    literalEl: HTMLElement,
-    literalIndex: LiteralIndex,
-    cursorPosition: number,
-    selection: SelectionIndex | undefined,
-    erFritekst: boolean,
-  ) => {
-    if (event.shiftKey) return;
-
-    const scope = hostRef.current?.closest(".editor") ?? document;
-    const allSpans = [...scope.querySelectorAll<HTMLSpanElement>("[data-literal]")];
-    const thisSpanIndex = allSpans.indexOf(literalEl as HTMLSpanElement);
-    if (thisSpanIndex < 0) return;
-
-    const textLength = getCleanTextLength(literalEl);
-
-    if (selection && erFritekst) {
-      event.preventDefault();
-      applyAction(updateFocus, setEditorState, { ...literalIndex, cursorPosition: textLength });
-      return;
-    }
-
-    const endInLiteral = selection ? selection.end.cursorPosition : cursorPosition;
-    if (endInLiteral < textLength) return;
-
-    const nextSpanIndex = thisSpanIndex + 1;
-    if (nextSpanIndex > allSpans.length - 1) {
-      event.preventDefault();
-      return;
-    }
-
-    const nextSpan = allSpans[nextSpanIndex];
-    const nextCleanLen = getCleanTextLength(nextSpan);
-    const targetOffset = areDirectlyAdjacentInlineLiterals(literalEl, nextSpan) ? Math.min(1, nextCleanLen) : 0;
-
-    event.preventDefault();
-    const nextIdx = parseLiteralIndex(nextSpan);
-    if (!nextIdx) return;
-    if (nextSpan.hasAttribute("data-fritekst")) {
-      selectFullLiteralInModel(nextSpan);
-    } else {
-      applyAction(updateFocus, setEditorState, {
-        ...nextIdx,
-        cursorPosition: targetOffset,
-      });
-    }
-  };
-
-  const syncModelAfterCoordinateJump = () => {
-    const scope = hostRef.current?.closest<HTMLElement>(".editor") ?? hostRef.current;
-    if (!scope) return;
-    const domSelection = globalThis.getSelection();
-    if (!domSelection || domSelection.rangeCount === 0) return;
-    const literalEl = closestEditableLiteralEl(domSelection.getRangeAt(0).startContainer);
-    if (!literalEl || !scope.contains(literalEl)) return;
-    const idx = parseLiteralIndex(literalEl);
-    if (!idx) return;
-    if (literalEl.hasAttribute("data-fritekst")) {
-      selectFullLiteralInModel(literalEl);
-      return;
-    }
-    const offset = getCleanOffsetInLiteral(
-      literalEl,
-      domSelection.getRangeAt(0).startContainer,
-      domSelection.getRangeAt(0).startOffset,
-    );
-    lastAppliedDomSelectionRef.current = snapshotDomSelection(domSelection);
-    applyAction(updateFocus, setEditorState, { ...idx, cursorPosition: offset });
-  };
-
-  const handleArrowUp = (event: React.KeyboardEvent<HTMLElement>, literalEl: HTMLElement) => {
-    if (event.shiftKey) return;
-
-    const f = parseLiteralIndex(literalEl) ?? editorState.focus;
+    if (event.shiftKey || event.altKey || event.ctrlKey || event.metaKey) return;
 
     if (isTableCellIndex(f)) {
       const block = editorState.redigertBrev.blocks[f.blockIndex];
       const content = block?.content[f.contentIndex];
 
       if (isTable(content)) {
-        const next = getTableArrowNavigationFocus(literalEl, f, content, "up");
+        const next = getTableArrowNavigationFocus(literalEl, f, content, direction);
         if (next === undefined) return;
         event.preventDefault();
         if (next === "exit") {
-          setEditorState(exitTable("backward"));
+          setEditorState(exitTable(direction === "up" ? "backward" : "forward"));
         } else {
           applyAction(updateFocus, setEditorState, next);
         }
@@ -895,95 +759,23 @@ export function EditableSurface<T extends React.ElementType = "div">({
       }
     }
 
-    const caretCoordinates = getCaretRect();
-    if (caretCoordinates === undefined) return;
-
     if (isBlockContentIndex(f) && f.blockIndex !== TITLE_INDEX) {
-      const tableEntry = adjacentTableEntryFocus(f, editorState.redigertBrev.blocks, "up");
+      const tableEntry = adjacentTableEntryFocus(f, editorState.redigertBrev.blocks, direction);
       if (tableEntry) {
+        const caretCoordinates = getCaretRect();
+        if (!caretCoordinates) return;
         const elementRect = literalEl.getBoundingClientRect();
-        const isOnFirstVisualLine = caretCoordinates.top <= elementRect.top + 1;
-        if (!isOnFirstVisualLine) return;
+        const atEdge =
+          direction === "up"
+            ? caretCoordinates.top <= elementRect.top + 1
+            : caretCoordinates.bottom >= elementRect.bottom - 1;
+        if (!atEdge) return;
 
         event.preventDefault();
         applyAction(updateFocus, setEditorState, tableEntry);
         return;
       }
-    }
-
-    const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedHigher(literalEl as HTMLSpanElement);
-
-    if (shouldDoItOurselves) {
-      const next = findOnLineAbove(literalEl);
-
-      if (next) {
-        ensureLineVisibleInScrollContainer(next, "bottom");
-        gotoCoordinates({
-          x: caretCoordinates.x,
-          y: next.getBoundingClientRect().bottom - Y_COORD_SAFETY_MARGIN,
-        });
-        syncModelAfterCoordinateJump();
-        event.preventDefault();
-      }
-    } else {
-      ensureAdjacentLineVisible(literalEl, "up");
-    }
-  };
-
-  const handleArrowDown = (event: React.KeyboardEvent<HTMLElement>, literalEl: HTMLElement) => {
-    if (event.shiftKey) return;
-
-    const f = parseLiteralIndex(literalEl) ?? editorState.focus;
-
-    if (isTableCellIndex(f)) {
-      const block = editorState.redigertBrev.blocks[f.blockIndex];
-      const content = block?.content[f.contentIndex];
-
-      if (isTable(content)) {
-        const next = getTableArrowNavigationFocus(literalEl, f, content, "down");
-        if (next === undefined) return;
-        event.preventDefault();
-        if (next === "exit") {
-          setEditorState(exitTable("forward"));
-        } else {
-          applyAction(updateFocus, setEditorState, next);
-        }
-        return;
-      }
-    }
-
-    const caretCoordinates = getCaretRect();
-    if (caretCoordinates === undefined) return;
-
-    if (isBlockContentIndex(f) && f.blockIndex !== TITLE_INDEX) {
-      const tableEntry = adjacentTableEntryFocus(f, editorState.redigertBrev.blocks, "down");
-      if (tableEntry) {
-        const elementRect = literalEl.getBoundingClientRect();
-        const isOnLastVisualLine = caretCoordinates.bottom >= elementRect.bottom - 1;
-        if (!isOnLastVisualLine) return;
-
-        event.preventDefault();
-        applyAction(updateFocus, setEditorState, tableEntry);
-        return;
-      }
-    }
-
-    const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedLower(literalEl as HTMLSpanElement);
-
-    if (shouldDoItOurselves) {
-      const next = findOnLineBelow(literalEl);
-
-      if (next) {
-        ensureLineVisibleInScrollContainer(next, "top");
-        gotoCoordinates({
-          x: caretCoordinates.x,
-          y: next.getBoundingClientRect().top + Y_COORD_SAFETY_MARGIN,
-        });
-        syncModelAfterCoordinateJump();
-        event.preventDefault();
-      }
-    } else {
-      ensureAdjacentLineVisible(literalEl, "down");
+      ensureAdjacentLineVisible(literalEl, direction);
     }
   };
 
@@ -1176,7 +968,7 @@ export function EditableSurface<T extends React.ElementType = "div">({
     }
   };
 
-  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     // Keys during a composition belong to the IME, e.g. Enter that commits it.
     if (e.nativeEvent.isComposing) return;
     pasteViaContextMenuRef.current = false;
@@ -1243,7 +1035,7 @@ export function EditableSurface<T extends React.ElementType = "div">({
     }
 
     if (!ctx) return;
-    const { literalEl, literalIndex, erFritekst, cursorPosition, selection } = ctx;
+    const { literalEl, literalIndex, cursorPosition, selection } = ctx;
 
     if ((e.key === "Backspace" || e.key === "Delete") && !selection) {
       const tableDeleteAction = determineTableCellDeleteAction(e as React.KeyboardEvent<HTMLSpanElement>, editorState);
@@ -1279,20 +1071,8 @@ export function EditableSurface<T extends React.ElementType = "div">({
       }
       return;
     }
-    if (e.key === "ArrowLeft") {
-      handleArrowLeft(e, literalEl, literalIndex, cursorPosition, selection, erFritekst);
-      return;
-    }
-    if (e.key === "ArrowRight") {
-      handleArrowRight(e, literalEl, literalIndex, cursorPosition, selection, erFritekst);
-      return;
-    }
-    if (e.key === "ArrowDown") {
-      handleArrowDown(e, literalEl);
-      return;
-    }
-    if (e.key === "ArrowUp") {
-      handleArrowUp(e, literalEl);
+    if (!selection && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+      handleVerticalArrow(e, literalEl, literalIndex, e.key === "ArrowUp" ? "up" : "down");
     }
   };
 
@@ -1455,7 +1235,7 @@ export function EditableSurface<T extends React.ElementType = "div">({
     placeContextMenuCaretAt(e.clientX, e.clientY);
   };
 
-  const handleOnFocus = (e: React.FocusEvent<HTMLElement>) => {
+  const handleOnFocus = (e: React.FocusEvent<HTMLDivElement>) => {
     externalOnFocus?.(e);
     const root = hostRef.current;
     if (!root || freeze) return;
@@ -1484,8 +1264,12 @@ export function EditableSurface<T extends React.ElementType = "div">({
   };
 
   return (
-    <Component
+    // biome-ignore lint/a11y/useSemanticElements: A textarea cannot contain the structured letter.
+    <div
       {...rest}
+      aria-label="Brevinnhold"
+      aria-multiline="true"
+      aria-readonly={freeze}
       contentEditable={!freeze}
       onClick={handleOnClick}
       onCompositionEnd={handleCompositionEnd}
@@ -1508,11 +1292,12 @@ export function EditableSurface<T extends React.ElementType = "div">({
       onPaste={handleOnPaste}
       onPointerDown={handleOnPointerDown}
       ref={setRefs}
+      role="textbox"
       suppressContentEditableWarning
       tabIndex={tabIndex ?? (freeze ? -1 : 0)}
     >
       {children}
-    </Component>
+    </div>
   );
 }
 

@@ -14,11 +14,9 @@ import React, {
 } from "react";
 
 import {
-  collectAllLiteralValues,
   countMissingFromTemplateBlocks,
   getBlockClassName,
   isLetterDocument,
-  isUneditedFritekst,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { getCleanTextLength, parseLiteralIndex } from "~/Brevredigering/LetterEditor/services/caretUtils";
@@ -67,13 +65,6 @@ export const LetterEditor = ({
   const [showFocusRing, setShowFocusRing] = useState(false);
   const tabHandledByEditor = useRef(false);
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
-
-  const hasUneditedFritekst = collectAllLiteralValues(letter).some(isUneditedFritekst);
-  const titleHasUneditedFritekst = letter.title.text.some(
-    (content) => content.type === "LITERAL" && isUneditedFritekst(content),
-  );
-  const titleTabIndex = freeze ? -1 : !hasUneditedFritekst || titleHasUneditedFritekst ? 0 : -1;
-  const surfaceTabIndex = freeze ? -1 : !titleHasUneditedFritekst && hasUneditedFritekst ? 0 : -1;
 
   const sporMissingFromTemplateHandling = useCallback(
     (eventName: MissingFromTemplateEventName, blockIndex: number) =>
@@ -187,23 +178,15 @@ export const LetterEditor = ({
           >
             {isLetterDocument(letter) && <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />}
             <EditableSurface
-              as={Heading}
-              className="letter-title"
-              isTitleSurface
-              level="1"
-              size="medium"
-              tabIndex={titleTabIndex}
-            >
-              <ContentGroup literalIndex={{ blockIndex: TITLE_INDEX, contentIndex: 0 }} />
-            </EditableSurface>
-            <EditableSurface
               className="editor-surface"
               data-editor-root
               data-fill-height={!isLetterDocument(letter)}
               onKeyDown={editorKeyboardShortcuts}
               surfaceRef={editorRootRef}
-              tabIndex={surfaceTabIndex}
             >
+              <Heading className="letter-title" level="1" size="medium">
+                <ContentGroup literalIndex={{ blockIndex: TITLE_INDEX, contentIndex: 0 }} />
+              </Heading>
               {blocks.map((block, blockIndex) => (
                 <React.Fragment key={blockIndex}>
                   <DeletedBlocksAt blockIndex={blockIndex} />

@@ -17,7 +17,7 @@
   }
 }
 
-.editor > :not(.letter-title, .editor-surface) {
+.editor > :not(.editor-surface) {
   padding-inline: var(--ax-space-48);
 }
 
@@ -28,7 +28,7 @@
 
 .letter-title {
   margin-bottom: 0;
-  padding: 0 var(--ax-space-48) var(--ax-space-20);
+  padding-bottom: var(--ax-space-20);
   font-weight: 700;
   letter-spacing: 0.108px;
   line-height: 1.875rem; /* Effektiv linjehøyde */
@@ -74,7 +74,9 @@
   min-height: 1.4rem;
 }
 
-.editor-surface :where(.PARAGRAPH, .TITLE1, .TITLE2, .TITLE3, li) > [data-literal][data-empty]:only-child {
+.editor-surface
+  :where(.letter-title, .PARAGRAPH, .TITLE1, .TITLE2, .TITLE3, li)
+  > [data-literal][data-empty]:only-child {
   display: block;
   line-height: inherit;
 }

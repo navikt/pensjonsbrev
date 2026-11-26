@@ -128,27 +128,6 @@ export function focusAtOffset(node: ChildNode, offset: number) {
   }
 }
 
-export function areAnyContentEditableSiblingsPlacedLower(element: HTMLSpanElement) {
-  const lastContentEditable = element.parentElement
-    ? [...element.parentElement.querySelectorAll<HTMLElement>(`:scope > ${EDITABLE_LITERAL_SELECTOR}`)].pop()
-    : undefined;
-  const caretCoordinates = getCaretRect();
-
-  if (lastContentEditable === undefined || caretCoordinates === undefined) return false;
-
-  return lastContentEditable.getBoundingClientRect().bottom > caretCoordinates.bottom;
-}
-
-export function areAnyContentEditableSiblingsPlacedHigher(element: HTMLSpanElement) {
-  const firstContentEditable = element.parentElement
-    ? [...element.parentElement.querySelectorAll<HTMLElement>(`:scope > ${EDITABLE_LITERAL_SELECTOR}`)][0]
-    : undefined;
-  const caretCoordinates = getCaretRect();
-
-  if (firstContentEditable === undefined || caretCoordinates === undefined) return false;
-  return caretCoordinates.top > firstContentEditable.getBoundingClientRect().top;
-}
-
 export function gotoCoordinates(coordinates: Coordinates) {
   const { x, y } = fineAdjustCoordinates(coordinates);
   let range: Range | null = null;
@@ -376,42 +355,6 @@ export function ensureAdjacentLineVisible(element: Element, direction: "up" | "d
       scrollContainer.scrollTop -= distanceAbove;
     }
   }
-}
-
-export function findOnLineBelow(element: Element) {
-  const currentRect = element.getBoundingClientRect();
-
-  const allEditables = [...document.querySelectorAll(EDITABLE_LITERAL_SELECTOR)];
-  const currentIndex = allEditables.indexOf(element);
-  const next = allEditables[currentIndex + 1];
-
-  if (next === undefined) {
-    return undefined;
-  }
-
-  if (currentRect.bottom !== next.getBoundingClientRect().bottom) {
-    return next;
-  }
-
-  return findOnLineBelow(next);
-}
-
-export function findOnLineAbove(element: Element) {
-  const currentRect = element.getBoundingClientRect();
-
-  const allEditables = [...document.querySelectorAll(EDITABLE_LITERAL_SELECTOR)];
-  const currentIndex = allEditables.indexOf(element);
-  const previous = allEditables[currentIndex - 1];
-
-  if (previous === undefined) {
-    return undefined;
-  }
-
-  if (currentRect.bottom !== previous.getBoundingClientRect().bottom) {
-    return previous;
-  }
-
-  return findOnLineAbove(previous);
 }
 
 function firstLiteralIn(node: Node | undefined | null): HTMLElement | null {

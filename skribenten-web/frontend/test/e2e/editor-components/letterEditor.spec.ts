@@ -629,7 +629,7 @@ test.describe("LetterEditor empty-line context menu", () => {
   });
 
   for (const { name, selector } of [
-    { name: "paragraph", selector: ".PARAGRAPH:nth-child(2)" },
+    { name: "paragraph", selector: ":nth-child(2 of .PARAGRAPH)" },
     { name: "heading 1", selector: ".TITLE1" },
     { name: "heading 2", selector: ".TITLE2" },
     { name: "heading 3", selector: ".TITLE3" },
@@ -645,7 +645,7 @@ test.describe("LetterEditor empty-line context menu", () => {
         page,
         context,
       }) => {
-        const source = page.locator(".editor-surface > .PARAGRAPH:first-child > [data-literal-index]");
+        const source = page.locator(".editor-surface > .PARAGRAPH").first().locator(":scope > [data-literal-index]");
         await copyText(page, source);
 
         const line = page.locator(`.editor-surface ${selector}`);
@@ -700,9 +700,9 @@ test.describe("LetterEditor empty-line context menu", () => {
     page,
     context,
   }) => {
-    const source = page.locator(".editor-surface > .PARAGRAPH:first-child > [data-literal-index]");
+    const source = page.locator(".editor-surface > .PARAGRAPH").first().locator(":scope > [data-literal-index]");
     await copyText(page, source);
-    const editable = page.locator(".editor-surface > .PARAGRAPH:nth-child(2) > [data-literal-index]");
+    const editable = page.locator(".editor-surface > .PARAGRAPH").nth(1).locator(":scope > [data-literal-index]");
 
     await swallowNextPointerUp(page);
     await page.keyboard.down("Control");
@@ -759,6 +759,26 @@ test.describe("LetterEditor text fields", () => {
     await expect(filled).toHaveCSS("font-weight", "400");
     await expect(filled).toHaveCSS("padding-inline-start", "0px");
     await expect(filled).toHaveCSS("text-decoration-line", "none");
+  });
+
+  test("arrowing into fritekst selects it, and the next arrow collapses without reselecting", async ({ page }) => {
+    const selectionText = () => page.evaluate(() => globalThis.getSelection()?.toString());
+    await page.locator(".editor").getByText("Tom variabel:", { exact: true }).click();
+    await page.keyboard.press("Home");
+    await page.keyboard.press("ArrowUp");
+    await expect.poll(selectionText).toBe("Fyll inn fritekst");
+
+    await page.keyboard.press("ArrowRight");
+    await expect.poll(selectionText).toBe("");
+    await page.keyboard.press("ArrowLeft");
+    await page.waitForTimeout(50);
+    expect(await selectionText()).toBe("");
+
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowUp");
+    await expect.poll(selectionText).toBe("Fyll inn fritekst");
+    await page.keyboard.type("Utfylt");
+    await expect(page.locator(".editor .PARAGRAPH").first()).toHaveText("Utfylt Variabelverdi");
   });
 
   test("typing after clicking a variable inserts the text right after the variable", async ({ page }) => {
@@ -970,7 +990,7 @@ test.describe("LetterEditor root-editable surface", () => {
     page,
     context,
   }) => {
-    const source = page.locator(".editor-surface > .PARAGRAPH:first-child > [data-literal]");
+    const source = page.locator(".editor-surface > .PARAGRAPH").first().locator(":scope > [data-literal]");
     await copyText(page, source);
 
     const firstParagraph = page.locator(".editor-surface > .PARAGRAPH").nth(0);

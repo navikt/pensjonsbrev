@@ -147,6 +147,7 @@ function toPlainText(node: Node): string {
 }
 
 function headingTagOf(block: HTMLElement) {
+  if (block.tagName === "H1") return "h1";
   return Object.entries(CLIPBOARD_HEADING_TAGS).find(([type]) => block.classList.contains(type))?.[1];
 }
 

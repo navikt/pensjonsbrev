@@ -47,6 +47,14 @@ afterEach(() => {
 });
 
 describe("copy from the editor as semantic html", () => {
+  test("copies the letter title as a heading, alone or together with body text", () => {
+    const root = renderEditor(`<h1>${lit("Vedtak")}</h1>${block("PARAGRAPH", lit("Din søknad"))}`);
+    select(root, [0, 0], [0, 6]);
+    expect(copy(root).html).toBe("<h1>Vedtak</h1>");
+    select(root, [0, 0], [1, 3]);
+    expect(copy(root)).toEqual({ html: "<h1>Vedtak</h1><p>Din</p>", text: "Vedtak\nDin", written: true });
+  });
+
   test("headings, paragraphs, variables and bold/italic survive a copy and paste", () => {
     const root = renderEditor(
       block("TITLE2", lit("Knirkende stoler")) +

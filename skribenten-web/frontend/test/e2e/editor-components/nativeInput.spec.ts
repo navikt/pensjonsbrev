@@ -117,6 +117,63 @@ const blockTexts = (page: Page) =>
   );
 
 test.describe("native input reaches the letter model", () => {
+  test("ArrowLeft collapses a range at a paragraph start without moving into the title", async ({ page }) => {
+    const errors = await openEditor(page);
+    await select(page, ["Vi drar til kaf i morgen.", 0], ["Vi drar til kaf i morgen.", 7]);
+    await page.keyboard.press("ArrowLeft");
+    await page.keyboard.type("!");
+    await expect(page.locator(".editor-surface > .PARAGRAPH").first()).toHaveText("!Vi drar til kaf i morgen.");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Vedtak om kafe");
+    expect(errors).toEqual([]);
+  });
+
+  test("Shift+Arrow selects across the title and body for replacement and undo", async ({ page }) => {
+    const errors = await openEditor(page);
+    const title = page.getByRole("heading", { level: 1 });
+    const firstParagraph = page.locator(".editor-surface > .PARAGRAPH").first();
+    await expect(page.locator('.editor [contenteditable="true"]')).toHaveCount(1);
+    await select(page, ["Vi drar til kaf i morgen.", 1]);
+    await page.keyboard.press("Shift+ArrowLeft");
+    await page.keyboard.press("Shift+ArrowLeft");
+    await page.keyboard.press("Shift+ArrowLeft");
+    await expect.poll(() => page.evaluate(() => getSelection()?.toString().replace(/\s/g, ""))).toBe("eV");
+    await page.keyboard.type("!");
+    await expect(title).toHaveText("Vedtak om kaf!");
+    await expect(firstParagraph).toHaveText("i drar til kaf i morgen.");
+    await page.keyboard.press("ControlOrMeta+z");
+    await expect(title).toHaveText("Vedtak om kafe");
+    await expect(firstParagraph).toHaveText("Vi drar til kaf i morgen.");
+    expect(errors).toEqual([]);
+  });
+
+  test("cutting the title and body leaves an editable H1 for paste", async ({ page }) => {
+    const errors = await openEditor(page);
+    const title = page.getByRole("heading", { level: 1 });
+    const host = page.getByRole("textbox", { name: "Brevinnhold" });
+    await select(page, ["Vi drar til kaf i morgen.", 1]);
+    await page.keyboard.press("ControlOrMeta+a");
+    const copied = await host.evaluate((root) => {
+      const clipboardData = new DataTransfer();
+      root.dispatchEvent(new ClipboardEvent("cut", { bubbles: true, cancelable: true, clipboardData }));
+      return clipboardData.getData("text/plain");
+    });
+    expect(copied).toMatch(/^Vedtak om kafe\nVi drar/);
+    expect(copied).toContain("Mandag");
+    await expect(title).toHaveText(/^[\u200B]*$/);
+    await host.evaluate((root) => {
+      const clipboardData = new DataTransfer();
+      clipboardData.setData("text/plain", "Ny tittel\nNytt avsnitt");
+      root.dispatchEvent(new ClipboardEvent("paste", { bubbles: true, cancelable: true, clipboardData }));
+    });
+    await expect(title).toHaveText("Ny tittel");
+    await expect(host.getByText("Nytt avsnitt", { exact: true })).toBeVisible();
+    await page.keyboard.press("ControlOrMeta+z");
+    await page.keyboard.press("ControlOrMeta+z");
+    await expect(title).toHaveText("Vedtak om kafe");
+    await expect(host.getByRole("cell", { name: "Mandag" })).toBeVisible();
+    expect(errors).toEqual([]);
+  });
+
   test("a dead key in the middle of a word", async ({ page }) => {
     const errors = await openEditor(page);
     const cdp = await page.context().newCDPSession(page);

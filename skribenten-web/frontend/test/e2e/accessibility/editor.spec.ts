@@ -259,7 +259,7 @@ test.describe("Letter editor accessibility", () => {
           await expect(editor).toHaveCSS("outline-style", "solid");
         } else {
           await expect.poll(() => page.evaluate(() => globalThis.getSelection()?.toString())).toBe(placeholder);
-          await expect(page.locator(".editor .letter-title")).toHaveAttribute("tabindex", "-1");
+          await expect(page.locator(".editor-surface")).toBeFocused();
         }
       });
     }
