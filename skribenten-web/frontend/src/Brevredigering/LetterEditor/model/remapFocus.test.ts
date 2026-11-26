@@ -5,6 +5,7 @@ import { editedLetter } from "~test/support/brevFixtures";
 import { cell, item, itemList, literal, paragraph, row, table } from "~test/support/letterEditorTestUtils";
 
 import { remapFocus } from "./remapFocus";
+import { SIGNATURE_FOCUS } from "./state";
 
 const redigert = literal({ id: 1, text: "Redigert tekst" });
 const avsnitt = paragraph({ id: 10, content: [literal({ id: 2, text: "Først" }), redigert] });
@@ -78,9 +79,8 @@ describe("remapFocus", () => {
   test("beholder signaturfokus når flettingen setter inn et avsnitt", () => {
     const from = editedLetter({ blocks: [avsnitt] });
     const to = editedLetter({ blocks: [flettetInn, avsnitt] });
-    const focus = { blockIndex: -1, contentIndex: -1 };
 
-    expect(remapFocus(focus, from, to)).toBe(focus);
+    expect(remapFocus(SIGNATURE_FOCUS, from, to)).toBe(SIGNATURE_FOCUS);
   });
 
   test("faller tilbake til starten av nærmeste foregående avsnitt når innholdet er fjernet", () => {

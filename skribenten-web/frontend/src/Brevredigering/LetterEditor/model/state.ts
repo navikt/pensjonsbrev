@@ -1,5 +1,5 @@
 import { type BrevInfo, type SaksbehandlerValg } from "~/types/brev";
-import { type Content, type EditedDocument } from "~/types/brevbakerTypes";
+import { type Content, type EditedDocument, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { type History } from "../history";
 
@@ -30,6 +30,8 @@ export type Focus = LiteralIndex & {
    */
   selectAll?: boolean;
 };
+
+export const SIGNATURE_FOCUS: Focus = { blockIndex: TITLE_INDEX, contentIndex: -1 };
 
 export type LetterEditorState = {
   info: BrevInfo;

@@ -1,7 +1,7 @@
 import { isItemContentIndex, isTable, text } from "~/Brevredigering/LetterEditor/actions/common";
 import { type Content, type EditedDocument, type Table, type TextContent, TITLE_INDEX } from "~/types/brevbakerTypes";
 
-import { type Focus, type LiteralIndex, type TableCellIndex } from "./state";
+import { type Focus, type LiteralIndex, SIGNATURE_FOCUS, type TableCellIndex } from "./state";
 import { isItemList, isTableCellIndex, isTextContent } from "./utils";
 
 type Identified = { id?: number | null };
@@ -115,7 +115,9 @@ function startOfBlock(document: EditedDocument, blockIndex: number): Focus | und
  * inserted or removed blocks. Falls back to the start of the nearest preceding block that still exists.
  */
 export function remapFocus(focus: Focus, from: EditedDocument, to: EditedDocument): Focus {
-  if (focus.blockIndex === -1 && focus.contentIndex === -1) return focus;
+  if (focus.blockIndex === SIGNATURE_FOCUS.blockIndex && focus.contentIndex === SIGNATURE_FOCUS.contentIndex) {
+    return focus;
+  }
 
   const remapped = remapLiteral(focus, from, to);
   if (remapped) return remapped;
