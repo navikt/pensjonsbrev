@@ -41,7 +41,6 @@ const block: ParagraphBlock = {
   editable: true,
   type: "PARAGRAPH",
   deletedContent: [],
-  missingFromTemplate: false,
   content,
 };
 const editorState = letter(block, block, block);

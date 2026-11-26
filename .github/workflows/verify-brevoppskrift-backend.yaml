@@ -4,11 +4,18 @@ on:
   pull_request:
     paths:
       - brevoppskrift-backend/**
+      - ufoere/**
+      - pensjon/**
+      - alder/**
+      - planlegge-pensjon-maler/**
+      - brevbaker/**
       - ktlint-rules/**
       - settings.gradle.kts
       - build.gradle.kts
       - gradle.properties
       - gradle/**
+      - .tool-versions
+      - brevoppskrift-web/frontend/src/verksted/api-types.ts
       - .github/workflows/verify-brevoppskrift-backend.yaml
   workflow_dispatch:
 
@@ -30,8 +37,21 @@ jobs:
         with:
           distribution: temurin
           java-version: 25
-      - name: Verify model
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: ".tool-versions"
+          cache: npm
+          cache-dependency-path: brevoppskrift-backend/openapi/package-lock.json
+      - name: Verify backend application
         run: ./gradlew :brevoppskrift-backend:build
+      - name: Verify generated API contract
+        run: |
+          ./gradlew :brevoppskrift-backend:generateApiTypes
+          git diff --exit-code -- brevoppskrift-web/frontend/src/verksted/api-types.ts
+      - name: Prepare published dependencies
+        run: ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
+      - name: Compile and render generated templates in target profiles
+        run: ./gradlew :brevoppskrift-backend:verifyGeneratedTemplates --no-configuration-cache
 
   klarTilMerge:
     name: "Klar til merge"

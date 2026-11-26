@@ -684,7 +684,7 @@ test.describe("LetterEditor copy and paste within the editor", () => {
   test("a whole heading missing from the template still pastes as a heading", async ({ page }) => {
     await setupHeadingAndEmptyLine(page, {
       ...title2(_literal("Knirkende stoler i rom 4A")),
-      missingFromTemplate: true,
+      decision: { type: "MISSING_FROM_RENDERED", status: "PENDING" },
     });
     await expect(page.getByRole("button", { name: "Behold" })).toBeVisible();
     await copyHeadingText(page, "TITLE2");

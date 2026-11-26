@@ -227,8 +227,8 @@ test.describe("Brevvelger spec", () => {
 
     await expect(
       page.getByTestId("mottaker-text-textfield").locator("..").locator(".aksel-error-message"),
-    ).toBeVisible();
-    await page.getByTestId("mottaker-text-textfield").pressSequentially("Haaland");
+    ).not.toBeVisible();
+    await page.getByTestId("mottaker-text-textfield").fill("Haaland");
     await expect(
       page.getByTestId("mottaker-text-textfield").locator("..").locator(".aksel-error-message"),
     ).not.toBeVisible();

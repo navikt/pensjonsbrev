@@ -8,15 +8,15 @@ import { setupSakStubs } from "~test/e2e/support/helpers";
 const fixturesDir = path.resolve("test/e2e/fixtures");
 const brevResponse = JSON.parse(fs.readFileSync(path.join(fixturesDir, "brevResponse.json"), "utf-8"));
 
-// Simulates the backend having flagged a block as missingFromTemplate: the saksbehandler edited
+// Simulates the backend having flagged a block with a pending MISSING_FROM_RENDERED decision: the saksbehandler edited
 // this block previously, but it can no longer be matched against a fresh render of the template
 
 const brevMedAvsnittIkkeIMal = JSON.parse(JSON.stringify(brevResponse));
-brevMedAvsnittIkkeIMal.redigertBrev.blocks[0].missingFromTemplate = true;
+brevMedAvsnittIkkeIMal.redigertBrev.blocks[0].decision = { type: "MISSING_FROM_RENDERED", status: "PENDING" };
 
 brevMedAvsnittIkkeIMal.saksbehandlerValg.ettEllerIngenAvMangeAlternativer = "RULLEKAKE";
 
-test.describe("Avsnitt som ikke finnes i malen (missingFromTemplate)", () => {
+test.describe("Avsnitt som ikke finnes i malen (MISSING_FROM_RENDERED)", () => {
   test.beforeEach(async ({ page }) => {
     await setupSakStubs(page);
 
@@ -55,7 +55,7 @@ test.describe("Avsnitt som ikke finnes i malen (missingFromTemplate)", () => {
     await page.goto("/saksnummer/123456/brev/1");
 
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis")).toBeVisible();
-    await expect(page.locator(".missing-from-template-block")).toBeVisible();
+    await expect(page.locator(".missing-in-rendered-block")).toBeVisible();
   });
 
   test("varsler om uhåndtert avsnitt ved klikk på Fortsett", async ({ page }) => {
@@ -78,13 +78,13 @@ test.describe("Avsnitt som ikke finnes i malen (missingFromTemplate)", () => {
   test("Behold beholder avsnittsteksten og fjerner markeringen", async ({ page }) => {
     await page.goto("/saksnummer/123456/brev/1");
 
-    await expect(page.locator(".missing-from-template-block")).toBeVisible();
+    await expect(page.locator(".missing-in-rendered-block")).toBeVisible();
 
     await page.getByRole("button", { name: "Behold" }).click();
 
     // Content is kept, but the block is no longer flagged and the actions are gone.
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis")).toBeVisible();
-    await expect(page.locator(".missing-from-template-block")).toBeHidden();
+    await expect(page.locator(".missing-in-rendered-block")).toBeHidden();
     await expect(page.getByRole("button", { name: "Behold" })).toBeHidden();
     await expect(page.getByRole("button", { name: "Slett" })).toBeHidden();
   });
@@ -92,12 +92,12 @@ test.describe("Avsnitt som ikke finnes i malen (missingFromTemplate)", () => {
   test("Slett fjerner avsnittet fra brevet", async ({ page }) => {
     await page.goto("/saksnummer/123456/brev/1");
 
-    await expect(page.locator(".missing-from-template-block")).toBeVisible();
+    await expect(page.locator(".missing-in-rendered-block")).toBeVisible();
 
     await page.getByRole("button", { name: "Slett" }).click();
 
     // The flagged block is removed entirely, and the action buttons disappear with it.
-    await expect(page.locator(".missing-from-template-block")).toHaveCount(0);
+    await expect(page.locator(".missing-in-rendered-block")).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Behold" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Slett" })).toHaveCount(0);
   });

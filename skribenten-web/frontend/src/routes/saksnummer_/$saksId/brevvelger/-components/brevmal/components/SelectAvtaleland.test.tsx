@@ -34,8 +34,12 @@ test("beholder standardverdi og manuelt valg ved lasting og oppdatering uten å 
   expect(screen.getByTestId("landkode").textContent).toBe("NOR");
 
   const options = Object.freeze([
+    { kode: "AUT", navn: "Østerrike" },
+    { kode: "GRL", navn: "Grønland" },
+    { kode: "DEU", navn: "Tyskland" },
     { kode: "BEL", navn: "Belgia" },
     { kode: "NOR", navn: "Norge" },
+    { kode: "FRO", navn: "Færøyene" },
     { kode: "GBR", navn: "Storbritannia" },
   ]);
   act(() => {
@@ -45,11 +49,15 @@ test("beholder standardverdi og manuelt valg ved lasting og oppdatering uten å 
   expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual([
     "Velg land",
     "Norge",
-    "Belgia",
+    "Færøyene",
+    "Grønland",
     "Storbritannia",
+    "Belgia",
+    "Tyskland",
+    "Østerrike",
   ]);
   expect(queryClient.getQueryData(getAvtaleLand.queryKey)).toBe(options);
-  expect(options.map((option) => option.kode)).toEqual(["BEL", "NOR", "GBR"]);
+  expect(options.map((option) => option.kode)).toEqual(["AUT", "GRL", "DEU", "BEL", "NOR", "FRO", "GBR"]);
 
   await user.selectOptions(select, "GBR");
   act(() => {
@@ -60,6 +68,20 @@ test("beholder standardverdi og manuelt valg ved lasting og oppdatering uten å 
   expect(screen.getByTestId("landkode").textContent).toBe("GBR");
 
   await user.selectOptions(select, "");
+  expect(screen.getByTestId("landkode").textContent).toBe("");
+  act(() => {
+    queryClient.setQueryData(getAvtaleLand.queryKey, [
+      { kode: "GBR", navn: "Storbritannia" },
+      { kode: "BEL", navn: "Belgia" },
+    ]);
+  });
+  await waitFor(() =>
+    expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual([
+      "Velg land",
+      "Storbritannia",
+      "Belgia",
+    ]),
+  );
   expect(screen.getByTestId("landkode").textContent).toBe("");
   queryClient.clear();
 });

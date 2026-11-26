@@ -52,7 +52,7 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 text(bokmal {
                     +"Klagen av "
                     +fritekst("dato") + " over Nav familie- og pensjonsytelser sitt vedtak av " + fritekst("dato") + " avvises fordi "
-                    +fritekst("påpek manglene i begrunnelsen (f.eks. for sent fremsatt, manglende fullmakt)")
+                    +fritekst("påpek mangler i begrunnelsen (f.eks. for sent fremsatt, manglende fullmakt)")
                 })
             }
 
@@ -127,7 +127,7 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 paragraph {
                     text(bokmal {
                         +"Den "
-                        +fritekst("dato") + " sendte vi deg et brev hvor vi opplyste om manglene ved klagen. "
+                        +fritekst("dato") + " sendte vi deg et brev hvor vi opplyste om mangler ved klagen. "
                         +"Fristen for å rette disse manglene ble satt til "
                         +fritekst("dato") + ". Vi har ikke mottatt tilbakemelding på dette."
                     })

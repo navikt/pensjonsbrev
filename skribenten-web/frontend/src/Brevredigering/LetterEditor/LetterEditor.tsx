@@ -18,10 +18,10 @@ import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEdito
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
-import { type MissingFromTemplateEventName, trackMissingFromTemplateAction } from "~/utils/editorTracking";
+import { type MissingInRenderedEventName, trackMissingInRenderedAction } from "~/utils/editorTracking";
 
 import Actions from "./actions";
-import { countMissingFromTemplateBlocks, getBlockClassName } from "./actions/common";
+import { countMissingInRenderedBlocks, getBlockClassName, isMissingInRendered } from "./actions/common";
 import { BlockHeading } from "./components/BlockHeading";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
@@ -72,14 +72,14 @@ export const LetterEditor = ({
 
   useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
 
-  const sporMissingFromTemplateHandling = useCallback(
-    (eventName: MissingFromTemplateEventName, blockIndex: number) =>
-      trackMissingFromTemplateAction(eventName, redigeringsflate, {
+  const sporMissingInRenderedHandling = useCallback(
+    (eventName: MissingInRenderedEventName, blockIndex: number) =>
+      trackMissingInRenderedAction(eventName, redigeringsflate, {
         brevId: editorState.info.id,
         brevkode: editorState.info.brevkode,
         brevtype: editorState.info.brevtype,
         spraak: editorState.info.spraak,
-        antallGjenstaaende: countMissingFromTemplateBlocks(letter) - 1,
+        antallGjenstaaende: countMissingInRenderedBlocks(letter) - 1,
         blockIndex,
       }),
     [redigeringsflate, editorState.info, letter],
@@ -87,7 +87,7 @@ export const LetterEditor = ({
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
-  const showMissingFromTemplate = redigeringsflate !== "attestant-redigering";
+  const showMissingInRendered = redigeringsflate !== "attestant-redigering";
 
   const canUndo = !freeze && editorState.history.entryPointer >= 0;
   const canRedo = !freeze && editorState.history.entryPointer < editorState.history.entries.length - 1;
@@ -209,16 +209,16 @@ export const LetterEditor = ({
                     className={getBlockClassName(
                       block,
                       isTekstValgHighlighted(highlightedIds, block),
-                      showMissingFromTemplate,
+                      showMissingInRendered,
                     )}
                   >
-                    {block.missingFromTemplate && showMissingFromTemplate && (
-                      <HStack className="missing-from-template-actions" gap="space-4" justify="end">
+                    {isMissingInRendered(block) && showMissingInRendered && (
+                      <HStack className="missing-in-rendered-actions" gap="space-4" justify="end">
                         <Button
                           icon={<CheckmarkIcon aria-hidden />}
                           onClick={() => {
-                            sporMissingFromTemplateHandling("blokk beholdt", blockIndex);
-                            applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex);
+                            sporMissingInRenderedHandling("blokk beholdt", blockIndex);
+                            applyAction(Actions.keepMissingInRenderedBlock, setEditorState, blockIndex);
                           }}
                           size="xsmall"
                           type="button"
@@ -229,8 +229,8 @@ export const LetterEditor = ({
                         <Button
                           icon={<XMarkIcon aria-hidden />}
                           onClick={() => {
-                            sporMissingFromTemplateHandling("blokk slettet", blockIndex);
-                            applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex);
+                            sporMissingInRenderedHandling("blokk slettet", blockIndex);
+                            applyAction(Actions.removeMissingInRenderedBlock, setEditorState, blockIndex);
                           }}
                           size="xsmall"
                           type="button"

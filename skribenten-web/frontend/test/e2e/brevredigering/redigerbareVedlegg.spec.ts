@@ -84,7 +84,10 @@ test.describe("Redigerbare vedlegg", () => {
     };
     const markertVedlegg = {
       ...vedlegg,
-      blocks: vedlegg.blocks.map((block) => ({ ...block, missingFromTemplate: true })),
+      blocks: vedlegg.blocks.map((block) => ({
+        ...block,
+        decision: { type: "MISSING_FROM_RENDERED", status: "PENDING" },
+      })),
     };
 
     test.beforeEach(async ({ page }) => {
@@ -130,7 +133,10 @@ test.describe("Redigerbare vedlegg", () => {
         route.fulfill({
           json: {
             ...annetVedlegg,
-            blocks: annetVedlegg.blocks.map((block) => ({ ...block, missingFromTemplate: true })),
+            blocks: annetVedlegg.blocks.map((block) => ({
+              ...block,
+              decision: { type: "MISSING_FROM_RENDERED", status: "PENDING" },
+            })),
           },
         }),
       );
@@ -159,19 +165,17 @@ test.describe("Redigerbare vedlegg", () => {
       expect(hentinger).toBe(0);
     });
 
-    for (const missingFromTemplate of [true, false]) {
-      test(`bruker lokalt antall for lukket vedlegg med missingFromTemplate=${missingFromTemplate}`, async ({
-        page,
-      }) => {
-        let serverVedlegg = missingFromTemplate ? markertVedlegg : vedlegg;
+    for (const missingInRendered of [true, false]) {
+      test(`bruker lokalt antall for lukket vedlegg med missingInRendered=${missingInRendered}`, async ({ page }) => {
+        let serverVedlegg = missingInRendered ? markertVedlegg : vedlegg;
         await page.route(vedleggUrl(VEDLEGG_ID), (route) => route.fulfill({ json: serverVedlegg }));
         await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
         await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
         await page.getByRole("tab", { name: "Brevmal" }).click();
-        serverVedlegg = missingFromTemplate ? vedlegg : markertVedlegg;
+        serverVedlegg = missingInRendered ? vedlegg : markertVedlegg;
         await page.getByRole("button", { name: "Fortsett", exact: true }).click();
 
-        if (missingFromTemplate) {
+        if (missingInRendered) {
           await expect(page.getByRole("dialog")).toContainText("Du må velge om du vil beholde eller slette 1 avsnitt");
         } else {
           await expect(page).toHaveURL(/brevbehandler/);
@@ -217,7 +221,7 @@ test.describe("Redigerbare vedlegg", () => {
 
     test("teller avsnitt i både brev og vedlegg", async ({ page }) => {
       const markertBrev = structuredClone(utfyltBrev);
-      markertBrev.redigertBrev.blocks[0].missingFromTemplate = true;
+      markertBrev.redigertBrev.blocks[0].decision = { type: "MISSING_FROM_RENDERED", status: "PENDING" };
       await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
         route.fulfill({ json: markertBrev }),
       );
@@ -232,7 +236,7 @@ test.describe("Redigerbare vedlegg", () => {
       test(`${handling} fjerner vedleggsvarselet uten å vente på autolagring`, async ({ page }) => {
         await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
         await page.getByRole("button", { name: handling, exact: true }).click();
-        await expect(page.locator(".missing-from-template-block")).toHaveCount(0);
+        await expect(page.locator(".missing-in-rendered-block")).toHaveCount(0);
         await page.getByRole("button", { name: "Fortsett", exact: true }).click();
 
         await expect(page).toHaveURL(/brevbehandler/);
@@ -242,7 +246,7 @@ test.describe("Redigerbare vedlegg", () => {
 
     test("attestant ser verken markering, Behold, Slett eller avsnittsvarsel", async ({ page }) => {
       const attestantBrev = structuredClone(utfyltBrev);
-      attestantBrev.redigertBrev.blocks[0].missingFromTemplate = true;
+      attestantBrev.redigertBrev.blocks[0].decision = { type: "MISSING_FROM_RENDERED", status: "PENDING" };
       attestantBrev.redigertBrev.signatur.attesterendeSaksbehandlerNavn = "Attestant";
       await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) =>
         route.fulfill({ json: attestantBrev }),
@@ -267,11 +271,11 @@ test.describe("Redigerbare vedlegg", () => {
 
       await page.goto(`/saksnummer/123456/attester/1/redigering?vedlegg=${VEDLEGG_ID}`);
       await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
-      await expect(page.locator(".missing-from-template-block")).toHaveCount(0);
+      await expect(page.locator(".missing-in-rendered-block")).toHaveCount(0);
       await expect(page.getByRole("button", { name: "Behold", exact: true })).toBeHidden();
       await expect(page.getByRole("button", { name: "Slett", exact: true })).toBeHidden();
       await page.getByRole("tab", { name: "Brevmal" }).click();
-      await expect(page.locator(".missing-from-template-block")).toHaveCount(0);
+      await expect(page.locator(".missing-in-rendered-block")).toHaveCount(0);
       await expect(page.getByRole("button", { name: "Behold", exact: true })).toBeHidden();
       await expect(page.getByRole("button", { name: "Slett", exact: true })).toBeHidden();
       await page.getByRole("textbox", { name: "Underskrift" }).fill("Attestant");

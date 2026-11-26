@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import { type UseFormReturn } from "react-hook-form";
 
 import {
-  countMissingFromTemplateBlocks,
+  countMissingInRenderedBlocks,
   countUneditedFritekstPlaceholders,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
@@ -18,8 +18,8 @@ interface UseBrevEditorWarningsParams<FormSchema extends { saksbehandlerValg: Sa
   form: UseFormReturn<FormSchema>;
   redigertBrev: EditedDocument;
   propertyUsage?: PropertyUsage[];
-  warnAboutMissingFromTemplate?: boolean;
-  getMissingFromTemplateVedleggCount?: () => Promise<number>;
+  warnAboutMissingInRendered?: boolean;
+  getMissingInRenderedVedleggCount?: () => Promise<number>;
 }
 
 type WarningResult = { kind: WarnModalKind; count?: number } | null;
@@ -29,8 +29,8 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
   form,
   redigertBrev,
   propertyUsage,
-  warnAboutMissingFromTemplate = true,
-  getMissingFromTemplateVedleggCount,
+  warnAboutMissingInRendered = true,
+  getMissingInRenderedVedleggCount,
 }: UseBrevEditorWarningsParams<FormSchema>) {
   const { status, specification, saksbehandlerValgType } = useModelSpecificationForm(brevkode);
 
@@ -59,10 +59,7 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     [redigertBrev],
   );
 
-  const numberOfMissingFromTemplateBlocks = useCallback(
-    () => countMissingFromTemplateBlocks(redigertBrev),
-    [redigertBrev],
-  );
+  const numberOfMissingInRenderedBlocks = useCallback(() => countMissingInRenderedBlocks(redigertBrev), [redigertBrev]);
 
   const getWarning = useCallback(async (): Promise<WarningResult> => {
     const unedited = numberOfUneditedFritekstPlaceholders();
@@ -77,20 +74,19 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     if (missingRequired) {
       return { kind: "tekstValg" };
     }
-    if (warnAboutMissingFromTemplate) {
-      const missingFromTemplate =
-        numberOfMissingFromTemplateBlocks() + ((await getMissingFromTemplateVedleggCount?.()) ?? 0);
-      if (missingFromTemplate > 0) {
-        return { kind: "avsnittIkkeIMal", count: missingFromTemplate };
+    if (warnAboutMissingInRendered) {
+      const missingInRendered = numberOfMissingInRenderedBlocks() + ((await getMissingInRenderedVedleggCount?.()) ?? 0);
+      if (missingInRendered > 0) {
+        return { kind: "avsnittIkkeIMal", count: missingInRendered };
       }
     }
     return null;
   }, [
     hasMissingRequiredSaksbehandlerValg,
     numberOfUneditedFritekstPlaceholders,
-    numberOfMissingFromTemplateBlocks,
-    warnAboutMissingFromTemplate,
-    getMissingFromTemplateVedleggCount,
+    numberOfMissingInRenderedBlocks,
+    warnAboutMissingInRendered,
+    getMissingInRenderedVedleggCount,
   ]);
 
   return { getWarning, hasMissingRequiredSaksbehandlerValg, numberOfUneditedFritekstPlaceholders };

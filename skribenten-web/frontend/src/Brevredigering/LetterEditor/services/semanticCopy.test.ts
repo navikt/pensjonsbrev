@@ -12,7 +12,7 @@ const lit = (text: string, fontType?: string) =>
   `<span contenteditable="true" data-literal-index="{}"${fontType ? ` data-font-type="${fontType}"` : ""}>${text}</span>`;
 const title = (type: string, tag: string, content: string) => `<div class="${type}"><${tag}>${content}</${tag}></div>`;
 const para = (content: string) => `<div class="PARAGRAPH">${content}</div>`;
-const actions = `<div class="missing-from-template-actions"><button>Behold</button><button>Slett</button></div>`;
+const actions = `<div class="missing-in-rendered-actions"><button>Behold</button><button>Slett</button></div>`;
 
 function renderEditor(html: string) {
   document.body.innerHTML = `<div data-editor-root>${html}</div>`;
@@ -93,7 +93,7 @@ describe("copy from the editor as semantic html", () => {
 
   test("leaves out action buttons and editor-only characters, and splits lists out of paragraphs", () => {
     const root = renderEditor(
-      `<div class="TITLE1 missing-from-template-block">${actions}<h2>${lit("Over\u2060")}${lit("skrift")}</h2></div>` +
+      `<div class="TITLE1 missing-in-rendered-block">${actions}<h2>${lit("Over\u2060")}${lit("skrift")}</h2></div>` +
         para(`${lit("Innledning")}<ul><li>${lit("Første punkt")}</li><li>${lit("\u200B")}</li></ul>`),
     );
     select(root, [0, 0], [4, 1]);
