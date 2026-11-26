@@ -66,7 +66,6 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
 export function withMissingInRendered<T extends AnyBlock>(block: T, missingInRendered = true): T {
   return {
     ...block,
-    missingFromTemplate: missingInRendered,
     decision: missingInRendered ? { type: "MISSING_FROM_RENDERED", status: "PENDING" } : null,
   };
 }
@@ -84,7 +83,6 @@ function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
   type: T;
   deletedContent: number[];
   content: TextContent[];
-  missingFromTemplate: boolean;
 } {
   if ("content" in contentOrArgs && !("text" in contentOrArgs)) {
     const args = contentOrArgs as TitleArgs;
@@ -96,7 +94,6 @@ function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
       type,
       deletedContent: [],
       content: withParent(args.content, id),
-      missingFromTemplate: false,
     };
   }
   const id = randomId();
@@ -108,7 +105,6 @@ function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
     type,
     deletedContent: [],
     content: withParent(content, id),
-    missingFromTemplate: false,
   };
 }
 

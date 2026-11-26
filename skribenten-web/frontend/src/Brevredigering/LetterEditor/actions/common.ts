@@ -709,7 +709,6 @@ export function newTitle(args: {
     editable: true,
     deletedContent: args.deletedContent ?? [],
     content: args.content,
-    missingFromTemplate: false,
   };
 }
 
@@ -725,7 +724,6 @@ export function newParagraph(args: {
     parentId: args.parentId ?? null,
     editable: true,
     deletedContent: args.deletedContent ?? [],
-    missingFromTemplate: false,
     content: args.content,
   };
 }
