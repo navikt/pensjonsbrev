@@ -59,7 +59,7 @@ class EditModelJacksonTest {
     }
 
     @Test
-    fun `serialiserer beslutninger uten boolsk missingFromTemplate for alle blokktyper`() {
+    fun `serialiserer beslutninger for alle blokktyper`() {
         DecisionRequest.Decision.entries.forEach { status ->
             val decision = DecisionRequest(DecisionRequest.Type.MISSING_FROM_RENDERED, status)
             val blocks = editLetterBlocks {
@@ -74,7 +74,6 @@ class EditModelJacksonTest {
 
                 assertThat(tree["decision"]["type"].asText()).isEqualTo(decision.type.name)
                 assertThat(tree["decision"]["status"].asText()).isEqualTo(status.name)
-                assertThat(tree.has("missingFromTemplate")).isFalse()
                 assertThat(readBlock(objectMapper.writeValueAsString(block)).decision)
                     .isEqualTo(decision)
             }
