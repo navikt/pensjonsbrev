@@ -114,7 +114,8 @@ object OktBunnfradragNesteAr {
                             nynorsk { +"Fordi uføretrygda di opphøyrer frå " + dato.format() + ", er inntekta og botnfrådraget justert ut frå talet på månader du får uføretrygd." }
                         )
                     }
-                }.orShowIf(periodisertBarnetillegg) {
+                }
+                showIf(periodisertBarnetillegg) {
                     paragraph {
                         text(
                             bokmal { +"Du har barnetillegg som opphører i løpet av neste år. Inntekt og fribeløp som brukes i beregning av barnetillegg er derfor justert for neste år, slik at de kun gjelder for perioden du mottar barnetillegg. Se vedlegg." },
