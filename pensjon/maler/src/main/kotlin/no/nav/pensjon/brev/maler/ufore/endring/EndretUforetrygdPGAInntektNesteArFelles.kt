@@ -337,12 +337,16 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 paragraph {
                     text(
                         bokmal {
-                            +"Fordi du har fått økning av uføregraden i løpet av " + data.virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. " +
-                                    "Får du lavere inntekt i " + data.virkningFom.year.format() + ", må du gå inn i Inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
+                            +"Da uføregraden din ble økt i " + data.virkningFom.year.minus(1).format() + ", ble det også fastsatt en ny inntekt etter uførhet (IEU). Denne inntekten ble lagt til grunn da vi behandlet søknaden din. " +
+                                    "Ved årsskiftet fremskriver vi den fastsatt IEU. Det betyr at vi oppdaterer beløpet i tråd med gjeldende regler for det nye året. Det er derfor ekstra " +
+                                    "viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. Får du lavere inntekt i " + data.virkningFom.year.format() +
+                                    ", må du gå inn i Inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
                         },
                         nynorsk {
-                            +"Fordi du har fått auka uføregraden i løpet av " + data.virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda er korrekt. " +
-                                    "Får du lågare inntekt i " + data.virkningFom.year.format() + ", må du gå inn i Inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år. "
+                            +"Då uføregraden din blei auka i " + data.virkningFom.year.minus(1).format() + ", blei det også fastsett ei ny inntekt etter uførleik (IEU). Denne inntekta blei lagd til grunn då vi behandla søknaden din. " +
+                                    "Ved årsskiftet framskriv vi den fastsette IEU-en. Det betyr at vi oppdaterer beløpet i tråd med gjeldande reglar for det nye året. Det er derfor ekstra " +
+                                    "viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda, er korrekt. Får du lågare inntekt i " + data.virkningFom.year.format() +
+                                    ", må du gå inn i Inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år."
                         }
                     )
                 }
@@ -445,17 +449,19 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                     }
                 )
             }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Tjener du mer enn ditt bunnfradrag på " + data.uforetrygd.bunnfradrag.format() +
-                                " per år, reduserer vi utbetalingen av uføretrygd. Det er bare den delen av inntekten din som er høyere enn bunnfradraget, som gir lavere utbetaling av uføretrygd. "
-                    },
-                    nynorsk {
-                        +"Dersom du tener meir enn botnfrådraget ditt på " + data.uforetrygd.bunnfradrag.format() +
-                                " per år, reduserer vi utbetalinga av uføretrygd. Det er berre den delen av inntekta di som er høgare enn botnfrådraget, som gir lågare utbetaling av uføretrygd. "
-                    }
-                )
+            showIf(data.uforetrygd.bunnfradrag.lessThan(data.uforetrygd.inntektstak)) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Tjener du mer enn ditt bunnfradrag på " + data.uforetrygd.bunnfradrag.format() +
+                                    " per år, reduserer vi utbetalingen av uføretrygd. Det er bare den delen av inntekten din som er høyere enn bunnfradraget, som gir lavere utbetaling av uføretrygd. "
+                        },
+                        nynorsk {
+                            +"Dersom du tener meir enn botnfrådraget ditt på " + data.uforetrygd.bunnfradrag.format() +
+                                    " per år, reduserer vi utbetalinga av uføretrygd. Det er berre den delen av inntekta di som er høgare enn botnfrådraget, som gir lågare utbetaling av uføretrygd. "
+                        }
+                    )
+                }
             }
             paragraph {
                 text(
