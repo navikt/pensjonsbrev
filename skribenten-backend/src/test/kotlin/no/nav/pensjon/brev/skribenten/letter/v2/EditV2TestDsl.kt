@@ -166,73 +166,73 @@ class EditLetterBuilderV2 {
 
     fun title2(
         id: Int? = null,
-        missingFromTemplate: Boolean = false,
+        decision: EditV2.Block.DecisionRequest? = null,
         deletedContent: Collection<Int> = emptyList(),
         originalType: EditV2.Block.Type? = null,
         parentId: Int? = null,
         builder: TextContentBuilderV2.() -> Unit,
     ) {
-        blocks += EditV2.Block.Title2(id, TextContentBuilderV2().apply(builder).texts, deletedContent.toList(), originalType, parentId, missingFromTemplate)
+        blocks += EditV2.Block.Title2(id, TextContentBuilderV2().apply(builder).texts, deletedContent.toList(), originalType, parentId, decision)
     }
 
     fun title3(
         id: Int? = null,
-        missingFromTemplate: Boolean = false,
+        decision: EditV2.Block.DecisionRequest? = null,
         deletedContent: Collection<Int> = emptyList(),
         originalType: EditV2.Block.Type? = null,
         parentId: Int? = null,
         builder: TextContentBuilderV2.() -> Unit,
     ) {
-        blocks += EditV2.Block.Title3(id, TextContentBuilderV2().apply(builder).texts, deletedContent.toList(), originalType, parentId, missingFromTemplate)
+        blocks += EditV2.Block.Title3(id, TextContentBuilderV2().apply(builder).texts, deletedContent.toList(), originalType, parentId, decision)
     }
 
     fun title4(
         id: Int? = null,
-        missingFromTemplate: Boolean = false,
+        decision: EditV2.Block.DecisionRequest? = null,
         deletedContent: Collection<Int> = emptyList(),
         originalType: EditV2.Block.Type? = null,
         parentId: Int? = null,
         builder: TextContentBuilderV2.() -> Unit,
     ) {
-        blocks += EditV2.Block.Title4(id, TextContentBuilderV2().apply(builder).texts, deletedContent.toList(), originalType, parentId, missingFromTemplate)
+        blocks += EditV2.Block.Title4(id, TextContentBuilderV2().apply(builder).texts, deletedContent.toList(), originalType, parentId, decision)
     }
 
     fun paragraph(
         id: Int? = null,
-        missingFromTemplate: Boolean = false,
+        decision: EditV2.Block.DecisionRequest? = null,
         deletedContent: Collection<Int> = emptyList(),
         originalType: EditV2.Block.Type? = null,
         parentId: Int? = null,
         builder: TextContentBuilderV2.() -> Unit,
     ) {
-        blocks += EditV2.Block.Paragraph(id, TextContentBuilderV2().apply(builder).texts, deletedContent.toList(), originalType, parentId, missingFromTemplate)
+        blocks += EditV2.Block.Paragraph(id, TextContentBuilderV2().apply(builder).texts, deletedContent.toList(), originalType, parentId, decision)
     }
 
     fun itemList(
         id: Int? = null,
-        missingFromTemplate: Boolean = false,
+        decision: EditV2.Block.DecisionRequest? = null,
         deletedItems: Collection<Int> = emptyList(),
         originalType: EditV2.Block.Type? = null,
         parentId: Int? = null,
         builder: ItemListBuilderV2.() -> Unit,
     ) {
-        blocks += EditV2.Block.ItemList(id, ItemListBuilderV2().apply(builder).items, deletedItems.toList(), originalType, parentId, missingFromTemplate)
+        blocks += EditV2.Block.ItemList(id, ItemListBuilderV2().apply(builder).items, deletedItems.toList(), originalType, parentId, decision)
     }
 
     fun numberedList(
         id: Int? = null,
-        missingFromTemplate: Boolean = false,
+        decision: EditV2.Block.DecisionRequest? = null,
         deletedItems: Collection<Int> = emptyList(),
         originalType: EditV2.Block.Type? = null,
         parentId: Int? = null,
         builder: ItemListBuilderV2.() -> Unit,
     ) {
-        blocks += EditV2.Block.NumberedList(id, ItemListBuilderV2().apply(builder).items, deletedItems.toList(), originalType, parentId, missingFromTemplate)
+        blocks += EditV2.Block.NumberedList(id, ItemListBuilderV2().apply(builder).items, deletedItems.toList(), originalType, parentId, decision)
     }
 
     fun table(
         id: Int? = null,
-        missingFromTemplate: Boolean = false,
+        decision: EditV2.Block.DecisionRequest? = null,
         deletedRows: Collection<Int> = emptyList(),
         originalType: EditV2.Block.Type? = null,
         parentId: Int? = null,
@@ -246,7 +246,7 @@ class EditLetterBuilderV2 {
             deletedRows = deletedRows.toList(),
             originalType = originalType,
             parentId = parentId,
-            missingFromTemplate = missingFromTemplate,
+            decision = decision,
         )
     }
 }

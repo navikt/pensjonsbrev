@@ -297,13 +297,13 @@ internal class UpdateEditedLetterV2(private val variableValues: Map<Int, String>
 
     private fun setMissing(block: Block): Block =
         when (block) {
-            is Block.Title2 -> block.copy(missingFromTemplate = true)
-            is Block.Title3 -> block.copy(missingFromTemplate = true)
-            is Block.Title4 -> block.copy(missingFromTemplate = true)
-            is Block.Paragraph -> block.copy(missingFromTemplate = true)
-            is Block.ItemList -> block.copy(missingFromTemplate = true)
-            is Block.NumberedList -> block.copy(missingFromTemplate = true)
-            is Table -> block.copy(missingFromTemplate = true)
+            is Block.Title2 -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
+            is Block.Title3 -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
+            is Block.Title4 -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
+            is Block.Paragraph -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
+            is Block.ItemList -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
+            is Block.NumberedList -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
+            is Table -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
         }
 
     private fun setMissing(text: Text): Text = text

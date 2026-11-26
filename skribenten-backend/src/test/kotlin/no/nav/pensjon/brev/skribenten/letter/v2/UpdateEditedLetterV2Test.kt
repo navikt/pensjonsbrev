@@ -708,7 +708,7 @@ class UpdateEditedLetterV2Test {
                 literal(id = 11, text = "en literal")
                 variable(id = 12, text = "oppdatert v1")
             }
-            paragraph(id = 2, missingFromTemplate = true) {
+            paragraph(id = 2, decision = EditV2.Block.DecisionRequest.missingFromRenderedPending) {
                 variable(id = 12, text = "oppdatert v1")
                 literal(id = 21, text = "hei", editedText = "heisann")
             }
@@ -928,7 +928,7 @@ class UpdateEditedLetterV2Test {
     }
 
     @Test
-    fun `edited list and table missing from template are kept and marked missingFromTemplate`() {
+    fun `edited list and table missing from template are kept and marked with pending decision`() {
         val next = letter(paragraph(1, literal(11, "tekst")))
         val edited = editedLetter {
             paragraph(id = 1) { literal(id = 11, text = "tekst") }
@@ -945,10 +945,10 @@ class UpdateEditedLetterV2Test {
         }
         val expected = editedLetter {
             paragraph(id = 1) { literal(id = 11, text = "tekst") }
-            itemList(id = 2, missingFromTemplate = true) {
+            itemList(id = 2, decision = EditV2.Block.DecisionRequest.missingFromRenderedPending) {
                 item(id = 21) { literal(id = 211, text = "punkt", editedText = "redigert punkt") }
             }
-            table(id = 3, missingFromTemplate = true) {
+            table(id = 3, decision = EditV2.Block.DecisionRequest.missingFromRenderedPending) {
                 header(id = 31) { colSpec(id = 311) { literal(id = 3111, text = "kolonne") } }
                 row(id = 32) { cell(id = 321) { literal(id = 3211, text = "celle", editedText = "redigert celle") } }
             }

@@ -129,7 +129,21 @@ object EditV2 {
         enum class Type { TITLE2, TITLE3, TITLE4, PARAGRAPH, ITEM_LIST, NUMBERED_LIST, TABLE }
 
         abstract val originalType: Type?
-        abstract val missingFromTemplate: Boolean
+        abstract val decision: DecisionRequest?
+
+        data class DecisionRequest(val type: Type, val status: Decision) {
+            enum class Type { MISSING_FROM_RENDERED }
+
+            enum class Decision { ACCEPTED, PENDING }
+
+            companion object {
+                val missingFromRenderedPending = DecisionRequest(Type.MISSING_FROM_RENDERED, Decision.PENDING)
+            }
+        }
+
+        @JsonIgnore
+        fun isPendingMissingFromTemplate(): Boolean =
+            decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED && decision?.status == DecisionRequest.Decision.PENDING
 
         @JsonIgnore
         fun isChangedType(): Boolean = type != (originalType ?: type)
@@ -156,7 +170,7 @@ object EditV2 {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
+            override val decision: DecisionRequest? = null,
         ) : TextBlock(Type.TITLE2)
 
         data class Title3(
@@ -165,7 +179,7 @@ object EditV2 {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
+            override val decision: DecisionRequest? = null,
         ) : TextBlock(Type.TITLE3)
 
         data class Title4(
@@ -174,7 +188,7 @@ object EditV2 {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
+            override val decision: DecisionRequest? = null,
         ) : TextBlock(Type.TITLE4)
 
         data class Paragraph(
@@ -183,7 +197,7 @@ object EditV2 {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
+            override val decision: DecisionRequest? = null,
         ) : TextBlock(Type.PARAGRAPH)
 
         data class ItemList(
@@ -192,7 +206,7 @@ object EditV2 {
             override val deletedItems: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
+            override val decision: DecisionRequest? = null,
         ) : ListBlock(Type.ITEM_LIST)
 
         data class NumberedList(
@@ -201,7 +215,7 @@ object EditV2 {
             override val deletedItems: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
+            override val decision: DecisionRequest? = null,
         ) : ListBlock(Type.NUMBERED_LIST)
 
         data class Table(
@@ -211,7 +225,7 @@ object EditV2 {
             val deletedRows: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
+            override val decision: DecisionRequest? = null,
         ) : Block(Type.TABLE) {
             data class Row(
                 override val id: Int?,
