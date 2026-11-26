@@ -21,7 +21,7 @@ type ActiveDocumentContextValue = {
    * for unsaved changes before leaving the editing session.
    */
   registerVedleggSave: (savePendingChanges: (() => Promise<void>) | null) => void;
-  registerVedleggMissingFromTemplate: (vedleggId: string, count: number | null) => void;
+  registerVedleggMissingInRendered: (vedleggId: string, count: number | null) => void;
 };
 
 const ActiveDocumentContext = createContext<ActiveDocumentContextValue | null>(null);
@@ -35,7 +35,7 @@ export const ActiveDocumentProvider = (props: {
   redigeringsflate: Redigeringsflate;
   onSelectDocument: (vedleggId: string | undefined) => Promise<boolean>;
   registerVedleggSave: (savePendingChanges: (() => Promise<void>) | null) => void;
-  registerVedleggMissingFromTemplate?: (vedleggId: string, count: number | null) => void;
+  registerVedleggMissingInRendered?: (vedleggId: string, count: number | null) => void;
   children: ReactNode;
 }) => {
   const { activeVedleggId, redigeringsflate, onSelectDocument, registerVedleggSave } = props;
@@ -59,8 +59,8 @@ export const ActiveDocumentProvider = (props: {
       resetActiveVedlegg: resetActiveVedlegg,
       registerReset: registerReset,
       registerVedleggSave: registerVedleggSave,
-      registerVedleggMissingFromTemplate: (vedleggId, count) =>
-        props.registerVedleggMissingFromTemplate?.(vedleggId, count),
+      registerVedleggMissingInRendered: (vedleggId, count) =>
+        props.registerVedleggMissingInRendered?.(vedleggId, count),
     }),
     [
       activeVedleggId,
@@ -70,7 +70,7 @@ export const ActiveDocumentProvider = (props: {
       resetActiveVedlegg,
       registerReset,
       registerVedleggSave,
-      props.registerVedleggMissingFromTemplate,
+      props.registerVedleggMissingInRendered,
     ],
   );
 

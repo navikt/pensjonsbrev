@@ -63,11 +63,11 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
   return { ...block, deletedContent };
 }
 
-export function withMissingFromTemplate<T extends AnyBlock>(block: T, missingFromTemplate = true): T {
+export function withMissingInRendered<T extends AnyBlock>(block: T, missingInRendered = true): T {
   return {
     ...block,
-    missingFromTemplate,
-    decision: missingFromTemplate ? { type: "MISSING_FROM_RENDERED", status: "PENDING" } : null,
+    missingFromTemplate: missingInRendered,
+    decision: missingInRendered ? { type: "MISSING_FROM_RENDERED", status: "PENDING" } : null,
   };
 }
 

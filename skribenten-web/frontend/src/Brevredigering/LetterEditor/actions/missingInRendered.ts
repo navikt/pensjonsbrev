@@ -4,7 +4,7 @@ import { type Action, withPatches } from "../lib/actions";
 import { type LetterEditorState } from "../model/state";
 import { removeElements } from "./common";
 
-export const removeMissingFromTemplateBlock: Action<LetterEditorState, [blockIndex: number]> = withPatches(
+export const removeMissingInRenderedBlock: Action<LetterEditorState, [blockIndex: number]> = withPatches(
   (draft, blockIndex) => {
     const blocks = draft.redigertBrev.blocks;
     if (blocks[blockIndex] == null) return;
@@ -20,13 +20,12 @@ export const removeMissingFromTemplateBlock: Action<LetterEditorState, [blockInd
   },
 );
 
-export const keepMissingFromTemplateBlock: Action<LetterEditorState, [blockIndex: number]> = withPatches(
+export const keepMissingInRenderedBlock: Action<LetterEditorState, [blockIndex: number]> = withPatches(
   (draft, blockIndex) => {
     const block = draft.redigertBrev.blocks[blockIndex];
     if (block == null) return;
 
     block.id = null;
-    block.missingFromTemplate = false;
     if (block.decision?.type === "MISSING_FROM_RENDERED" && block.decision.status === "PENDING") {
       block.decision.status = "ACCEPTED";
     }

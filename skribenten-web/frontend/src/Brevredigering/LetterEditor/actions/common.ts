@@ -1214,21 +1214,24 @@ export function findFirstUneditedFritekstFocus(letter: EditedDocument): Focus | 
   );
 }
 
-export const countMissingFromTemplateBlocks = (letter: EditedDocument): number => {
-  return letter.blocks.filter((block) => block.missingFromTemplate).length;
+export const isMissingInRendered = (block: AnyBlock): boolean =>
+  block.decision?.type === "MISSING_FROM_RENDERED" && block.decision.status === "PENDING";
+
+export const countMissingInRenderedBlocks = (letter: EditedDocument): number => {
+  return letter.blocks.filter(isMissingInRendered).length;
 };
 
 export function getBlockClassName(
   block: AnyBlock,
   isFlashHighlighted: boolean,
-  showMissingFromTemplate: boolean,
+  showMissingInRendered: boolean,
 ): string {
   const classNames: string[] = [block.type];
   if (isFlashHighlighted) {
     classNames.push("inserted-flash-block");
   }
-  if (block.missingFromTemplate && showMissingFromTemplate) {
-    classNames.push("missing-from-template-block");
+  if (isMissingInRendered(block) && showMissingInRendered) {
+    classNames.push("missing-in-rendered-block");
   }
   return classNames.join(" ");
 }

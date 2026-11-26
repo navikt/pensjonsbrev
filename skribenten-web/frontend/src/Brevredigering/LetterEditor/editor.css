@@ -197,7 +197,7 @@ Selectoren ´+´ betyr "neste direkte søsken"
   animation: none;
 }
 
-.missing-from-template-block {
+.missing-in-rendered-block {
   position: relative;
   border-radius: var(--ax-radius-8);
   border: 2px solid var(--ax-border-accent-strong);
@@ -205,7 +205,7 @@ Selectoren ´+´ betyr "neste direkte søsken"
   padding: var(--ax-space-16) var(--ax-space-8) var(--ax-space-8);
 }
 
-.missing-from-template-actions {
+.missing-in-rendered-actions {
   position: absolute;
   right: var(--ax-space-8);
   top: 0;
@@ -213,13 +213,13 @@ Selectoren ´+´ betyr "neste direkte søsken"
   z-index: 1;
 }
 
-.missing-from-template-actions button {
+.missing-in-rendered-actions button {
   background: var(--ax-bg-default);
 }
 
-.missing-from-template-actions button:hover,
-.missing-from-template-actions button:focus-visible,
-.missing-from-template-actions button:active {
+.missing-in-rendered-actions button:hover,
+.missing-in-rendered-actions button:focus-visible,
+.missing-in-rendered-actions button:active {
   background: var(--ax-bg-accent-moderate-hover);
 }
 

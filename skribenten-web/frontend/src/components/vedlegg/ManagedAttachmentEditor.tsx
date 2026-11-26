@@ -10,7 +10,7 @@ import {
 } from "~/api/redigerbareVedlegg-endpoints";
 import { hentPdfForAttestering, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import {
-  countMissingFromTemplateBlocks,
+  countMissingInRenderedBlocks,
   normalizeDocumentForComparison,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
@@ -85,7 +85,7 @@ export const ManagedAttachmentEditor = (props: AttachmentEditorProps) => {
 const AttachmentEditorSession = (props: AttachmentEditorProps & { initialVedlegg: EditAttachment }) => {
   const { saksId, brev, vedleggId, redigeringsflate } = props;
   const queryClient = useQueryClient();
-  const { registerVedleggSave, registerReset, registerVedleggMissingFromTemplate } = useActiveDocument();
+  const { registerVedleggSave, registerReset, registerVedleggMissingInRendered } = useActiveDocument();
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [vedleggMeta, setVedleggMeta] = useState({ includeSakspart: props.initialVedlegg.includeSakspart });
 
@@ -139,11 +139,11 @@ const AttachmentEditorSession = (props: AttachmentEditorProps & { initialVedlegg
       },
     });
 
-  const missingFromTemplateCount = countMissingFromTemplateBlocks(editorState.redigertBrev);
+  const missingInRenderedCount = countMissingInRenderedBlocks(editorState.redigertBrev);
   useEffect(() => {
-    registerVedleggMissingFromTemplate(vedleggId, missingFromTemplateCount);
-    return () => registerVedleggMissingFromTemplate(vedleggId, null);
-  }, [registerVedleggMissingFromTemplate, vedleggId, missingFromTemplateCount]);
+    registerVedleggMissingInRendered(vedleggId, missingInRenderedCount);
+    return () => registerVedleggMissingInRendered(vedleggId, null);
+  }, [registerVedleggMissingInRendered, vedleggId, missingInRenderedCount]);
 
   useEffect(() => {
     registerVedleggSave(savePendingChanges);
