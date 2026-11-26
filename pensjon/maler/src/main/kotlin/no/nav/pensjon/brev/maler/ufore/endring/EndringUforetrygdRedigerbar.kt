@@ -1293,7 +1293,12 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                         and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().greaterThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag())
                         and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))
             ) {
-                includePhrase(TBU2361_Generated(pe))
+                paragraph {
+                    text(
+                        bokmal { +"Du har tidligere meldt fra om en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " i år." },
+                        nynorsk { +"Du har tidlegare meldt frå om ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " for dette kalenderåret." },
+                    )
+                }
             }
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
