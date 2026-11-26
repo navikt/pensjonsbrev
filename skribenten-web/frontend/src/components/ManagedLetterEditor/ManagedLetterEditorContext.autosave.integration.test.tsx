@@ -3,6 +3,8 @@ import { act, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { useOppdaterBrevMutation } from "~/Brevredigering/hooks/useOppdaterBrevMutation";
+import Actions from "~/Brevredigering/LetterEditor/actions";
+import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import {
@@ -130,6 +132,27 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
     expect(harness().editorState.saksbehandlerValg).toEqual(nyeValg);
     expect(harness().redigertBrev.deletedBlocks).toEqual([101]);
     expect(harness().editorState.saveStatus).toBe("SAVED");
+  });
+
+  test("beholder angrehistorikken når backend sender det utdaterte missingFromTemplate-feltet", async () => {
+    oppdaterBrevtekstMock.mockImplementation(({ redigertBrev }: { redigertBrev: EditedLetter }) =>
+      Promise.resolve({
+        ...structuredClone(lagretBrev),
+        redigertBrev: {
+          ...redigertBrev,
+          blocks: redigertBrev.blocks.map((block) => ({ ...block, missingFromTemplate: false })),
+        },
+      }),
+    );
+    const harness = renderAutosave();
+    act(() => applyAction(Actions.split, harness().setEditorState, { blockIndex: 0, contentIndex: 0 }, 0));
+    expect(harness().editorState.history.entries).toHaveLength(1);
+
+    await vent(AUTOSAVE_TIMER);
+
+    expect(oppdaterBrevtekstMock).toHaveBeenCalledOnce();
+    expect(harness().editorState.saveStatus).toBe("SAVED");
+    expect(harness().editorState.history.entries).toHaveLength(1);
   });
 
   for (const ytelse of ["Uføretrygd", "alderspensjon"]) {
