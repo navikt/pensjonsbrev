@@ -1,48 +1,39 @@
 package no.nav.pensjon.brev.maler.ufore.uforegrad
 
-import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
-import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Kravhode.Arsak
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Institusjonsopphold.JustertPeriodeCode
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Reduksjonsgrunnlag.BarnetilleggRegelverkTypeCode
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig.InntektEtterUforhetBegrunnelse
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig.InntektForUforhetBegrunnelse
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig.YrkesskadeBegrunnelse
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarResultat
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig.VirkningstidspunktBegrunnelse
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.barnetillegg.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.barnetillegg.barnetilleggFellesbarn.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.barnetillegg.barnetilleggSerkullsbarn.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.belopHarOkt
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.beregningsresultatTilRevurderingTotalNetto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.bunnfradrag
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.grunnbelop
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.reduksjonsprosent
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.totalNetto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.uforegrad
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.uforetidspunkt
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.utbetalingsgrad
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.virkFom
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.yrkesskadeBest
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.grunnlag.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.institusjonsopphold.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.kravhode.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.reduksjonsgrunnlag.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.tillegg.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vedtak.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vilkarsvurderingFullstendig.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradV2Dto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Institusjonsopphold.JustertPeriodeCode
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Kravhode.Arsak
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Reduksjonsgrunnlag.BarnetilleggRegelverkTypeCode
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarResultat
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig.InntektVedSkadetidspunktBegrunnelse.STDBEGR_12_17_3_1
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig.InntektVedSkadetidspunktBegrunnelse.STDBEGR_12_17_3_2
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.anvendtTrygdetid
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.fribelop
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.oifu
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.barnetillegg.antallForekomsterAvBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.barnetillegg.barnetilleggFellesbarn.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.barnetillegg.barnetilleggSerkullsbarn.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.barnetillegg.btFellesbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.barnetillegg.btSerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.grunnlag.anvendtSivilstand
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.grunnlag.borIUtlandet
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.grunnlag.epsBrukerBorMed
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.grunnlag.harVTA
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.institusjonsopphold.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.kravhode.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.reduksjonsgrunnlag.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.tillegg.ektefelletilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.tillegg.gjenlevendetilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.tillegg.nyttGjenlevendetillegg
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vedtak.vedtakFattetDatoEllerIdag
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vedtak.virkFom
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vedtak.virkningsdatoTidligereMnd
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vilkarsvurderingFullstendig.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.yrkesskade.inntektVedSkadetidspunkt
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.yrkesskade.inntektVedSkadetidspunktBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.yrkesskade.skadetidspunkt
@@ -50,20 +41,18 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.yrkesskade.
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.BarnetilleggFlereBarnFormatter
+import no.nav.pensjon.brev.maler.legacy.BarnetilleggFormatter
+import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated_Ny
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU5005_Generated
+import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
-import no.nav.pensjon.brev.maler.ufore.extensions.barnetilleggRedusertTil0
-import no.nav.pensjon.brev.maler.ufore.extensions.btFellesInnvilgetMenIkkeUtbetalt
-import no.nav.pensjon.brev.maler.ufore.extensions.btSerkullInnvilgetMenIkkeUtbetalt
-import no.nav.pensjon.brev.maler.ufore.extensions.epsBorMedBmEntall
-import no.nav.pensjon.brev.maler.ufore.extensions.epsBorMedNnEntall
-import no.nav.pensjon.brev.maler.ufore.extensions.erInnvilget
-import no.nav.pensjon.brev.maler.ufore.extensions.fellesbarnInnvilget
-import no.nav.pensjon.brev.maler.ufore.extensions.serkullsbarnInnvilget
+import no.nav.pensjon.brev.maler.ufore.extensions.*
+import no.nav.pensjon.brev.maler.ufore.fraser.Barnetillegg
 import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.InntektBarnetillegg
@@ -1413,13 +1402,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 showIf(barnetillegg.antallForekomsterAvBarnetillegg.greaterThan(0)) {
-                    includePhrase(TBU5005_Generated)
-                    paragraph {
-                        text(
-                            bokmal { +"Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." },
-                            nynorsk { +"Om du planlegg å flytte eller opphalde deg i eit anna land må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjeld også om barnet du forsørgjer skal opphalde seg i eit anna land. " },
-                        )
-                    }
+                    includePhrase(Barnetillegg.BarnetilleggPavirkesAvUtlandsopphold)
                 }
 
                 showIf(tillegg.gjenlevendetilleggInnvilget) {

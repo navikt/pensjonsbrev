@@ -118,6 +118,47 @@ object Barnetillegg {
         }
     }
 
+    object BarnetilleggPavirkesAvUtlandsopphold : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Barnetillegget påvirkes av utlandsopphold" },
+                    nynorsk { + "Barnetillegget vert påverka av utanlandsopphald" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "For å ha rett til barnetillegg" },
+                    nynorsk { + "For å ha rett til barnetillegg" },
+                )
+                list {
+                    item {
+                        text(
+                            bokmal { + "må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
+                            nynorsk { + "må du enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { + "må også barnet være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med" },
+                            nynorsk { + "må også barn vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med" },
+                        )
+                    }
+                }
+                text(
+                    bokmal { + "Dette går frem av folketrygdloven § 12-15." },
+                    nynorsk { + "Dette går fram av folketrygdlova § 12-15." },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land. " },
+                    nynorsk { +"Om du planlegg å flytte eller opphalde deg i eit anna land må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjeld også om barnet du forsørgjer skal opphalde seg i eit anna land. " },
+                )
+            }
+        }
+    }
+
 
     object DuHarFaattUtbetaltBarnetilleggTidligereIAar : ParagraphPhrase<LangBokmalNynorsk>() {
         override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() {
