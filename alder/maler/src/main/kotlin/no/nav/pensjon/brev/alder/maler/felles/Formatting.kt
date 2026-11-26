@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.maler.felles
 
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
+import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.Sivilstand
 import no.nav.pensjon.brev.alder.model.SivilstandAvdoed
 import no.nav.pensjon.brev.template.Expression
@@ -11,6 +12,22 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.dsl.expression.format
+
+@JvmName("formatSakstypeUbestemtForm")
+fun Expression<Sakstype>.ubestemtForm() = format(formatter = SakstypeUbestemt)
+
+object SakstypeUbestemt : LocalizedFormatter<Sakstype>() {
+    override fun apply(first: Sakstype, second: Language): String =
+        when (first) {
+            Sakstype.ALDER -> "alderspensjon"
+            Sakstype.AFP -> "avtalefestet pensjon"
+            Sakstype.BARNEP -> "barnepensjon"
+            Sakstype.GJENLEV -> "pensjon til gjenlevende"
+            else -> throw IllegalStateException("Ukjent sakstype: $first")
+        }
+
+    override fun stableHashCode(): Int = "SakstypeUbestemt".hashCode()
+}
 
 @JvmName("formatBormedSivilstandTabell")
 fun Expression<BorMedSivilstand>.tableFormat() = format(formatter = FormatBorMedSivilstandTabell)
