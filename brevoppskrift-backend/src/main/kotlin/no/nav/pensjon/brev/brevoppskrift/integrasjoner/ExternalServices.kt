@@ -10,6 +10,7 @@ import io.ktor.utils.io.readBuffer
 import io.micrometer.core.instrument.MeterRegistry
 import kotlinx.io.readByteArray
 import no.nav.pensjon.brev.brevoppskrift.VertexConfig
+import no.nav.pensjon.brev.brevoppskrift.GitHubConfig
 import no.nav.pensjon.brev.brevoppskrift.api.ApiFailure
 import no.nav.pensjon.brev.brevoppskrift.draftObjectMapper
 import no.nav.pensjon.brev.brevoppskrift.services.ClientOperation
@@ -22,6 +23,7 @@ import java.io.IOException
 interface ExternalIntegrationSettings {
     val vertex: VertexConfig
     val slackWebhookUrl: SlackWebhookUrl?
+    val github: GitHubConfig
 }
 
 class SlackNotifications(engine: HttpClientEngine, metrics: MeterRegistry, private val webhook: SlackWebhookUrl) : NotificationService, Closeable {

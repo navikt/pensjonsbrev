@@ -11,6 +11,8 @@ import io.ktor.server.plugins.di.provide
 import io.ktor.server.plugins.di.DependencyRegistry
 import no.nav.pensjon.brev.brevoppskrift.application.DraftHandler
 import no.nav.pensjon.brev.brevoppskrift.application.PrJobHandler
+import no.nav.pensjon.brev.brevoppskrift.api.DraftGenerator
+import no.nav.pensjon.brev.brevoppskrift.api.SourceCatalogue
 import no.nav.pensjon.brev.brevoppskrift.integrasjoner.*
 import no.nav.pensjon.brev.brevoppskrift.katalog.BuildSourceCatalogue
 import no.nav.pensjon.brev.brevoppskrift.kotlin.KotlinDraftGenerator
@@ -61,7 +63,12 @@ internal fun Application.configureDependencies(
         provide<NotificationService?> {
             resolve<ExternalIntegrationSettings>().slackWebhookUrl?.let { SlackNotifications(integrationEngine ?: resolve<HttpClientEngine>(), resolve<MeterRegistry>(), it) }
         }
-        provide<PrService?> { prService }
+        provide<PrService?> {
+            val settings = resolve<ExternalIntegrationSettings>()
+            prService ?: if (settings.github.enabled) {
+                GitHubPr(integrationEngine ?: resolve<HttpClientEngine>(), resolve<MeterRegistry>(), settings.github, resolve<DraftGenerator>(), resolve<SourceCatalogue>())
+            } else null
+        }
         provide(AiSuggestions::class)
         provide(DraftNotifications::class)
         provide(PrJobWorker::class)

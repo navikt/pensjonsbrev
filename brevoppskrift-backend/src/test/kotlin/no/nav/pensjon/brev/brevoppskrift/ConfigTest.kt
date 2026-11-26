@@ -15,6 +15,29 @@ import org.junit.jupiter.api.Test
 
 class ConfigTest {
     @Test
+    fun `GitHub App credentials are optional validated and redacted`() {
+        assertThat(loadConfig().github.enabled).isFalse()
+        val appEnvironment = environment + mapOf("GITHUB_APP_ID" to "1", "GITHUB_APP_INSTALLATION_ID" to "2", "GITHUB_APP_PRIVATE_KEY" to "synthetic-key")
+        val app = loadConfig(appEnvironment)
+        assertThat(app.github.enabled).isTrue()
+        assertThat(app.vertex.projectId).isNull()
+        assertThat(app.slackWebhookUrl).isNull()
+        assertThat(app.github.toString()).doesNotContain("synthetic-key")
+        for (key in listOf("GITHUB_APP_ID", "GITHUB_APP_INSTALLATION_ID", "GITHUB_APP_PRIVATE_KEY")) {
+            assertThatThrownBy { loadConfig(appEnvironment - key) }.hasStackTraceContaining("GitHub requires")
+        }
+        for (key in listOf("GITHUB_APP_ID", "GITHUB_APP_INSTALLATION_ID")) {
+            for (value in listOf("", "0", "../app")) {
+                assertThatThrownBy { loadConfig(appEnvironment + (key to value)) }.hasStackTraceContaining("GitHub requires")
+            }
+        }
+        assertThatThrownBy { loadConfig(appEnvironment + ("GITHUB_APP_PRIVATE_KEY" to "")) }.hasStackTraceContaining("GitHub requires")
+        val serialized = Json.encodeToString(app)
+        val restored = Json.decodeFromString<BrevoppskriftConfig>(serialized)
+        assertThat(restored.github).isEqualTo(app.github)
+    }
+
+    @Test
     fun `Vertex and Slack can be independently configured while partial Vertex configuration fails`() {
         val slack = loadConfig(environment + ("SLACK_WEBHOOK_URL" to "https://hooks.slack.com/services/synthetic"))
         assertThat(slack.slackWebhookUrl).isNotNull()

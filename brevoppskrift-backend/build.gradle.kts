@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.flyway.core)
     implementation(libs.flyway.database.postgresql)
     implementation(libs.micrometer.prometheus)
+    implementation(libs.bouncycastle.pkix)
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.testcontainers.postgresql)

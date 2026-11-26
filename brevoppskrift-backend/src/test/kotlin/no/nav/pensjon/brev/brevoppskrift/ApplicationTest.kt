@@ -58,10 +58,62 @@ import java.time.Instant
 import java.util.Base64
 import java.util.Date
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration.Companion.seconds
 
 @Isolated
 @Execution(ExecutionMode.SAME_THREAD)
 class ApplicationTest {
+    @Test
+    fun `configured GitHub adapter handles real generation and persistent jobs through editor API`() = testApplication {
+        val requests = AtomicInteger()
+        val authRequests = AtomicInteger()
+        val engine = MockEngine { request ->
+            if (request.url.encodedPath == "/app/installations/2/access_tokens") {
+                authRequests.incrementAndGet()
+                return@MockEngine respond("""{"token":"synthetic-token"}""")
+            }
+            requests.incrementAndGet()
+            assertThat(request.url.host).isEqualTo("api.github.com")
+            assertThat(request.url.encodedPath).isEqualTo("/repos/navikt/pensjonsbrev/pulls")
+            assertThat(request.url.parameters["head"]).startsWith("navikt:brevoppskrift/")
+            respond("""[{"html_url":"https://github.com/navikt/pensjonsbrev/pull/1"}]""")
+        }
+        lateinit var app: Application
+        application {
+            app = this
+            testModule(azure, jwks, postgres.database(), productionAuthoring = true,
+                integrations = IntegrationsConfig(github = GitHubPrTest.appConfig), integrationEngine = engine)
+        }
+        try {
+            startApplication()
+            val repository = app.dependencies.resolve<DraftRepository>()
+            val draft = exampleDraft().let { it.copy(metadata = it.metadata.copy(brevkode = "SYNTHETIC")) }
+            val created = repository.create(draft, null, AuthorName("Synthetic author"))
+            val ready = repository.status(created.id, created.revision, DraftStatus.READY, AuthorName("Synthetic author"))
+            val path = "/api/v1/utkast/${ready.id}/pr"
+            val capabilities = draftObjectMapper.readTree(client.get("/api/v1/integrasjoner") { bearerAuth(token()) }.bodyAsText())
+            assertThat(capabilities["pullRequests"].asBoolean()).isTrue()
+            assertThat(capabilities["ai"].asBoolean()).isFalse()
+            assertThat(client.post(path) { bearerAuth(token()); contentType(ContentType.Application.Json); setBody("invalid") }.status).isEqualTo(HttpStatusCode.Forbidden)
+            assertThat(requests.get()).isZero()
+            assertThat(authRequests.get()).isZero()
+            val submitted = client.post(path) {
+                bearerAuth(token(groups = listOf("editors")))
+                contentType(ContentType.Application.Json)
+                setBody(draftObjectMapper.writeValueAsString(RevisionRequest(ready.revision)))
+            }
+            assertThat(submitted.status).isEqualTo(HttpStatusCode.Accepted)
+            withTimeout(10.seconds) {
+                while (draftObjectMapper.readTree(client.get(path) { bearerAuth(token()) }.bodyAsText())["status"].asText() != "SUCCEEDED") delay(10)
+            }
+            assertThat(requests.get()).isEqualTo(1)
+            assertThat(authRequests.get()).isEqualTo(1)
+            assertThat(client.get(path) { bearerAuth(token()) }.bodyAsText()).doesNotContain("synthetic-token", "lease", "draft")
+        } finally {
+            engine.close()
+        }
+    }
+
     @Test
     fun `enabled AI remains editor only and returns proposals without modifying drafts`() = testApplication {
         var calls = 0

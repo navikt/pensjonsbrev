@@ -20,6 +20,14 @@ value class PrUrl(val value: String) {
 
 @Serializable
 @JvmInline
+value class GitHubAppId(val value: String)
+
+@Serializable
+@JvmInline
+value class GitHubInstallationId(val value: String)
+
+@Serializable
+@JvmInline
 value class VertexProjectId(val value: String)
 
 @Serializable

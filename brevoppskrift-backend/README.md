@@ -31,7 +31,7 @@ Helseendepunktene `/isAlive` og `/isReady`, samt `/metrics`, er offentlige
 i backend. Readiness krever fungerende database. KI og varsling er valgfrie;
 capabilities oppgir om de er konfigurert. KI-rutene returnerer 503 uten tjeneste.
 PR-ruter finnes, men innsending gir 503 uten konfigurert PR-tjeneste.
-GitHub-adapter er ikke innført.
+GitHub, KI og Slack kan aktiveres uavhengig.
 
 `application.conf` leser Entra- og databasekonfigurasjon fra miljøet.
 Klientlisten kommer fra `AZURE_APP_PRE_AUTHORIZED_APPS`, og
@@ -54,8 +54,38 @@ tre-minutters leases, 150 sekunders operasjonsgrense og maksimalt tre
 forsøk. Midlertidige feil prøves igjen etter 30 sekunder. Ved avslutning
 avbrytes pågående transport; en ny worker kan overta etter lease-utløp.
 
-Produksjon har foreløpig ingen PR-tjeneste, og `pullRequests` er false.
-Testene bruker fake transport mot en isolert PostgreSQL-database.
+`pullRequests` er true når GitHub-adapteren er konfigurert. Testene bruker
+fake transport mot en isolert PostgreSQL-database, uten reelle GitHub-kall.
+
+## GitHub
+
+Adapteren bruker bare `api.github.com` og `navikt/pensjonsbrev`.
+En GitHub App konfigureres med `GITHUB_APP_ID`,
+`GITHUB_APP_INSTALLATION_ID` og `GITHUB_APP_PRIVATE_KEY`. Nøkkelen må være
+ukryptert RSA PEM i PKCS#1- eller PKCS#8-format, med minst 2048 bits.
+PEM leses med Bouncy Castle; signering bruker JCA og Auth0 JWT.
+Appen må være installert på repositoryet med `Contents: write` og
+`Pull requests: write`. Hvert installation-token begrenses til dette
+repositoryet og disse rettighetene.
+
+Delvis eller ugyldig konfigurasjon avvises ved oppstart. Credentials skal
+komme fra secret-konfigurasjon; ingen integrasjon aktiveres i Nais her.
+
+Nye maler baseres på aktuell main, også med importerte vedlegg.
+Importerte utkast beholder den betrodde
+opprinnelige kildecommitten; vedlegg fra andre commits krever at deres
+kildefiler er identiske i valgt base. Rekursive treoppslag avvises ved
+avkorting og begrenses til 8 MiB før parsing. Øvrige svar begrenses til
+1 MiB. Bare avgrensede Kotlin-stier i målmodulene og utviklersjekklister
+kan eksporteres, og eksisterende filer utenfor importgrunnlaget overskrives
+ikke.
+
+Branchen er stabil per utkast/revisjon. En eksisterende branch må ha
+samme eksportinnhold uten andre filendringer; referanser force-oppdateres
+eller slettes aldri. Tapt PR-svar og opprettingsrace kan gjenopptas uten
+en ny PR. PR-en opprettes som utkast mot main; utvikleren håndterer
+registrering, tester, API-kompatibilitet og eventuelle mergekonflikter.
+Adapteren merger ikke.
 
 ## KI og Slack
 
@@ -80,7 +110,7 @@ antall og eventuell verkstedlenke, ikke utkastnavn eller dokumenttekst.
 Varslingsfeil hindrer ikke lagring av utkast.
 
 HTTP-klientene følger ikke redirects og prøver ikke kall automatisk på nytt.
-Vertex har 20 sekunders request-/socketgrense, Slack 3 sekunder og
+Vertex har 20 sekunders request-/socketgrense, GitHub 10 sekunder, Slack 3 sekunder og
 tilkoblinger 5 sekunder. Metrikker bruker faste tjeneste-/operasjonsnavn
 uten URL-er, webhooker, token eller brevtekst. Adapterne deler en
 applikasjonseid engine og lukkes ved avslutning; fake engines i tester
@@ -144,8 +174,9 @@ kildeversjonen. Uendret kilde og tilhørende DTO beholdes byte for byte,
 inkludert kommentarer, formatering og språkorden. Generering krever ikke
 Git eller et kildecheckout ved kjøring.
 
-Genererte filer returneres som data; modulen skriver dem ikke inn i
-målmodulene, registrerer ingen nye maler og utfører ingen publisering.
+Generatoren returnerer filer som data uten å skrive dem inn i
+målmodulene eller registrere nye maler. GitHub-adapteren kan bruke
+eksporten til å opprette en branch og utkast-PR.
 Utvikleren må kontrollere blant annet brevkode, registrering,
 feature-toggle og eventuell publisering av API-modeller før innføring.
 
