@@ -99,6 +99,8 @@ class EditModelJacksonTest {
                     .isEqualTo(decision.copy(status = DecisionRequest.Decision.ACCEPTED))
                 tree.remove("missingFromTemplate")
                 assertThat(readBlock(objectMapper.writeValueAsString(tree)).decision).isEqualTo(decision)
+                tree.putNull("missingFromTemplate")
+                assertThat(readBlock(objectMapper.writeValueAsString(tree)).decision).isEqualTo(decision)
             }
         }
     }

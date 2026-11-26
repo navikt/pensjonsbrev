@@ -33,7 +33,7 @@ class FerdigRedigertPolicy {
     }
 
     private fun VersjonertBrev.alleDuplikateAvsnittErHaandtert(): Boolean = when (this) {
-        is VersjonertBrev.V1 -> brev.blocks.none { it.missingFromTemplate }
+        is VersjonertBrev.V1 -> brev.blocks.none { it.missingFromTemplate == true }
     }
 }
 

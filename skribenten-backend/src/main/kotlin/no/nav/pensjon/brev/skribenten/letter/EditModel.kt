@@ -134,7 +134,7 @@ object Edit {
             "Use decision instead",
             replaceWith = ReplaceWith("decision?.status == DecisionRequest.Decision.PENDING")
         )
-        val missingFromTemplate: Boolean
+        val missingFromTemplate: Boolean?
             get() = decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED &&
                     decision?.status == DecisionRequest.Decision.PENDING
 
@@ -520,4 +520,3 @@ fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
     ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.toMarkup())
-
