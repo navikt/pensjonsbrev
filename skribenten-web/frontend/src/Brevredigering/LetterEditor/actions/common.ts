@@ -1057,9 +1057,7 @@ export function normalizeDeletedArrays(obj: unknown): unknown {
 }
 
 export function normalizeDocumentForComparison(obj: unknown): unknown {
-  const withoutNulls = JSON.parse(
-    JSON.stringify(obj, (_key, value) => (value === null ? undefined : value)),
-  );
+  const withoutNulls = JSON.parse(JSON.stringify(obj, (_key, value) => (value === null ? undefined : value)));
   return normalizeDeletedArrays(withoutNulls);
 }
 
