@@ -17,7 +17,7 @@ const recipients = {
   departementet:
     "Departementet for Sociale Anliggender, Familier, Arbejdsmarked og Indenrigsanliggender\nMinistry of Social Affairs and Labour\nImaneq 1 A\nPostboks 970\n3900 Nuuk\nGRØNLAND",
   "isle-of-man":
-    "Department of Health and Social Security, Social Security Division\nMaxwell House\nMarket Street\nDouglas\nISLE OF MAN",
+    "Department of Health and Social Security, Social Security Division\nMarkwell House\nMarket Street\nDouglas\nISLE OF MAN",
   jersey: "Social Department\nPhilip Le Feuvre Hourse\nLa Motte Street\nSt Helier\nJERSEY, CHANNEL ISLANDS",
 };
 
@@ -101,6 +101,31 @@ for (const landkode of ["NOR", "GBR"]) {
     ]);
   });
 }
+
+test("Mottakeretiketten er knyttet til tekstfeltet i alle land", async ({ page }) => {
+  await page.goto("/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815");
+  const country = page.getByRole("combobox", { name: "Land", exact: true });
+  const textarea = page.getByRole("textbox", { name: "Mottaker", exact: true });
+  const visibleLabel = page.getByText("Mottaker", { exact: true }).first();
+  const recipient = page.getByRole("combobox", { name: "Velg mottaker", exact: true });
+  const radios = page.getByRole("radiogroup", { name: "Velg mottaker", exact: true });
+
+  for (const code of ["NOR", "GRL", "GBR", "FRO", "BEL", ""]) {
+    await country.selectOption(code);
+    await expect(visibleLabel).toHaveAttribute("for", (await textarea.getAttribute("id")) ?? "");
+    await expect(textarea).toHaveAccessibleName("Mottaker");
+    await visibleLabel.click();
+    await expect(textarea).toBeFocused();
+    if (code === "NOR") {
+      await expect(recipient).toHaveAccessibleName("Velg mottaker");
+    } else if (code === "GRL" || code === "GBR") {
+      await expect(radios).toHaveAccessibleName("Velg mottaker");
+    } else {
+      await expect(recipient).not.toBeVisible();
+      await expect(radios).not.toBeVisible();
+    }
+  }
+});
 
 test("Mottaker har 8 px avstand etter etiketten og 12 px etter mottakervalg", async ({ page }) => {
   await page.goto("/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815");

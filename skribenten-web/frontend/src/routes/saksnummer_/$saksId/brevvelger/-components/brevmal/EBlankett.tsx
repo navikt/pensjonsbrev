@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Label, Radio, RadioGroup, Select, Textarea, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
@@ -65,7 +65,7 @@ GRØNLAND`,
     navn: "Social Security Division",
     landnavn: "Isle of Man",
     adresse: `Department of Health and Social Security, Social Security Division
-Maxwell House
+Markwell House
 Market Street
 Douglas
 ISLE OF MAN`,
@@ -95,6 +95,8 @@ export default function EBlankett({
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
   const { enhetsId: urlEnhetsId } = Route.useSearch();
+  const mottakerId = useId();
+  const mottakerLabelId = `${mottakerId}-label`;
   const formRef = useRef<HTMLFormElement>(null);
   const avtalelandQuery = useQuery(getAvtaleLand);
   const validationSchema = eblankettValidationSchema.refine(
@@ -179,7 +181,9 @@ export default function EBlankett({
           />
           <VStack gap={tilgjengeligeMottakere.length > 1 ? "space-12" : "space-8"}>
             <VStack gap="space-8">
-              <Label size="small">Mottaker</Label>
+              <Label htmlFor={mottakerId} id={mottakerLabelId} size="small">
+                Mottaker
+              </Label>
               {tilgjengeligeMottakere.length === 2 ? (
                 <RadioGroup
                   hideLegend
@@ -215,9 +219,11 @@ export default function EBlankett({
             <Textarea
               data-testid="mottaker-text-textfield"
               {...methods.register("mottakerText")}
+              aria-labelledby={mottakerLabelId}
               autoComplete="off"
               error={methods.formState.errors.mottakerText?.message}
               hideLabel
+              id={mottakerId}
               label="Mottaker"
               onChange={(event) => {
                 setValgtMottaker("");
