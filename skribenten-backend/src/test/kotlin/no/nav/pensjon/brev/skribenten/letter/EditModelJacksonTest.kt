@@ -59,9 +59,9 @@ class EditModelJacksonTest {
     }
 
     @Test
-    fun `NEW_IN_RENDERED beholdes naar missingFromTemplate er false`() {
+    fun `deserialiserer NEW_IN_RENDERED`() {
         val json = paragraphJson(
-            ""","decision":{"type":"NEW_IN_RENDERED","status":"PENDING"},"missingFromTemplate":false"""
+            ""","decision":{"type":"NEW_IN_RENDERED","status":"PENDING"}"""
         )
         assertThat(readBlock(json).decision)
             .isEqualTo(DecisionRequest(DecisionRequest.Type.NEW_IN_RENDERED, DecisionRequest.Decision.PENDING))
