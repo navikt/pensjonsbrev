@@ -397,6 +397,7 @@ class KotlinSourceImporter : AutoCloseable {
             if (editable) setOf("EDIT_LITERAL_TEXT", "PRESERVE_DTO_IDENTITY", "LOCKED_PHRASE_CALLS", "PRESERVE_ALL_SOURCE_LANGUAGES") else emptySet(),
             dtoSymbol,
             file.packageFqName.asString(),
+            dtoPaths = dtoFiles.keys - registryPath,
         )
     }
 
