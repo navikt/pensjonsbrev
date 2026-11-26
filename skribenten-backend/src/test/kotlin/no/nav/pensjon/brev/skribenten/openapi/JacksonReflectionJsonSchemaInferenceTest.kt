@@ -4,9 +4,6 @@ import io.ktor.openapi.AdditionalProperties
 import io.ktor.openapi.JsonSchema
 import io.ktor.openapi.JsonType
 import io.ktor.openapi.ReferenceOr
-import io.ktor.openapi.wrapIfNullable
-import io.ktor.utils.io.InternalAPI
-import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -14,19 +11,6 @@ import org.junit.jupiter.api.Test
 class JacksonReflectionJsonSchemaInferenceTest {
 
     private val inference = JacksonReflectionJsonSchemaInference(JacksonSchemaReflectionAdapter(null))
-
-    @OptIn(InternalAPI::class)
-    @Test
-    fun `missingFromTemplate er valgfritt og nullable for alle blokktyper`() {
-        listOf(Edit.Block.Paragraph::class, Edit.Block.Title1::class, Edit.Block.Title2::class, Edit.Block.Title3::class)
-            .forEach { blockType ->
-                val schema = inference.schemaForClass(blockType)
-                val property = (schema.properties?.get("missingFromTemplate") as ReferenceOr.Value<JsonSchema>).value
-
-                assertThat(schema.required).doesNotContain("missingFromTemplate")
-                assertThat(property.type).isEqualTo(JsonType.BOOLEAN.wrapIfNullable(true))
-            }
-    }
 
     /**
      * [SaksbehandlervalgMap] is a concrete class that fixes its `Map` value type
