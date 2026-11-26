@@ -449,17 +449,19 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                     }
                 )
             }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Tjener du mer enn ditt bunnfradrag på " + data.uforetrygd.bunnfradrag.format() +
-                                " per år, reduserer vi utbetalingen av uføretrygd. Det er bare den delen av inntekten din som er høyere enn bunnfradraget, som gir lavere utbetaling av uføretrygd. "
-                    },
-                    nynorsk {
-                        +"Dersom du tener meir enn botnfrådraget ditt på " + data.uforetrygd.bunnfradrag.format() +
-                                " per år, reduserer vi utbetalinga av uføretrygd. Det er berre den delen av inntekta di som er høgare enn botnfrådraget, som gir lågare utbetaling av uføretrygd. "
-                    }
-                )
+            showIf(data.uforetrygd.bunnfradrag.greaterThanOrEqual(data.uforetrygd.inntektstak)) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Tjener du mer enn ditt bunnfradrag på " + data.uforetrygd.bunnfradrag.format() +
+                                    " per år, reduserer vi utbetalingen av uføretrygd. Det er bare den delen av inntekten din som er høyere enn bunnfradraget, som gir lavere utbetaling av uføretrygd. "
+                        },
+                        nynorsk {
+                            +"Dersom du tener meir enn botnfrådraget ditt på " + data.uforetrygd.bunnfradrag.format() +
+                                    " per år, reduserer vi utbetalinga av uføretrygd. Det er berre den delen av inntekta di som er høgare enn botnfrådraget, som gir lågare utbetaling av uføretrygd. "
+                        }
+                    )
+                }
             }
             paragraph {
                 text(
