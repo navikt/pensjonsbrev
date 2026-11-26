@@ -333,6 +333,47 @@ test.describe("autolagring", () => {
     await expect(page.getByLabel("Ytelse")).toHaveValue("Supplerende stønad A");
   });
 
+  test("angre gjenoppretter markøren der teksten ble limt inn etter en mislykket valglagring", async ({ page }) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=false", (route) =>
+      route.fulfill({ status: 422, json: { reason: "FritekstFelterUredigert" } }),
+    );
+    await page.goto("/saksnummer/123456/brev/1");
+    await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
+    await page.clock.install();
+    await page.clock.pauseAt(new Date());
+    await page.getByRole("radio", { name: "Rullekake", exact: true }).check();
+    await page.clock.runFor(SAKSBEHANDLERVALG_TIMER);
+    await expect(page.getByText(/Klarte ikke lagre/)).toBeVisible();
+
+    const text = page.locator("[data-literal-index]", { hasText: "Dersom vi trenger flere opplysninger" });
+    await text.click();
+    await text.press("Home");
+    await text.pressSequentially("X");
+    const beforePaste = await text.evaluate((element) => element.textContent);
+    await text.evaluate((element) => {
+      globalThis.getSelection()!.collapse(element.firstChild, element.textContent!.length);
+      const clipboardData = new DataTransfer();
+      clipboardData.setData("text/html", "<p>Linje én</p><p>Linje to</p>");
+      element.dispatchEvent(new ClipboardEvent("paste", { bubbles: true, cancelable: true, clipboardData }));
+    });
+    const pastedLine = page.locator("[data-literal-index]", { hasText: "Linje to" });
+    await expect(pastedLine).toBeVisible();
+
+    await page.getByRole("button", { name: "Angre (Undo)" }).click();
+    await page.clock.runFor(SAKSBEHANDLERVALG_TIMER);
+    await expect(text).toHaveAttribute("contenteditable", "true");
+    await expect(text).toHaveText(beforePaste);
+    await expect(pastedLine).toHaveCount(0);
+    await expect
+      .poll(() =>
+        text.evaluate((element) => {
+          const selection = globalThis.getSelection();
+          return element.contains(selection?.focusNode ?? null) ? selection?.focusOffset : null;
+        }),
+      )
+      .toBe(beforePaste.length);
+  });
+
   test("ny tekstendring lagrer siste gyldige valg uten å nullstille nyere skjemaverdier", async ({ page }) => {
     const lagringer: OppdaterBrevRequest[] = [];
     let tekstlagringer = 0;
