@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.skribenten
 
+import com.typesafe.config.ConfigFactory
 import io.ktor.server.application.Application
-import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.config.HoconApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.config.mergeWith
 import io.ktor.server.plugins.di.DependencyKey
@@ -10,12 +11,35 @@ import io.ktor.server.plugins.di.MapDependencyResolver
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.plugins.di.getBlocking
 import io.ktor.server.testing.testApplication
+import no.nav.pensjon.brev.skribenten.auth.AzureADSettings
+import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerSettings
+import no.nav.pensjon.brev.skribenten.common.CacheSettings
+import no.nav.pensjon.brev.skribenten.db.DatabaseSettings
+import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalApiSettings
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataSettings
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenSettings
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorSettings
+import no.nav.pensjon.brev.skribenten.services.KrrSettings
+import no.nav.pensjon.brev.skribenten.services.LeaderSettings
+import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
+import no.nav.pensjon.brev.skribenten.services.NavansattSettings
+import no.nav.pensjon.brev.skribenten.services.Norg2Settings
+import no.nav.pensjon.brev.skribenten.services.PdlSettings
+import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataSettings
+import no.nav.pensjon.brev.skribenten.services.PensjonRepresentasjonSettings
+import no.nav.pensjon.brev.skribenten.services.SafSettings
+import no.nav.pensjon.brev.skribenten.services.SamhandlerSettings
+import no.nav.pensjon.brev.skribenten.services.SkjermingSettings
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.Isolated
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.testcontainers.postgresql.PostgreSQLContainer
 
 /**
@@ -62,10 +86,19 @@ class DependenciesTest {
         "skribenten.database.maxPoolSize" to "2",
     )
 
-    @Test
-    fun `alle registrerte avhengigheter kan resolves`() = testApplication {
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    @Execution(ExecutionMode.SAME_THREAD)
+    fun `alle registrerte avhengigheter kan resolves`(leaderEnabled: Boolean) = testApplication {
         environment {
-            config = ApplicationConfig("application-test.conf").mergeWith(databaseConfig())
+            config = HoconApplicationConfig(
+                ConfigFactory.parseResources("application-test.conf")
+                    .withoutPath("skribenten.services.leader")
+                    .resolve()
+            ).mergeWith(databaseConfig())
+            if (leaderEnabled) {
+                config = config.mergeWith(MapApplicationConfig("skribenten.services.leader.url" to "http://localhost:9999/fake"))
+            }
         }
 
         lateinit var app: Application
@@ -73,6 +106,33 @@ class DependenciesTest {
         startApplication()
 
         val registry = app.dependencies
+        val config = registry.resolve<SkribentenConfig>()
+        assertThat(
+            listOf(
+                registry.resolve<AzureADSettings>(),
+                registry.resolve<DatabaseSettings>(),
+                registry.resolve<UnleashSettings>(),
+                registry.resolve<CacheSettings>(),
+                registry.resolve<CorsSettings>(),
+                registry.resolve<PenSettings>(),
+                registry.resolve<PdlSettings>(),
+                registry.resolve<SafSettings>(),
+                registry.resolve<PensjonPersonDataSettings>(),
+                registry.resolve<PensjonRepresentasjonSettings>(),
+                registry.resolve<KrrSettings>(),
+                registry.resolve<BrevbakerSettings>(),
+                registry.resolve<BrevmetadataSettings>(),
+                registry.resolve<NavansattSettings>(),
+                registry.resolve<SamhandlerSettings>(),
+                registry.resolve<Norg2Settings>(),
+                registry.resolve<ExternalApiSettings>(),
+                registry.resolve<LeaderSettings>(),
+                registry.resolve<SkjermingSettings>(),
+                registry.resolve<FoerstesidegeneratorSettings>(),
+            )
+        ).allSatisfy { assertThat(it).isSameAs(config) }
+        assertThat(config.leader != null).isEqualTo(leaderEnabled)
+        assertThat(registry.resolve<NaisLeaderService>().isLeaderElectionEnabled).isEqualTo(leaderEnabled)
         val keys = registry.resolver.registrerteNoekler()
 
         assertTrue(keys.size >= MINIMUM_ANTALL_DEKLARASJONER) {

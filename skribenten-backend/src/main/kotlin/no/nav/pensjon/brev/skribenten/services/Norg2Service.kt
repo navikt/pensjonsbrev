@@ -11,7 +11,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
@@ -22,14 +21,15 @@ interface Norg2Service {
     suspend fun getEnhet(enhetId: EnhetId): NavEnhet
 }
 
+interface Norg2Settings {
+    val norg2: NoAuthClientConfig
+}
+
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
-class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache, engine: HttpClientEngine) : Norg2Service, Closeable {
+class Norg2ServiceHttp(config: Norg2Settings, val cache: Cache, engine: HttpClientEngine) : Norg2Service, Closeable {
     private val logger = LoggerFactory.getLogger(Norg2ServiceHttp::class.java)
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, cache: Cache, engine: HttpClientEngine): this(config.services.norg2, cache, engine)
-
-    private val norgUrl = config.url
+    private val norgUrl = config.norg2.url
 
     private val client = lagHttpClient(engine) {
         defaultRequest {

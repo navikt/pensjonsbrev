@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorSettings
 import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.*
@@ -184,7 +185,9 @@ abstract class BrevredigeringHandlerTestBase {
             genererFoerstesideHandler = GenererFoerstesideHandler(
                 brevtilgang,
                 FoerstesidegeneratorClient(
-                    config = OboClientConfig(url = "http://localhost", scope = "test"),
+                    config = object : FoerstesidegeneratorSettings {
+                        override val foerstesidegenerator = OboClientConfig(url = "http://localhost", scope = "test")
+                    },
                     authService = FakeAuthService,
                     clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
                 ),

@@ -9,19 +9,52 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import no.nav.pensjon.brev.skribenten.auth.ADGroup
+import no.nav.pensjon.brev.skribenten.auth.AzureADSettings
 import no.nav.pensjon.brev.skribenten.auth.SkribentenADGroups
+import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerSettings
+import no.nav.pensjon.brev.skribenten.common.CacheSettings
+import no.nav.pensjon.brev.skribenten.db.DatabaseSettings
+import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalApiSettings
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataSettings
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenSettings
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorSettings
+import no.nav.pensjon.brev.skribenten.services.KrrSettings
+import no.nav.pensjon.brev.skribenten.services.LeaderSettings
+import no.nav.pensjon.brev.skribenten.services.NavansattSettings
+import no.nav.pensjon.brev.skribenten.services.Norg2Settings
+import no.nav.pensjon.brev.skribenten.services.PdlSettings
+import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataSettings
+import no.nav.pensjon.brev.skribenten.services.PensjonRepresentasjonSettings
+import no.nav.pensjon.brev.skribenten.services.SafSettings
+import no.nav.pensjon.brev.skribenten.services.SamhandlerSettings
+import no.nav.pensjon.brev.skribenten.services.SkjermingSettings
 
 @Serializable
 data class SkribentenConfig(
-    val azureAD: AzureADConfig,
-    val database: DatabaseConfig,
-    val unleash: UnleashCfg,
-    val valkey: ValkeyConfig,
+    override val azureAD: AzureADConfig,
+    override val database: DatabaseConfig,
+    override val unleash: UnleashCfg,
+    override val valkey: ValkeyConfig,
     val groups: GroupsConfig,
-    val cors: CorsConfig,
+    override val cors: CorsConfig,
     val krypteringsnoekkel: String,
     val services: ServicesConfig,
-)
+) : AzureADSettings, DatabaseSettings, UnleashSettings, CacheSettings, CorsSettings,
+    PenSettings by services,
+    PdlSettings by services,
+    SafSettings by services,
+    PensjonPersonDataSettings by services,
+    PensjonRepresentasjonSettings by services,
+    KrrSettings by services,
+    BrevbakerSettings by services,
+    BrevmetadataSettings by services,
+    NavansattSettings by services,
+    SamhandlerSettings by services,
+    Norg2Settings by services,
+    ExternalApiSettings by services,
+    LeaderSettings by services,
+    SkjermingSettings by services,
+    FoerstesidegeneratorSettings by services
 
 @Serializable
 data class ValkeyConfig(
@@ -120,19 +153,21 @@ data class ExternalApiConfig(val skribentenWebUrl: String)
 
 @Serializable
 data class ServicesConfig(
-    val pen: OboClientConfig,
-    val pdl: OboClientConfig,
-    val saf: SafConfig,
-    val pensjonPersondata: OboClientConfig,
-    val pensjonRepresentasjon: OboClientConfig,
-    val krr: OboClientConfig,
-    val brevbaker: OboClientConfig,
-    val brevmetadata: NoAuthClientConfig,
-    val navansatt: OboClientConfig,
-    val samhandlerProxy: OboClientConfig,
-    val norg2: NoAuthClientConfig,
-    val externalApi: ExternalApiConfig,
-    val leader: NoAuthClientConfig? = null,
-    val skjerming: OboClientConfig,
-    val foerstesidegenerator: OboClientConfig,
-)
+    override val pen: OboClientConfig,
+    override val pdl: OboClientConfig,
+    override val saf: SafConfig,
+    override val pensjonPersondata: OboClientConfig,
+    override val pensjonRepresentasjon: OboClientConfig,
+    override val krr: OboClientConfig,
+    override val brevbaker: OboClientConfig,
+    override val brevmetadata: NoAuthClientConfig,
+    override val navansatt: OboClientConfig,
+    override val samhandlerProxy: OboClientConfig,
+    override val norg2: NoAuthClientConfig,
+    override val externalApi: ExternalApiConfig,
+    override val leader: NoAuthClientConfig? = null,
+    override val skjerming: OboClientConfig,
+    override val foerstesidegenerator: OboClientConfig,
+) : PenSettings, PdlSettings, SafSettings, PensjonPersonDataSettings, PensjonRepresentasjonSettings,
+    KrrSettings, BrevbakerSettings, BrevmetadataSettings, NavansattSettings, SamhandlerSettings,
+    Norg2Settings, ExternalApiSettings, LeaderSettings, SkjermingSettings, FoerstesidegeneratorSettings

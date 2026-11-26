@@ -11,7 +11,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.services.ServiceStatus
@@ -26,15 +25,16 @@ interface BrevmetadataService {
     suspend fun getMal(brevkode: String): BrevdataDto
 }
 
+interface BrevmetadataSettings {
+    val brevmetadata: NoAuthClientConfig
+}
+
 class BrevmetadataServiceHttp(
-    config: NoAuthClientConfig,
+    config: BrevmetadataSettings,
     engine: HttpClientEngine,
 ) : BrevmetadataService, ServiceStatus, Closeable {
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, engine: HttpClientEngine): this(config.services.brevmetadata, engine)
-
-    private val brevmetadataUrl = config.url
+    private val brevmetadataUrl = config.brevmetadata.url
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
     private val httpClient = lagHttpClient(engine) {
         defaultRequest {

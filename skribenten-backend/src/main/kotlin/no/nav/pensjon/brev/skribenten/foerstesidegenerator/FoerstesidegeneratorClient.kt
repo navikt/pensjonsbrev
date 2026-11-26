@@ -16,7 +16,6 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import io.ktor.utils.io.core.Closeable
 import no.nav.pensjon.brev.skribenten.OboClientConfig
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -29,14 +28,15 @@ import no.nav.pensjon.brev.skribenten.services.metricsRoute
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.slf4j.LoggerFactory
 
-class FoerstesidegeneratorClient(config: OboClientConfig, authService: AuthService, clientEngine: HttpClientEngine) : Closeable {
+interface FoerstesidegeneratorSettings {
+    val foerstesidegenerator: OboClientConfig
+}
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine) : this(config.services.foerstesidegenerator, authService, engine)
+class FoerstesidegeneratorClient(config: FoerstesidegeneratorSettings, authService: AuthService, clientEngine: HttpClientEngine) : Closeable {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val foerstesidegeneratorUrl = config.url
-    private val foerstesidegeneratorScope = config.scope
+    private val foerstesidegeneratorUrl = config.foerstesidegenerator.url
+    private val foerstesidegeneratorScope = config.foerstesidegenerator.scope
 
     private val client = lagHttpClient(clientEngine) {
         defaultRequest {

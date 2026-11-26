@@ -65,12 +65,13 @@ class PenServiceException(message: String, override val journalpostId: Journalpo
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
-class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine, val cache: Cache) : PenClient, ServiceStatus, Closeable {
-    private val penUrl = config.url
-    private val penScope = config.scope
+interface PenSettings {
+    val pen: OboClientConfig
+}
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine, cache: Cache): this(config.services.pen, authService, engine, cache)
+class PentHttpClient(config: PenSettings, authService: AuthService, engine: HttpClientEngine, val cache: Cache) : PenClient, ServiceStatus, Closeable {
+    private val penUrl = config.pen.url
+    private val penScope = config.pen.scope
 
     private val client = lagHttpClient(engine) {
         defaultRequest {

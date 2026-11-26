@@ -14,16 +14,20 @@ import java.net.InetAddress
 data class LeaderElection(val isThisInstanceLeader: Boolean, val thisInstanceName: String, val leaderName: String)
 data class LeaderResponse(val name: String)
 
+interface LeaderSettings {
+    val leader: NoAuthClientConfig?
+}
+
 interface LeaderService {
     suspend fun electedLeader(): LeaderElection?
     val isLeaderElectionEnabled: Boolean
 }
 
 class NaisLeaderService(
-    config: NoAuthClientConfig?,
+    config: LeaderSettings,
     clientEngine: HttpClientEngine,
 ) : LeaderService, Closeable {
-    private val url: String? = config?.url
+    private val url: String? = config.leader?.url
 
     private val client = lagHttpClient(clientEngine) {
         install(ContentNegotiation) {

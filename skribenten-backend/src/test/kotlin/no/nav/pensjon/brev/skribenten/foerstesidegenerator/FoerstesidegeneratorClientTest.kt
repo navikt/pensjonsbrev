@@ -28,10 +28,12 @@ import java.nio.file.Path
 
 class FoerstesidegeneratorClientTest {
 
-    private val config = OboClientConfig(
-        url = "http://foerstesidegenerator.test",
-        scope = "test-scope"
-    )
+    private val config = object : FoerstesidegeneratorSettings {
+        override val foerstesidegenerator = OboClientConfig(
+            url = "http://foerstesidegenerator.test",
+            scope = "test-scope"
+        )
+    }
 
     @Test
     fun `genererer foersteside og lagrer resulterende pdf`() = httpClientTest(

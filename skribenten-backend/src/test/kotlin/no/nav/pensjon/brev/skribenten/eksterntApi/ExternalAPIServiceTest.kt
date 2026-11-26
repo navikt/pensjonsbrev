@@ -38,6 +38,9 @@ import kotlin.reflect.full.primaryConstructor
 class ExternalAPIServiceTest {
 
     private val skribentenWebUrl = "https://our-cool-url"
+    private val config = object : ExternalApiSettings {
+        override val externalApi = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl)
+    }
     val saksId = SaksId(1L)
     val brevDto = Dto.BrevInfo(
         id = BrevId(214L),
@@ -75,7 +78,7 @@ class ExternalAPIServiceTest {
         sakstyper = emptySet(),
     )
     private val externalAPIService = ExternalAPIService(
-        config = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl),
+        config = config,
         hentBrevForAlleSaker = { Outcome.success(listOf(brevDto)) },
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal)),
@@ -246,7 +249,7 @@ class ExternalAPIServiceTest {
         brevInfo: Dto.BrevInfo = brevDto,
         onOpprettBrev: (OpprettBrevHandler.Request) -> Unit = {},
     ) = ExternalAPIService(
-        config = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl),
+        config = config,
         hentBrevForAlleSaker = { Outcome.success(listOf(brevInfo)) },
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal)),

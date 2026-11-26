@@ -13,7 +13,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
@@ -30,19 +29,20 @@ interface NavansattService {
 
 class NavansattServiceException(message: String) : ServiceException(message)
 
+interface NavansattSettings {
+    val navansatt: OboClientConfig
+}
+
 class NavansattServiceHttp(
-    config: OboClientConfig,
+    config: NavansattSettings,
     authService: AuthService,
     private val cache: Cache,
     engine: HttpClientEngine,
 ) : NavansattService, ServiceStatus, Closeable {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.services.navansatt, authService, cache, engine)
-
-    private val navansattUrl = config.url
-    private val navansattScope = config.scope
+    private val navansattUrl = config.navansatt.url
+    private val navansattScope = config.navansatt.scope
 
     private val client = lagHttpClient(engine) {
         defaultRequest {

@@ -129,7 +129,9 @@ class ExternalAPIRouteTest {
         opprettBrevResult: Outcome<Dto.Brevredigering, BrevredigeringError> = Outcome.success(successBrevredigering),
         onOpprettBrev: (OpprettBrevHandler.Request) -> Unit = {},
     ) = ExternalAPIService(
-        config = ExternalApiConfig(skribentenWebUrl = "https://example.com"),
+        config = object : ExternalApiSettings {
+            override val externalApi = ExternalApiConfig(skribentenWebUrl = "https://example.com")
+        },
         hentBrevForAlleSaker = hentBrevForAlleSaker,
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(),

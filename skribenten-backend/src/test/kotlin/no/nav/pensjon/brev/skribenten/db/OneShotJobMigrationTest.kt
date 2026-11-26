@@ -6,6 +6,7 @@ import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.SharedPostgres
+import no.nav.pensjon.brev.skribenten.NoAuthClientConfig
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
@@ -22,6 +23,7 @@ import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
+import no.nav.pensjon.brev.skribenten.services.LeaderSettings
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
@@ -47,6 +49,9 @@ class OneShotJobMigrationTest {
     private lateinit var postgres: PostgreSQLContainer
     private lateinit var dataSource: HikariDataSource
     private val engine = CIO.create()
+    private val config = object : LeaderSettings {
+        override val leader: NoAuthClientConfig? = null
+    }
     private val edited = editedLetter()
     private val rendered = edited.copy(title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "Rendret"))))
     private val staleHash = Hash.fromBytes<VersjonertBrev>(ByteArray(32))
@@ -114,7 +119,7 @@ class OneShotJobMigrationTest {
     private fun runJob(): TekniskVersjon? {
         var version: TekniskVersjon? = null
         runBlocking {
-            oneShotJobs(NaisLeaderService(null, engine)) {
+            oneShotJobs(NaisLeaderService(config, engine)) {
                 job(jobName) {
                     version = it
                     updateBrevredigeringJson(it)
