@@ -101,7 +101,7 @@ fun Expression<PEgruppe10>.harBrevkodeForRettTilBarnetillegg(): Expression<Boole
 /** Som `harBrevkodeForRettTilBarnetillegg`, men inkluderer også 06_300. */
 fun Expression<PEgruppe10>.harBrevkodeForBarnetilleggsberegning(): Expression<Boolean> =
     pebrevkode().isOneOf(
-        "PE_UT_04_101", "PE_UT_04_102", "PE_UT_04_114", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_05_100",
+        "PE_UT_04_101", "PE_UT_04_102", "PE_UT_04_114", "PE_UT_04_300", "PE_UT_14_300",
         "PE_UT_06_100", "PE_UT_04_103", "PE_UT_04_106", "PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200",
         "PE_UT_06_300",
     )

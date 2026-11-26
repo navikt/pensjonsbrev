@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorSettings
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.PenClientStub
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
@@ -311,7 +312,9 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
                 genererFoerstesideHandler = GenererFoerstesideHandler(
                     brevtilgang,
                     FoerstesidegeneratorClient(
-                        config = OboClientConfig(url = "http://localhost", scope = "test"),
+                        config = object : FoerstesidegeneratorSettings {
+                            override val foerstesidegenerator = OboClientConfig(url = "http://localhost", scope = "test")
+                        },
                         authService = FakeAuthService,
                         clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
                     )

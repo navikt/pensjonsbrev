@@ -3,9 +3,11 @@ package no.nav.pensjon.brev.skribenten.db
 import io.ktor.client.engine.cio.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.SharedPostgres
+import no.nav.pensjon.brev.skribenten.NoAuthClientConfig
 import no.nav.pensjon.brev.skribenten.common.TekniskVersjon
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
+import no.nav.pensjon.brev.skribenten.services.LeaderSettings
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.less
@@ -16,6 +18,9 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class OneShotJobTest {
     private val jobnameCounter = AtomicInteger(0)
+    private val config = object : LeaderSettings {
+        override val leader: NoAuthClientConfig? = null
+    }
 
     @BeforeAll
     fun initDb() {
@@ -41,7 +46,7 @@ class OneShotJobTest {
         val name = jobName("test-job")
 
         runBlocking {
-            oneShotJobs(NaisLeaderService(null, engine)) {
+            oneShotJobs(NaisLeaderService(config, engine)) {
                 job(name) { tekniskVersjon ->
                     isExecuted = true
                     transaction {
@@ -69,7 +74,7 @@ class OneShotJobTest {
         val name = jobName("no-duplicate-execution")
         fun aJob() {
             runBlocking {
-                oneShotJobs(NaisLeaderService(null, engine)) {
+                oneShotJobs(NaisLeaderService(config, engine)) {
                     job(name) {
                         executionCount++
                     }
@@ -89,7 +94,7 @@ class OneShotJobTest {
         val name = jobName("failing-job")
 
         fun failingJob() = runBlocking {
-            oneShotJobs(NaisLeaderService(null, engine)) {
+            oneShotJobs(NaisLeaderService(config, engine)) {
                 job(name) {
                     isExecuted = true
                     throw RuntimeException("Simulated failure")
@@ -152,7 +157,7 @@ class OneShotJobTest {
         val versions = mutableListOf<TekniskVersjon>()
 
         runBlocking {
-            oneShotJobs(NaisLeaderService(null, engine)) {
+            oneShotJobs(NaisLeaderService(config, engine)) {
                 job(jobName("first-version")) { versions.add(it) }
                 job(jobName("second-version")) { versions.add(it) }
             }
@@ -175,7 +180,7 @@ class OneShotJobTest {
         val newerVersions = mutableListOf<TekniskVersjon>()
 
         runBlocking {
-            oneShotJobs(NaisLeaderService(null, engine)) {
+            oneShotJobs(NaisLeaderService(config, engine)) {
                 job(name) {
                     versions.add(it)
                     completed = false
@@ -189,7 +194,7 @@ class OneShotJobTest {
         }
 
         runBlocking {
-            oneShotJobs(NaisLeaderService(null, engine)) {
+            oneShotJobs(NaisLeaderService(config, engine)) {
                 job(name) { versions.add(it) }
             }
         }
@@ -210,14 +215,14 @@ class OneShotJobTest {
 
         runBlocking {
             runCatching {
-                oneShotJobs(NaisLeaderService(null, engine)) {
+                oneShotJobs(NaisLeaderService(config, engine)) {
                     job(name) {
                         versions.add(it)
                         throw RuntimeException("Simulated failure")
                     }
                 }
             }
-            oneShotJobs(NaisLeaderService(null, engine)) {
+            oneShotJobs(NaisLeaderService(config, engine)) {
                 job(name) { versions.add(it) }
             }
         }

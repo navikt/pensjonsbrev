@@ -29,7 +29,9 @@ import java.time.LocalDate
 
 class PenClientTest {
 
-    private val config = OboClientConfig(url = "http://pen.test", scope = "test-scope")
+    private val config = object : PenSettings {
+        override val pen = OboClientConfig(url = "http://pen.test", scope = "test-scope")
+    }
 
     private val templateDescription = TemplateDescription.Redigerbar(
         name = "INFORMASJONSBREV",

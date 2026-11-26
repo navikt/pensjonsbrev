@@ -45,9 +45,12 @@ interface AuthService {
     suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse.OnBehalfOfToken
 }
 
-class AzureADService(private val jwtConfig: AzureADConfig, private val cache: Cache, engine: HttpClientEngine) : AuthService, Closeable {
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, cache: Cache, engine: HttpClientEngine): this(config.azureAD, cache, engine)
+interface AzureADSettings {
+    val azureAD: AzureADConfig
+}
+
+class AzureADService(config: AzureADSettings, private val cache: Cache, engine: HttpClientEngine) : AuthService, Closeable {
+    private val jwtConfig = config.azureAD
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val client = lagHttpClient(engine) {

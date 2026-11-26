@@ -13,7 +13,6 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
 import kotlinx.io.IOException
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
@@ -21,15 +20,16 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 import java.nio.channels.UnresolvedAddressException
 
-class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine) : ServiceStatus, Closeable {
+interface KrrSettings {
+    val krr: OboClientConfig
+}
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine): this(config.services.krr, authService, engine)
+class KrrService(config: KrrSettings, authService: AuthService, engine: HttpClientEngine) : ServiceStatus, Closeable {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val client = lagHttpClient(engine) {
         defaultRequest {
-            url(config.url)
+            url(config.krr.url)
         }
         install(ContentNegotiation) {
             jackson {
@@ -37,7 +37,7 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
             }
         }
         installRetry(logger)
-        onBehalfOfClient(config.scope, authService)
+        onBehalfOfClient(config.krr.scope, authService)
     }
 
     @Suppress("EnumEntryName")

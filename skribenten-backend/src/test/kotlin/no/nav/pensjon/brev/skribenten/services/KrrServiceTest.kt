@@ -17,7 +17,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 
 class KrrServiceTest {
-    private val config = OboClientConfig(url = "http://krr.test", scope = "test-scope")
+    private val config = object : KrrSettings {
+        override val krr = OboClientConfig(url = "http://krr.test", scope = "test-scope")
+    }
 
     @Test
     fun `kan hente foretrukket spraak fra KRR`() {

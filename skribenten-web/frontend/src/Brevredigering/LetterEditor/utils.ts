@@ -5,6 +5,7 @@ import { FontType } from "~/types/brevbakerTypes";
 import Actions from "./actions";
 import { applyAction } from "./lib/actions";
 import { type LetterEditorState } from "./model/state";
+import { getCursorOffset } from "./services/caretUtils";
 
 export enum Typography {
   PARAGRAPH = "PARAGRAPH",
@@ -44,18 +45,21 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
   return useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (event.defaultPrevented || event.repeat) return;
+      const switchTypography = (typography: Typography) => {
+        event.preventDefault();
+        applyAction(Actions.switchTypography, setEditorState, typography);
+        // A new heading level re-renders the text, so keep the caret like the typography menu does.
+        applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
+      };
+
       if (event.altKey && event.code === "Digit1") {
-        event.preventDefault();
-        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE1);
+        switchTypography(Typography.TITLE1);
       } else if (event.altKey && event.code === "Digit2") {
-        event.preventDefault();
-        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE2);
+        switchTypography(Typography.TITLE2);
       } else if (event.altKey && event.code === "Digit3") {
-        event.preventDefault();
-        applyAction(Actions.switchTypography, setEditorState, Typography.TITLE3);
+        switchTypography(Typography.TITLE3);
       } else if (event.altKey && event.code === "Digit4") {
-        event.preventDefault();
-        applyAction(Actions.switchTypography, setEditorState, Typography.PARAGRAPH);
+        switchTypography(Typography.PARAGRAPH);
       } else if (event.altKey && event.code === "Digit5") {
         event.preventDefault();
         setEditorState((previous) => Actions.toggleBulletList(previous, previous.focus));

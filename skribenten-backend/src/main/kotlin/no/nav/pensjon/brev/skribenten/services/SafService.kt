@@ -13,7 +13,6 @@ import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
@@ -54,14 +53,15 @@ interface SafService {
 
 class SafServiceException(message: String) : ServiceException(message)
 
-class SafServiceHttp(config: SafConfig, authService: AuthService, engine: HttpClientEngine) : SafService, ServiceStatus, Closeable {
-    private val safUrl = config.url
-    private val safRestUrl = config.restUrl
-    private val safScope = config.scope
-    private val logger = LoggerFactory.getLogger(this::class.java)
+interface SafSettings {
+    val saf: SafConfig
+}
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine): this(config.services.saf, authService, engine)
+class SafServiceHttp(config: SafSettings, authService: AuthService, engine: HttpClientEngine) : SafService, ServiceStatus, Closeable {
+    private val safUrl = config.saf.url
+    private val safRestUrl = config.saf.restUrl
+    private val safScope = config.saf.scope
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     private val client = lagHttpClient(engine) {
         defaultRequest {

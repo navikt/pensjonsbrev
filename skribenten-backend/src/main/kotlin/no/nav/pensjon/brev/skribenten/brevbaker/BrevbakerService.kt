@@ -104,14 +104,15 @@ interface BrevbakerService {
     suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart): Set<AlltidValgbartVedleggBrevkode>
 }
 
-class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, val cache: Cache, engine: HttpClientEngine) : BrevbakerService, ServiceStatus, Closeable {
+interface BrevbakerSettings {
+    val brevbaker: OboClientConfig
+}
+
+class BrevbakerServiceHttp(config: BrevbakerSettings, authService: AuthService, val cache: Cache, engine: HttpClientEngine) : BrevbakerService, ServiceStatus, Closeable {
     private val logger = LoggerFactory.getLogger(BrevbakerServiceHttp::class.java)!!
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache, engine: HttpClientEngine) : this(config.services.brevbaker, authService, cache, engine)
-
-    private val brevbakerUrl = config.url
-    private val scope = config.scope
+    private val brevbakerUrl = config.brevbaker.url
+    private val scope = config.brevbaker.scope
     private val client = lagHttpClient(engine) {
         defaultRequest {
             url(brevbakerUrl)

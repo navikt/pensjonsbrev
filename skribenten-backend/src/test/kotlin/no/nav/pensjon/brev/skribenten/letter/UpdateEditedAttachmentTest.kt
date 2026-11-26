@@ -53,7 +53,13 @@ class UpdateEditedAttachmentTest {
         val result = edited.updateEditedAttachment(rendered)
 
         assertEquals(2, result.blocks.size)
-        assertTrue(result.blocks.first().missingFromTemplate == true)
+        assertEquals(
+            Edit.Block.DecisionRequest(
+                Edit.Block.DecisionRequest.Type.MISSING_FROM_RENDERED,
+                Edit.Block.DecisionRequest.Decision.PENDING,
+            ),
+            result.blocks.first().decision,
+        )
     }
 
     @Test

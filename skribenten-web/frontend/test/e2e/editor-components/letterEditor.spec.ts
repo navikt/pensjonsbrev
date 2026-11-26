@@ -1,15 +1,18 @@
 import { type BrowserContext, expect, type Locator, type Page, test } from "@playwright/test";
 
-import { type EditedLetter, ElementTags, ListType, type LiteralValue } from "~/types/brevbakerTypes";
+import { type EditedLetter, ElementTags, FontType, ListType, type LiteralValue } from "~/types/brevbakerTypes";
 import { baseSakspart, baseSignatur, editorInfo } from "~test/e2e/support/editorFixtures";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevResponse, editedLetter } from "~test/support/brevFixtures";
 import {
   literal as _literal,
   variable as _variable,
+  cell,
   item,
   itemList,
   paragraph,
+  row,
+  table,
   title1,
   title2,
   title3,
@@ -582,6 +585,231 @@ test.describe("LetterEditor", () => {
   });
 });
 
+test.describe("LetterEditor copy and paste within the editor", () => {
+  test("a selection across a heading and a paragraph survives mouseup and right-click, and copies in full", async ({
+    page,
+  }) => {
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await setupBrevRoute(
+      page,
+      makeBrevResponse(
+        editedLetter({
+          blocks: [title2(_literal("Heading to copy")), paragraph([_literal("Paragraph to copy")])],
+        }),
+      ),
+    );
+    await navigateToEditor(page);
+
+    const heading = page.locator(".editor-surface > .TITLE2 [data-literal-index]");
+    const paragraphText = page.locator(".editor-surface > .PARAGRAPH [data-literal-index]");
+    const headingBox = (await heading.boundingBox())!;
+    const paragraphBox = (await paragraphText.boundingBox())!;
+    const selectedText = () => page.evaluate(() => globalThis.getSelection()?.toString());
+
+    await page.mouse.move(headingBox.x + 1, headingBox.y + headingBox.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(paragraphBox.x + paragraphBox.width - 1, paragraphBox.y + paragraphBox.height / 2, {
+      steps: 5,
+    });
+    await page.mouse.up();
+    await expect.poll(selectedText).toBe("Heading to copy\nParagraph to copy");
+
+    await page.mouse.click(paragraphBox.x + 10, paragraphBox.y + paragraphBox.height / 2, { button: "right" });
+    await expect.poll(selectedText).toBe("Heading to copy\nParagraph to copy");
+
+    const clipboardText = () => page.evaluate(() => navigator.clipboard.readText());
+    // Like the context menu's Copy, this fires the copy event without a keydown.
+    await page.evaluate(() => document.execCommand("copy"));
+    await expect.poll(clipboardText).toBe("Heading to copy\nParagraph to copy");
+
+    await page.evaluate(() => navigator.clipboard.writeText(""));
+    await page.keyboard.press("ControlOrMeta+c");
+    await expect.poll(clipboardText).toBe("Heading to copy\nParagraph to copy");
+
+    await page.keyboard.press("Escape");
+    await paragraphText.click();
+    await expect(paragraphText).toHaveAttribute("contenteditable", "true");
+    await page.keyboard.press("End");
+    await page.keyboard.type("!");
+    await expect(paragraphText).toHaveText("Paragraph to copy!");
+  });
+
+  async function setupHeadingAndEmptyLine(
+    page: Page,
+    heading: ReturnType<typeof title1 | typeof title2 | typeof title3>,
+  ) {
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await setupBrevRoute(page, makeBrevResponse(editedLetter({ blocks: [heading, paragraph([_literal("")])] })));
+    await navigateToEditor(page);
+  }
+
+  async function copyHeadingText(page: Page, className: string, range?: { start: number; end: number }) {
+    await page.locator(`.editor-surface > .${className} [data-literal-index]`).evaluate((element, offsets) => {
+      const selectionRange = document.createRange();
+      if (offsets) {
+        selectionRange.setStart(element.firstChild!, offsets.start);
+        selectionRange.setEnd(element.firstChild!, offsets.end);
+      } else {
+        selectionRange.selectNodeContents(element);
+      }
+      globalThis.getSelection()!.removeAllRanges();
+      globalThis.getSelection()!.addRange(selectionRange);
+    }, range);
+    await page.keyboard.press("ControlOrMeta+c");
+  }
+
+  async function pasteIntoEmptyLine(page: Page) {
+    const emptyLine = page.locator(".editor-surface > .PARAGRAPH:last-child > [data-literal-index]");
+    await emptyLine.focus();
+    await expect(emptyLine).toBeFocused();
+    await page.keyboard.press("ControlOrMeta+v");
+  }
+
+  for (const [className, level, heading] of [
+    ["TITLE1", 2, title1(_literal("Knirkende stoler i rom 4A"))],
+    ["TITLE2", 3, title2(_literal("Knirkende stoler i rom 4A"))],
+    ["TITLE3", 4, title3(_literal("Knirkende stoler i rom 4A"))],
+  ] as const) {
+    test(`a whole ${className} copied on its own pastes as the same heading`, async ({ page }) => {
+      await setupHeadingAndEmptyLine(page, heading);
+      await copyHeadingText(page, className);
+      await pasteIntoEmptyLine(page);
+
+      await expect(page.locator(`.editor-surface > .${className}`)).toHaveCount(2);
+      await expect(page.locator(`.editor-surface > .${className}`).nth(1)).toHaveText("Knirkende stoler i rom 4A");
+      await expect(page.getByRole("heading", { level, name: "Knirkende stoler i rom 4A" })).toHaveCount(2);
+    });
+  }
+
+  test("a whole heading missing from the template still pastes as a heading", async ({ page }) => {
+    await setupHeadingAndEmptyLine(page, {
+      ...title2(_literal("Knirkende stoler i rom 4A")),
+      missingFromTemplate: true,
+    });
+    await expect(page.getByRole("button", { name: "Behold" })).toBeVisible();
+    await copyHeadingText(page, "TITLE2");
+    await pasteIntoEmptyLine(page);
+
+    await expect(page.locator(".editor-surface > .TITLE2")).toHaveCount(2);
+    await expect(page.locator(".editor-surface > .TITLE2").nth(1)).toHaveText("Knirkende stoler i rom 4A");
+    await expect(page.getByRole("heading", { level: 3, name: "Knirkende stoler i rom 4A", exact: true })).toHaveCount(
+      2,
+    );
+  });
+
+  test("part of a heading pastes as plain paragraph text", async ({ page }) => {
+    await setupHeadingAndEmptyLine(page, title1(_literal("Knirkende stoler i rom 4A")));
+    await copyHeadingText(page, "TITLE1", { start: 0, end: 9 });
+    await pasteIntoEmptyLine(page);
+
+    await expect(page.locator(".editor-surface > .TITLE1")).toHaveCount(1);
+    const pasted = page.locator(".editor-surface > .PARAGRAPH").getByText("Knirkende", { exact: true });
+    await expect(pasted).toHaveCSS("font-weight", "400");
+  });
+
+  test("a heading and a paragraph with bold text keep their structure and formatting", async ({ page }) => {
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await setupBrevRoute(
+      page,
+      makeBrevResponse(
+        editedLetter({
+          blocks: [
+            title2(_literal("Knirkende stoler i rom 4A")),
+            paragraph([_literal("Noen stoler "), { ..._literal("knirker"), fontType: FontType.BOLD }, _literal(".")]),
+            paragraph([_literal("")]),
+          ],
+        }),
+      ),
+    );
+    await navigateToEditor(page);
+
+    await page.evaluate(() => {
+      const literals = document.querySelectorAll(".editor-surface [data-literal-index]");
+      const range = document.createRange();
+      range.setStart(literals[0].firstChild!, 0);
+      range.setEnd(literals[3].firstChild!, 1);
+      globalThis.getSelection()!.removeAllRanges();
+      globalThis.getSelection()!.addRange(range);
+    });
+    await page.keyboard.press("ControlOrMeta+c");
+
+    const emptyParagraph = page.locator(".editor-surface > .PARAGRAPH:nth-child(3) > [data-literal-index]");
+    await emptyParagraph.focus();
+    await expect(emptyParagraph).toBeFocused();
+    await page.keyboard.press("ControlOrMeta+v");
+
+    const pastedHeading = page.locator(".editor-surface > .TITLE2").nth(1);
+    await expect(pastedHeading).toHaveText("Knirkende stoler i rom 4A");
+    const sourceParagraph = page.locator(".editor-surface > .TITLE2 + .PARAGRAPH").first();
+    const pastedParagraph = page.locator(".editor-surface > .TITLE2 + .PARAGRAPH").nth(1);
+    await expect(pastedParagraph).toHaveText((await sourceParagraph.textContent()) ?? "");
+    await expect(pastedParagraph.getByText("knirker", { exact: true })).toHaveCSS("font-weight", "700");
+    await expect(pastedParagraph.getByText("Noen stoler", { exact: true })).toHaveCSS("font-weight", "400");
+  });
+
+  test("copying within numbered lists and tables keeps list numbering and cell boundaries", async ({ page }) => {
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await setupBrevRoute(
+      page,
+      makeBrevResponse(
+        editedLetter({
+          blocks: [
+            paragraph([
+              itemList({
+                listType: ListType.NUMMERERT_LISTE,
+                items: [item({ content: [_literal("Første")] }), item({ content: [_literal("Andre")] })],
+              }),
+            ]),
+            paragraph([
+              table([cell(_literal("H1")), cell(_literal("H2"))], [row(cell(_literal("A1")), cell(_literal("B1")))]),
+            ]),
+            paragraph([_literal("")]),
+            paragraph([_literal("")]),
+          ],
+        }),
+      ),
+    );
+    await navigateToEditor(page);
+
+    const listItems = page.locator(".editor-surface ol li");
+    const firstItemBox = (await listItems.nth(0).boundingBox())!;
+    const secondItemBox = (await listItems.nth(1).boundingBox())!;
+    await page.mouse.move(firstItemBox.x + 2, firstItemBox.y + firstItemBox.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(secondItemBox.x + secondItemBox.width - 2, secondItemBox.y + secondItemBox.height / 2, {
+      steps: 5,
+    });
+    await page.mouse.up();
+    await page.keyboard.press("ControlOrMeta+c");
+
+    const firstTarget = page.locator(".editor-surface > .PARAGRAPH:nth-child(3) > [data-literal-index]");
+    await firstTarget.click();
+    await page.keyboard.press("ControlOrMeta+v");
+
+    await expect(page.locator(".editor-surface ol")).toHaveCount(2);
+    await expect(page.locator(".editor-surface ol").nth(1).locator("li")).toHaveText(["Første", "Andre", "\u200B"]);
+
+    const tableCells = page.locator(".editor-surface tbody td");
+    const firstCellBox = (await tableCells.nth(0).boundingBox())!;
+    const secondCellBox = (await tableCells.nth(1).boundingBox())!;
+    await page.mouse.move(firstCellBox.x + 2, firstCellBox.y + firstCellBox.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(secondCellBox.x + secondCellBox.width - 2, secondCellBox.y + secondCellBox.height / 2, {
+      steps: 5,
+    });
+    await page.mouse.up();
+    await page.keyboard.press("ControlOrMeta+c");
+
+    const secondTarget = page.locator(".editor-surface > .PARAGRAPH:last-child > [data-literal-index]");
+    await secondTarget.click();
+    await page.keyboard.press("ControlOrMeta+v");
+
+    await expect(page.getByTestId("letter-table")).toHaveCount(2);
+    const pastedTable = page.getByTestId("letter-table").nth(1);
+    await expect(pastedTable.locator("th")).toHaveText(["A1", "B1"]);
+  });
+});
+
 test.describe("LetterEditor empty-line context menu", () => {
   test.beforeEach(async ({ page }) => {
     await setupBrevRoute(
@@ -624,7 +852,7 @@ test.describe("LetterEditor empty-line context menu", () => {
         await copyText(page, source);
 
         const line = page.locator(`.editor-surface ${selector}`);
-        const editable = line.locator(":scope > [data-literal-index]");
+        const editable = line.locator("[data-literal-index]");
         await expect(editable).toHaveAttribute("data-empty", "");
         const bounds = await line.boundingBox();
         if (!bounds) throw new Error("Missing empty line bounds");

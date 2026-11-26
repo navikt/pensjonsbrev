@@ -26,8 +26,12 @@ sealed class Cache : Closeable {
     abstract suspend fun update(key: String, value: String, ttl: Duration)
 }
 
+interface CacheSettings {
+    val valkey: ValkeyConfig
+}
+
 private val factoryLogger = LoggerFactory.getLogger(Cache::class.java)
-fun cacheFactory(config: SkribentenConfig, registry: MeterRegistry = Metrics.registry): Cache =
+fun cacheFactory(config: CacheSettings, registry: MeterRegistry = Metrics.registry): Cache =
     if (config.valkey.enabled) {
         Valkey(config.valkey, registry)
     } else {

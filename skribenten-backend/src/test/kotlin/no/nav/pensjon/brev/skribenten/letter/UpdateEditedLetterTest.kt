@@ -889,7 +889,13 @@ class UpdateRenderedLetterTest {
                 literal(id = 11, text = "en literal")
                 variable(id = 12, text = "oppdatert v1")
             }
-            paragraph(id = 2, missingFromTemplate = true) {
+            paragraph(
+                id = 2,
+                decision = Edit.Block.DecisionRequest(
+                    Edit.Block.DecisionRequest.Type.MISSING_FROM_RENDERED,
+                    Edit.Block.DecisionRequest.Decision.PENDING,
+                ),
+            ) {
                 variable(id = 12, text = "oppdatert v1")
                 literal(id = 21, text = "hei", editedText = "heisann")
             }

@@ -10,7 +10,6 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
 import no.nav.pensjon.brev.skribenten.OboClientConfig
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
@@ -26,17 +25,18 @@ interface SkjermingService {
 
 private val logger = LoggerFactory.getLogger(SkjermingService::class.java)
 
+interface SkjermingSettings {
+    val skjerming: OboClientConfig
+}
+
 class SkjermingServiceHttp(
-    config: OboClientConfig,
+    config: SkjermingSettings,
     authService: AuthService,
     private val cache: Cache,
     engine: HttpClientEngine,
 ) : SkjermingService, Closeable {
-    private val url: String = config.url
-    private val scope: String = config.scope
-
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.services.skjerming, authService, cache, engine)
+    private val url: String = config.skjerming.url
+    private val scope: String = config.skjerming.scope
 
     private val client = lagHttpClient(engine) {
         defaultRequest { url(this@SkjermingServiceHttp.url) }

@@ -22,14 +22,17 @@ import { type MissingFromTemplateEventName, trackMissingFromTemplateAction } fro
 
 import Actions from "./actions";
 import { countMissingFromTemplateBlocks, getBlockClassName } from "./actions/common";
+import { BlockHeading } from "./components/BlockHeading";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
+import { useAttestantDiff } from "./diff/AttestantDiffContext";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
 import { useRedigeringsflate } from "./RedigeringsflateContext";
+import { copyAsSemanticHtml } from "./services/semanticCopy";
 import { useEditorKeyboardShortcuts } from "./utils";
 
 const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
@@ -57,6 +60,8 @@ export const LetterEditor = ({
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
+  const { diff, diffHash, showDeletions, showInsertions } = useAttestantDiff();
+  const showingDiff = diff && diffHash && (showDeletions || showInsertions);
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
   const [showFocusRing, setShowFocusRing] = useState(false);
@@ -187,6 +192,7 @@ export const LetterEditor = ({
             <div
               className="editor-surface"
               data-editor-root
+              onCopy={showingDiff ? undefined : copyAsSemanticHtml}
               onDragOver={(e) => {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = "none";
@@ -234,7 +240,9 @@ export const LetterEditor = ({
                         </Button>
                       </HStack>
                     )}
-                    <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
+                    <BlockHeading type={block.type}>
+                      <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
+                    </BlockHeading>
                   </div>
                 </React.Fragment>
               ))}

@@ -12,7 +12,6 @@ import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.*
 import no.nav.pensjon.brev.skribenten.OboClientConfig
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.common.Cache
@@ -36,18 +35,19 @@ interface SamhandlerService {
     suspend fun hentSamhandlerAdresse(idTSSEkstern: TssId): HentSamhandlerAdresseResponseDto
 }
 
+interface SamhandlerSettings {
+    val samhandlerProxy: OboClientConfig
+}
+
 class SamhandlerServiceHttp(
-    config: OboClientConfig,
+    config: SamhandlerSettings,
     authService: AuthService,
     private val cache: Cache,
     engine: HttpClientEngine,
 ) : SamhandlerService, ServiceStatus, Closeable {
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.services.samhandlerProxy, authService, cache, engine)
-
-    private val samhandlerProxyUrl = config.url
-    private val samhandlerProxyScope = config.scope
+    private val samhandlerProxyUrl = config.samhandlerProxy.url
+    private val samhandlerProxyScope = config.samhandlerProxy.scope
 
     private val samhandlerProxyClient = lagHttpClient(engine) {
         defaultRequest {

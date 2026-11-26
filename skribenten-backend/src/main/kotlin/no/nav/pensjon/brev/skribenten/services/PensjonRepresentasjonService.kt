@@ -12,7 +12,6 @@ import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
@@ -23,19 +22,20 @@ import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+interface PensjonRepresentasjonSettings {
+    val pensjonRepresentasjon: OboClientConfig
+}
+
 class PensjonRepresentasjonService(
-    config: OboClientConfig,
+    config: PensjonRepresentasjonSettings,
     authService: AuthService,
     private val cache: Cache,
     engine: HttpClientEngine,
 ): Closeable {
 
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.services.pensjonRepresentasjon, authService, cache, engine)
-
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val pensjonPersondataURL = config.url
-    private val scope = config.scope
+    private val pensjonPersondataURL = config.pensjonRepresentasjon.url
+    private val scope = config.pensjonRepresentasjon.scope
 
     private val client = lagHttpClient(engine) {
         defaultRequest {

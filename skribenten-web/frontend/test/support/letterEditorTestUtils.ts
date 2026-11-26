@@ -64,7 +64,11 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
 }
 
 export function withMissingFromTemplate<T extends AnyBlock>(block: T, missingFromTemplate = true): T {
-  return { ...block, missingFromTemplate };
+  return {
+    ...block,
+    missingFromTemplate,
+    decision: missingFromTemplate ? { type: "MISSING_FROM_RENDERED", status: "PENDING" } : null,
+  };
 }
 
 type TitleArgs = { id?: Nullable<number>; content: TextContent[] };

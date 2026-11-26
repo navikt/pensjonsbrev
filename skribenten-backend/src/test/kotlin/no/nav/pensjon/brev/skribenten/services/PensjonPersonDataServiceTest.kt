@@ -26,7 +26,9 @@ class PensjonPersonDataServiceTest {
     }
 
     private fun pensjonPersonDataService(engine: MockEngine) = PensjonPersonDataServiceImpl(
-        OboClientConfig(url = "http://localhost", scope = "fri tilgang"),
+        object : PensjonPersonDataSettings {
+            override val pensjonPersondata = OboClientConfig(url = "http://localhost", scope = "fri tilgang")
+        },
         FakeAuthService,
         engine,
         InMemoryCache()

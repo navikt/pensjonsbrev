@@ -26,6 +26,8 @@ import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
+import no.nav.pensjon.brev.skribenten.common.updateBrevredigeringJson
+import no.nav.pensjon.brev.skribenten.common.updateRedigertVedleggJson
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.*
@@ -37,6 +39,10 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.SkribentenApp")
+
+interface CorsSettings {
+    val cors: CorsConfig
+}
 
 fun main(args: Array<String>) {
     Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
@@ -132,7 +138,8 @@ fun Application.skribentenApp() {
     skribentenContenNegotiation()
     configureDependencies()
 
-    val skribentenConfig: SkribentenConfig by dependencies
+    val corsSettings: CorsSettings by dependencies
+    val azureADSettings: AzureADSettings by dependencies
 
     install(CORS) {
         allowMethod(HttpMethod.Options)
@@ -142,13 +149,13 @@ fun Application.skribentenApp() {
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.ContentType)
         allowHeader("X-Request-ID")
-        skribentenConfig.cors.host.split(",").forEach { host ->
-            allowHost(host, schemes = skribentenConfig.cors.schemes)
+        corsSettings.cors.host.split(",").forEach { host ->
+            allowHost(host, schemes = corsSettings.cors.schemes)
         }
     }
 
     install(Authentication) {
-        skribentenJwt(skribentenConfig.azureAD)
+        skribentenJwt(azureADSettings.azureAD)
     }
 
     configureRouting()
@@ -161,6 +168,12 @@ fun Application.skribentenApp() {
             val leaderService: NaisLeaderService by dependencies
             oneShotJobs(leaderService) {
                 // Sett opp evt. jobber her
+                job("2026-11-24-oppdater-brevredigering-json") {
+                    updateBrevredigeringJson(it)
+                }
+                job("2026-11-24-oppdater-redigert-vedlegg-json") {
+                    updateRedigertVedleggJson(it)
+                }
             }
         }
         launch {
