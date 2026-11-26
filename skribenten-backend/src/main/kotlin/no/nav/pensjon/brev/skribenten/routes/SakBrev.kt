@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.*
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
 import no.nav.pensjon.brev.skribenten.common.asSuccess
@@ -84,7 +85,7 @@ fun Route.sakBrev() =
                 )
 
                 apiRespond(dto2ApiService, brev)
-            }
+            }.kreverMarkupVersjon(MarkupVersjon.V1)
 
             val oppdaterBrev: OppdaterBrevHandler by app.dependencies
             val observability: BrevoppdateringObservability by app.dependencies
@@ -106,7 +107,7 @@ fun Route.sakBrev() =
                     apiRespond(dto2ApiService, result)
                     result
                 }
-            }
+            }.kreverMarkupVersjon(MarkupVersjon.V1)
 
             // TODO: fjern når frontend er oppdatert til å bruke endreValgteVedlegg-endepunktet
             val endreValgteVedlegg: EndreValgteVedleggHandler by app.dependencies
@@ -128,7 +129,7 @@ fun Route.sakBrev() =
                     val brev = hentBrev(HentBrevHandler.Request(brevId = brevId, saksId = sak.saksId, reserverForRedigering = false))
                     apiRespond(dto2ApiService, brev)
                 }
-            }
+            }.kreverMarkupVersjon(MarkupVersjon.V1)
 
             val endreDistribusjonstype: EndreDistribusjonstypeHandler by app.dependencies
             put("/distribusjon") {
@@ -161,7 +162,7 @@ fun Route.sakBrev() =
                 )
 
                 apiRespond(dto2ApiService, brev)
-            }
+            }.kreverMarkupVersjon(MarkupVersjon.V1)
 
             route("/redigerbareVedlegg") {
                 val hentRedigerbareVedlegg: HentRedigerbareVedleggHandler by app.dependencies
@@ -187,7 +188,7 @@ fun Route.sakBrev() =
                         )
 
                         respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
-                    }
+                    }.kreverMarkupVersjon(MarkupVersjon.V1)
 
                     val endreRedigertVedlegg: EndreRedigertVedleggHandler by app.dependencies
                     put {
@@ -206,7 +207,7 @@ fun Route.sakBrev() =
                         )
 
                         respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
-                    }
+                    }.kreverMarkupVersjon(MarkupVersjon.V1)
 
                     val tilbakestillRedigertVedlegg: TilbakestillRedigertVedleggHandler by app.dependencies
                     delete {
@@ -219,7 +220,7 @@ fun Route.sakBrev() =
                         )
 
                         respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
-                    }
+                    }.kreverMarkupVersjon(MarkupVersjon.V1)
                 }
             }
 
@@ -318,7 +319,7 @@ fun Route.sakBrev() =
                     )
 
                     apiRespond(dto2ApiService, resultat)
-                }
+                }.kreverMarkupVersjon(MarkupVersjon.V1)
 
                 val attesterBrev: AttesterBrevHandler by app.dependencies
                 put {
@@ -337,7 +338,7 @@ fun Route.sakBrev() =
                     )
 
                     apiRespond(dto2ApiService, resultat)
-                }
+                }.kreverMarkupVersjon(MarkupVersjon.V1)
 
                 val lagreAttestertBrev: LagreAttestertBrevHandler by app.dependencies
                 put<Edit.Letter>("/redigertBrev") { request ->
@@ -355,7 +356,7 @@ fun Route.sakBrev() =
                     )
 
                     apiRespond(dto2ApiService, resultat)
-                }
+                }.kreverMarkupVersjon(MarkupVersjon.V1)
 
                 val hentEllerOpprettAttesteringPdf: HentEllerOpprettAttesteringPdfHandler by app.dependencies
                 get("/pdf") {
@@ -393,7 +394,7 @@ fun Route.sakBrev() =
                             )
 
                             respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
-                        }
+                        }.kreverMarkupVersjon(MarkupVersjon.V1)
 
                         val lagreAttestertVedlegg: LagreAttestertVedleggHandler by app.dependencies
                         put<Api.RedigertVedleggRequest> { request ->
@@ -411,7 +412,7 @@ fun Route.sakBrev() =
                             )
 
                             respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
-                        }
+                        }.kreverMarkupVersjon(MarkupVersjon.V1)
                     }
                 }
             }

@@ -7,13 +7,14 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
+import no.nav.pensjon.brev.skribenten.auth.BrevInfoKey
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.DiffBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.FrigiReservasjonHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevInfoHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
@@ -27,13 +28,10 @@ fun Route.brev() {
     val dto2ApiService: Dto2ApiService by app.dependencies
 
     route("/brev/{brevId}") {
-        val hentBrevInfo: HentBrevInfoHandler by app.dependencies
         install(AuthorizeAnsattSakTilgangForBrev)
 
         get("/info") {
-            val brevId = call.parameters.brevId()
-            val hentBrevInfo = hentBrevInfo(HentBrevInfoHandler.Request(brevId))
-            respondSuccess(hentBrevInfo?.asSuccess()) { respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
+            call.respond(HttpStatusCode.OK, dto2ApiService.toApi(call.attributes[BrevInfoKey]))
         }
 
         val oppdaterBrev: OppdaterBrevHandler by app.dependencies
@@ -50,7 +48,7 @@ fun Route.brev() {
                 )
             )
             apiRespond(dto2ApiService, resultat)
-        }
+        }.kreverMarkupVersjon(MarkupVersjon.V1)
 
         route("/reservasjon") {
             val reserverBrev: ReserverBrevHandler by app.dependencies
@@ -76,7 +74,7 @@ fun Route.brev() {
             val sak: Fagsak = call.attributes[SakKey]
             val resultat = tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId, saksId = sak.saksId))
             apiRespond(dto2ApiService, resultat)
-        }
+        }.kreverMarkupVersjon(MarkupVersjon.V1)
 
         val diffBrev: DiffBrevHandler by app.dependencies
         post<Edit.Letter>("/diff") { request ->
@@ -86,7 +84,7 @@ fun Route.brev() {
 
             val result = diffBrev(DiffBrevHandler.Request(brevId, sak.saksId, VersjonertBrev.V1(request), split))
             respondSuccess(result?.asSuccess()) { respond(HttpStatusCode.OK, (it as DiffBrevHandler.Resultat.V1).response) }
-        }
+        }.kreverMarkupVersjon(MarkupVersjon.V1)
     }
 }
 
