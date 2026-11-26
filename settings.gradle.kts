@@ -45,6 +45,7 @@ include("brevbaker:pdf-bygger")
 include("brevbaker:template-model-generator")
 
 include("skribenten-backend")
+include("brevoppskrift-backend")
 
 include("pensjon:brevbaker")
 include("pensjon:maler")

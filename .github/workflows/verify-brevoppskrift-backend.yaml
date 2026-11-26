@@ -1,0 +1,45 @@
+name: "verify: brevoppskrift-backend"
+
+on:
+  pull_request:
+    paths:
+      - brevoppskrift-backend/**
+      - ktlint-rules/**
+      - settings.gradle.kts
+      - build.gradle.kts
+      - gradle.properties
+      - gradle/**
+      - .github/workflows/verify-brevoppskrift-backend.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+        with:
+          cache-encryption-key: ${{ secrets.GRADLEKEY }}
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: 25
+      - name: Verify model
+        run: ./gradlew :brevoppskrift-backend:build
+
+  klarTilMerge:
+    name: "Klar til merge"
+    needs: [verify]
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr
