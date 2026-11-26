@@ -16,13 +16,16 @@ ktor {
     }
 }
 
+// Resolved eagerly: NodePlugin maps `version` through a lambda that captures its non-serializable Project.
+// A lazy ValueSource here makes the configuration cache serialize that lambda, failing nodeSetup on reuse.
+val nodeVersion: String = providers.fileContents(toolVersions).asText.get()
+    .lineSequence().firstOrNull { it.startsWith("nodejs ") }
+    ?.substringAfter("nodejs ")?.trim()?.takeIf { it.isNotBlank() }
+    ?: throw GradleException("Missing 'nodejs <version>' in .tool-versions")
+
 node {
     download.set(providers.environmentVariable("CI").map { !it.toBoolean() }.orElse(true))
-    version.set(providers.fileContents(toolVersions).asText.map { contents ->
-        contents.lineSequence().firstOrNull { it.startsWith("nodejs ") }
-            ?.substringAfter("nodejs ")?.trim()?.takeIf { it.isNotBlank() }
-            ?: throw GradleException("Missing 'nodejs <version>' in .tool-versions")
-    })
+    version.set(nodeVersion)
     nodeProjectDir.set(apiTypes.npmDirectory)
     npmInstallCommand.set("ci")
 }
