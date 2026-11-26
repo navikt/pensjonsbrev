@@ -26,58 +26,65 @@ const eblankettValidationSchema = z.object({
 
 const mottakere = [
   {
-    id: "almannastovan",
+    // https://www.av.fo/
+    id: "almannaverkid",
     landkode: "FRO",
-    navn: "Almannastovan",
+    navn: "Almannaverkið",
     landnavn: "Færøyene",
-    adresse: `Almannastovan
-Jónas Broncksgøta 27
-Postrúm 196
+    adresse: `Almannaverkið
+Staravegur 18
+Postrúm 3096
 110 Tórshavn
 FÆRØYENE`,
   },
   {
-    id: "familiedirektoratet",
+    // https://naalakkersuisut.gl/Departementer/Sociale_Anlig_Arbsmarked_Familier_og_Indenrigsan/Sociale-Anliggender?sc_lang=da
+    id: "sociale-anliggender",
     landkode: "GRL",
-    navn: "Familiedirektoratet",
+    navn: "Sociale Anliggender (udsatte voksne, ældre)",
     landnavn: "Grønland",
-    adresse: `Familiedirektoratet
-Grønlands Hjemmestyre
-Postbox 260
-3900 Nuuk
-GRØNLAND`,
-  },
-  {
-    id: "departementet",
-    landkode: "GRL",
-    navn: "Departementet",
-    landnavn: "Grønland",
-    adresse: `Departementet for Sociale Anliggender, Familier, Arbejdsmarked og Indenrigsanliggender
-Ministry of Social Affairs and Labour
+    adresse: `Departementet for Sociale Anliggender, Arbejdsmarked, Familier og Indenrigsanliggender
+Sociale Anliggender
 Imaneq 1 A
 Postboks 970
 3900 Nuuk
 GRØNLAND`,
   },
   {
+    // https://naalakkersuisut.gl/Departementer/Sociale_Anlig_Arbsmarked_Familier_og_Indenrigsan/Socialeomraadet?sc_lang=da
+    id: "socialeomraadet",
+    landkode: "GRL",
+    navn: "Socialeområdet (udsatte voksne, ældre, familie)",
+    landnavn: "Grønland",
+    adresse: `Departementet for Sociale Anliggender, Arbejdsmarked, Familier og Indenrigsanliggender
+Socialeområdet
+Imaneq 1 A
+Postboks 970
+3900 Nuuk
+GRØNLAND`,
+  },
+  {
+    // https://www.gov.im/about-the-government/departments/the-treasury/social-security-division
     id: "isle-of-man",
     landkode: "GBR",
     navn: "Social Security Division",
     landnavn: "Isle of Man",
-    adresse: `Department of Health and Social Security, Social Security Division
+    adresse: `The Treasury,
+Social Security Division
 Markwell House
 Market Street
 Douglas
 ISLE OF MAN`,
   },
   {
+    // https://www.gov.je/pages/contacts.aspx?contactId=201
     id: "jersey",
     landkode: "GBR",
-    navn: "Social Department",
+    navn: "Employment, Social Sec. & Housing",
     landnavn: "Jersey",
-    adresse: `Social Department
-Philip Le Feuvre Hourse
-La Motte Street
+    adresse: `Government of Jersey,
+Employment, Social Security and Housing Department
+Union Street
 St Helier
 JERSEY, CHANNEL ISLANDS`,
   },
@@ -224,7 +231,7 @@ export default function EBlankett({
               error={methods.formState.errors.mottakerText?.message}
               hideLabel
               id={mottakerId}
-              label="Mottaker"
+              label="Rediger mottaker"
               onChange={(event) => {
                 setValgtMottaker("");
                 setValue("mottakerText", event.target.value, { shouldDirty: true });
