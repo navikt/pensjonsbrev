@@ -69,7 +69,7 @@ GRØNLAND`,
     landkode: "GBR",
     navn: "Social Security Division",
     landnavn: "Isle of Man",
-    adresse: `The Treasury,
+    adresse: `The Treasury
 Social Security Division
 Markwell House
 Market Street
@@ -82,7 +82,7 @@ ISLE OF MAN`,
     landkode: "GBR",
     navn: "Employment, Social Sec. & Housing",
     landnavn: "Jersey",
-    adresse: `Government of Jersey,
+    adresse: `Government of Jersey
 Employment, Social Security and Housing Department
 Union Street
 St Helier

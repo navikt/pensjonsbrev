@@ -12,13 +12,14 @@ declare global {
 const orderUrl = "**/bff/skribenten-backend/sak/123456/bestillBrev/exstream/eblankett";
 
 const recipients = {
-  almannastovan: "Almannastovan\nJónas Broncksgøta 27\nPostrúm 196\n110 Tórshavn\nFÆRØYENE",
-  familiedirektoratet: "Familiedirektoratet\nGrønlands Hjemmestyre\nPostbox 260\n3900 Nuuk\nGRØNLAND",
-  departementet:
-    "Departementet for Sociale Anliggender, Familier, Arbejdsmarked og Indenrigsanliggender\nMinistry of Social Affairs and Labour\nImaneq 1 A\nPostboks 970\n3900 Nuuk\nGRØNLAND",
-  "isle-of-man":
-    "Department of Health and Social Security, Social Security Division\nMarkwell House\nMarket Street\nDouglas\nISLE OF MAN",
-  jersey: "Social Department\nPhilip Le Feuvre Hourse\nLa Motte Street\nSt Helier\nJERSEY, CHANNEL ISLANDS",
+  almannaverkid: "Almannaverkið\nStaravegur 18\nPostrúm 3096\n110 Tórshavn\nFÆRØYENE",
+  "sociale-anliggender":
+    "Departementet for Sociale Anliggender, Arbejdsmarked, Familier og Indenrigsanliggender\nSociale Anliggender\nImaneq 1 A\nPostboks 970\n3900 Nuuk\nGRØNLAND",
+  socialeomraadet:
+    "Departementet for Sociale Anliggender, Arbejdsmarked, Familier og Indenrigsanliggender\nSocialeområdet\nImaneq 1 A\nPostboks 970\n3900 Nuuk\nGRØNLAND",
+  "isle-of-man": "The Treasury\nSocial Security Division\nMarkwell House\nMarket Street\nDouglas\nISLE OF MAN",
+  jersey:
+    "Government of Jersey\nEmployment, Social Security and Housing Department\nUnion Street\nSt Helier\nJERSEY, CHANNEL ISLANDS",
 };
 
 const creationEvents = (page: Page) =>
@@ -167,11 +168,11 @@ test("Norge tilbyr alle mottakere og lar saksbehandler redigere eller tømme adr
   await expect(textarea).toHaveValue("");
   await expect(recipient.locator("option")).toHaveText([
     "Velg mottaker",
-    "Almannastovan (Færøyene)",
-    "Familiedirektoratet (Grønland)",
-    "Departementet (Grønland)",
+    "Almannaverkið (Færøyene)",
+    "Sociale Anliggender (udsatte voksne, ældre) (Grønland)",
+    "Socialeområdet (udsatte voksne, ældre, familie) (Grønland)",
     "Social Security Division (Isle of Man)",
-    "Social Department (Jersey)",
+    "Employment, Social Sec. & Housing (Jersey)",
   ]);
   await expect(page.getByRole("radiogroup", { name: "Velg mottaker" })).not.toBeVisible();
   await page.getByTestId("order-letter").click();
@@ -187,7 +188,7 @@ test("Norge tilbyr alle mottakere og lar saksbehandler redigere eller tømme adr
   await textarea.fill("Manuelt endret mottaker");
   await expect(recipient).toHaveValue("");
   await expect(textarea).toHaveValue("Manuelt endret mottaker");
-  await recipient.selectOption("almannastovan");
+  await recipient.selectOption("almannaverkid");
   await recipient.selectOption("");
   await expect(textarea).toHaveValue("");
   await expect(textarea).not.toHaveAttribute("aria-invalid", "true");
@@ -196,8 +197,8 @@ test("Norge tilbyr alle mottakere og lar saksbehandler redigere eller tømme adr
 });
 
 for (const { landkode, ids } of [
-  { landkode: "FRO", ids: ["almannastovan"] },
-  { landkode: "GRL", ids: ["familiedirektoratet", "departementet"] },
+  { landkode: "FRO", ids: ["almannaverkid"] },
+  { landkode: "GRL", ids: ["sociale-anliggender", "socialeomraadet"] },
   { landkode: "GBR", ids: ["isle-of-man", "jersey"] },
 ] as const) {
   test(`Land ${landkode} velger standardmottaker og tilbyr bare landets adresser`, async ({ page }) => {
@@ -224,8 +225,8 @@ for (const { landkode, ids } of [
       ]);
       const expectedNames =
         landkode === "GRL"
-          ? ["Familiedirektoratet", "Departementet"]
-          : ["Social Security Division (Isle of Man)", "Social Department (Jersey)"];
+          ? ["Sociale Anliggender (udsatte voksne, ældre)", "Socialeområdet (udsatte voksne, ældre, familie)"]
+          : ["Social Security Division (Isle of Man)", "Employment, Social Sec. & Housing (Jersey)"];
       for (const [index, id] of ids.entries()) {
         await expect(radios.nth(index)).toHaveAccessibleName(expectedNames[index]);
         await radios.nth(index).check();
@@ -305,7 +306,7 @@ test("Mottaker valideres bare når Fortsett trykkes etter redigering og valg", a
   await expect(error).toBeVisible();
   expect(orders).toBe(0);
 
-  await recipient.selectOption("almannastovan");
+  await recipient.selectOption("almannaverkid");
   await expect(error).not.toBeVisible();
   await recipient.selectOption("");
   await expect(textarea).toHaveValue("");
@@ -347,7 +348,7 @@ test("Landbytte tømmer mottaker uten feilmelding før Fortsett trykkes", async 
 
   for (const code of ["BEL", "", "SWE"]) {
     await country.selectOption("FRO");
-    await expect(textarea).toHaveValue(recipients.almannastovan);
+    await expect(textarea).toHaveValue(recipients.almannaverkid);
     await country.selectOption(code);
     await expect(textarea).toHaveValue("");
     await expect(error).not.toBeVisible();
@@ -382,8 +383,8 @@ test("Land uten mottakere tømmer adressen og lar saksbehandler skrive en ny mot
   for (const code of ["BEL", "", "SWE"]) {
     await country.selectOption("FRO");
     await country.selectOption("NOR");
-    await expect(recipient).toHaveValue("almannastovan");
-    await expect(textarea).toHaveValue(recipients.almannastovan);
+    await expect(recipient).toHaveValue("almannaverkid");
+    await expect(textarea).toHaveValue(recipients.almannaverkid);
     await country.selectOption(code);
     await expect(textarea).toHaveValue("");
     await expect(textarea).toBeEditable();
