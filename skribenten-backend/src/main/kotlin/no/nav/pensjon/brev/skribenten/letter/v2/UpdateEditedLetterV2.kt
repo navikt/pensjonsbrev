@@ -8,14 +8,14 @@ import no.nav.pensjon.brev.skribenten.letter.v2.EditV2.Block.Table
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2.Item
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2.Text
 
-internal class UpdateEditedLetterV2(private val variableValues: Map<Int, String>) {
+internal class UpdateEditedLetterV2(private val variableValues: VariableValuesUpdaterV2) {
 
     companion object {
         fun merge(edited: EditV2.Letter, rendered: LetterMarkup): EditV2.Letter =
-            EditV2Markup.toEdit(rendered).let { UpdateEditedLetterV2(it.variablesValueMap()).mergeLetter(edited, it) }
+            EditV2Markup.toEdit(rendered).let { UpdateEditedLetterV2(VariableValuesUpdaterV2(it)).mergeLetter(edited, it) }
 
         fun merge(edited: EditV2.Attachment, rendered: Attachment): EditV2.Attachment =
-            EditV2Markup.toEdit(rendered).let { UpdateEditedLetterV2(it.variablesValueMap()).mergeAttachment(edited, it) }
+            EditV2Markup.toEdit(rendered).let { UpdateEditedLetterV2(VariableValuesUpdaterV2(it)).mergeAttachment(edited, it) }
 
         fun updateSaksinformasjonOgSignatur(edited: EditV2.Letter, rendered: LetterMarkup): EditV2.Letter =
             edited.copy(
@@ -32,81 +32,27 @@ internal class UpdateEditedLetterV2(private val variableValues: Map<Int, String>
     }
 
     private fun mergeLetter(edited: EditV2.Letter, rendered: EditV2.Letter): EditV2.Letter =
-        edited.copy(
-            title = mergeTitle(edited.title, rendered.title),
-            saksinformasjon = rendered.saksinformasjon,
-            signatur = mergeSignatur(edited.signatur, rendered.signatur),
-            blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues, ::setMissing),
-            deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
-        )
+        mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock).let { merged ->
+            edited.copy(
+                title = mergeTitle(edited.title, rendered.title),
+                saksinformasjon = rendered.saksinformasjon,
+                signatur = mergeSignatur(edited.signatur, rendered.signatur),
+                blocks = merged.items,
+                deletedBlocks = merged.deleted,
+            )
+        }
 
     private fun mergeAttachment(edited: EditV2.Attachment, rendered: EditV2.Attachment): EditV2.Attachment =
-        edited.copy(
-            title = mergeTitle(edited.title, rendered.title),
-            blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues, ::setMissing),
-            deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
-            inkluderSaksinformasjon = rendered.inkluderSaksinformasjon,
-        )
-
-    private fun prunedDeleted(deleted: List<Int>, edited: List<EditV2.Identifiable>, rendered: List<EditV2.Identifiable>): List<Int> {
-        if (deleted.isEmpty()) return emptyList()
-
-        val matchedRenderedIndices = matchedRenderedIndices(edited, rendered)
-        val unmatchedRenderedCounts = rendered
-            .filterIndexed { index, element -> element.id != null && index !in matchedRenderedIndices }
-            .groupingBy { it.id }
-            .eachCount()
-        val deletedCounts = deleted.groupingBy { it }.eachCount()
-
-        return deletedCounts.flatMap { (id, deletedCount) ->
-            List(minOf(deletedCount, unmatchedRenderedCounts[id] ?: 0)) { id }
+        mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock).let { merged ->
+            edited.copy(
+                title = mergeTitle(edited.title, rendered.title),
+                blocks = merged.items,
+                deletedBlocks = merged.deleted,
+                inkluderSaksinformasjon = rendered.inkluderSaksinformasjon,
+            )
         }
-    }
 
-    private fun matchedRenderedIndices(edited: List<EditV2.Identifiable>, rendered: List<EditV2.Identifiable>): Set<Int> {
-        val editedIds = edited.mapNotNull { it.id }
-        val renderedWithIds = rendered.mapIndexedNotNull { index, element -> element.id?.let { index to it } }
-        val renderedIds = renderedWithIds.map { it.second }
-        val lengths = longestCommonSubsequenceLengths(editedIds, renderedIds)
-
-        return collectMatchedRenderedIndices(editedIds, renderedWithIds, lengths)
-    }
-
-    private fun longestCommonSubsequenceLengths(editedIds: List<Int>, renderedIds: List<Int>): Array<IntArray> {
-        val lengths = Array(editedIds.size + 1) { IntArray(renderedIds.size + 1) }
-        for (editedIndex in editedIds.indices.reversed()) {
-            for (renderedIndex in renderedIds.indices.reversed()) {
-                lengths[editedIndex][renderedIndex] =
-                    if (editedIds[editedIndex] == renderedIds[renderedIndex]) {
-                        1 + lengths[editedIndex + 1][renderedIndex + 1]
-                    } else {
-                        maxOf(lengths[editedIndex + 1][renderedIndex], lengths[editedIndex][renderedIndex + 1])
-                    }
-            }
-        }
-        return lengths
-    }
-
-    private fun collectMatchedRenderedIndices(
-        editedIds: List<Int>,
-        renderedWithIds: List<Pair<Int, Int>>,
-        lengths: Array<IntArray>,
-    ): Set<Int> =
-        buildSet {
-            var editedIndex = 0
-            var renderedIndex = 0
-            while (editedIndex < editedIds.size && renderedIndex < renderedWithIds.size) {
-                if (editedIds[editedIndex] == renderedWithIds[renderedIndex].second) {
-                    add(renderedWithIds[renderedIndex].first)
-                    editedIndex++
-                    renderedIndex++
-                } else if (lengths[editedIndex + 1][renderedIndex] > lengths[editedIndex][renderedIndex + 1]) {
-                    editedIndex++
-                } else {
-                    renderedIndex++
-                }
-            }
-        }
+    private data class Merged<E>(val items: List<E>, val deleted: List<Int>)
 
     private fun <E : EditV2.Identifiable> mergeList(
         parent: EditV2.Identifiable?,
@@ -114,29 +60,22 @@ internal class UpdateEditedLetterV2(private val variableValues: Map<Int, String>
         rendered: List<E>,
         deleted: List<Int>,
         merge: (E, E) -> E,
-        updateVariables: (E) -> E,
-        setMissingFromTemplate: (E) -> E,
+    ): Merged<E> {
+        val aligned = ListAlignmentV2.align(edited, rendered, deleted)
+        return Merged(mergeAligned(parent, edited, aligned.remainingRendered, merge), aligned.deleted)
+    }
+
+    private fun <E : EditV2.Identifiable> mergeAligned(
+        parent: EditV2.Identifiable?,
+        edited: List<E>,
+        rendered: List<E>,
+        merge: (E, E) -> E,
     ): List<E> = buildList {
-        val remainingRendered = if (deleted.isEmpty()) {
-            rendered.filter { it.id != null }.toMutableList()
-        } else {
-            val deletedCounts = deleted.groupingBy { it }.eachCount().toMutableMap()
-            val matchedRenderedIndices = matchedRenderedIndices(edited, rendered)
-            rendered.mapIndexedNotNull { index, element ->
-                val id = element.id ?: return@mapIndexedNotNull null
-                val remaining = deletedCounts[id]
-                if (index !in matchedRenderedIndices && remaining != null && remaining > 0) {
-                    deletedCounts[id] = remaining - 1
-                    null
-                } else {
-                    element
-                }
-            }.toMutableList()
-        }
+        val remainingRendered = rendered.toMutableList()
 
         edited.forEach { currentEdited ->
             if (currentEdited.isNew()) {
-                add(updateVariables(currentEdited))
+                add(variableValues.withUpdatedVariables(currentEdited))
             } else {
                 val renderedIndex = remainingRendered.indexOfFirst { it.id == currentEdited.id }
 
@@ -149,9 +88,9 @@ internal class UpdateEditedLetterV2(private val variableValues: Map<Int, String>
                         add(remainingRendered.removeFirst())
                     }
                 } else if (currentEdited.isEdited()) {
-                    add(setMissingFromTemplate(updateVariables(currentEdited)))
+                    add(withDecision(variableValues.withUpdatedVariables(currentEdited), Block.DecisionRequest.missingFromRenderedPending))
                 } else if (currentEdited.parentId != parent?.id) {
-                    add(updateVariables(currentEdited))
+                    add(variableValues.withUpdatedVariables(currentEdited))
                 }
             }
         }
@@ -159,42 +98,37 @@ internal class UpdateEditedLetterV2(private val variableValues: Map<Int, String>
     }
 
     private fun mergeTitle(edited: EditV2.Title, rendered: EditV2.Title): EditV2.Title =
-        edited.copy(
-            text = mergeList(null, edited.text, rendered.text, edited.deletedContent, ::mergeText, ::updateVariableValues, ::setMissing),
-            deletedContent = prunedDeleted(edited.deletedContent, edited.text, rendered.text),
-        )
+        mergeList(null, edited.text, rendered.text, edited.deletedContent, ::mergeText).let { merged ->
+            edited.copy(text = merged.items, deletedContent = merged.deleted)
+        }
 
     private fun mergeBlock(edited: Block, rendered: Block): Block =
         when (edited) {
             is Block.TextBlock ->
                 if (rendered is Block.TextBlock) {
-                    edited.withContent(
-                        content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeText, ::updateVariableValues, ::setMissing),
-                        deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.content),
-                    )
+                    mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeText).let { merged ->
+                        edited.withContent(merged.items, merged.deleted)
+                    }
                 } else {
-                    updateVariableValues(edited)
+                    variableValues.withUpdatedVariables(edited)
                 }
 
             is Block.ListBlock ->
                 if (rendered is Block.ListBlock) {
-                    edited.withItems(
-                        items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItem, ::updateVariableValues, ::setMissing),
-                        deletedItems = prunedDeleted(edited.deletedItems, edited.items, rendered.items),
-                    )
+                    mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItem).let { merged ->
+                        edited.withItems(merged.items, merged.deleted)
+                    }
                 } else {
-                    updateVariableValues(edited)
+                    variableValues.withUpdatedVariables(edited)
                 }
 
             is Table ->
                 if (rendered is Table) {
-                    edited.copy(
-                        header = mergeTableHeader(edited.header, rendered.header),
-                        rows = mergeList(edited, edited.rows, rendered.rows, edited.deletedRows, ::mergeRow, ::updateVariableValues, ::setMissing),
-                        deletedRows = prunedDeleted(edited.deletedRows, edited.rows, rendered.rows),
-                    )
+                    mergeList(edited, edited.rows, rendered.rows, edited.deletedRows, ::mergeRow).let { merged ->
+                        edited.copy(header = mergeTableHeader(edited.header, rendered.header), rows = merged.items, deletedRows = merged.deleted)
+                    }
                 } else {
-                    updateVariableValues(edited)
+                    variableValues.withUpdatedVariables(edited)
                 }
         }
 
@@ -229,90 +163,46 @@ internal class UpdateEditedLetterV2(private val variableValues: Map<Int, String>
         }
 
     private fun mergeItem(edited: Item, rendered: Item): Item =
-        edited.copy(
-            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeText, ::updateVariableValues, ::setMissing),
-            deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.content),
-        )
+        mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeText).let { merged ->
+            edited.copy(content = merged.items, deletedContent = merged.deleted)
+        }
 
     private fun mergeTableHeader(edited: Table.Header, rendered: Table.Header): Table.Header =
-        edited.copy(
-            colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, edited.deletedColSpecs, ::mergeColumnSpec, ::updateVariableValues, ::setMissing),
-            deletedColSpecs = prunedDeleted(edited.deletedColSpecs, edited.colSpec, rendered.colSpec),
-        )
+        mergeList(edited, edited.colSpec, rendered.colSpec, edited.deletedColSpecs, ::mergeColumnSpec).let { merged ->
+            edited.copy(colSpec = merged.items, deletedColSpecs = merged.deleted)
+        }
 
     private fun mergeColumnSpec(edited: Table.ColumnSpec, rendered: Table.ColumnSpec): Table.ColumnSpec =
-        edited.copy(
-            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeText, ::updateVariableValues, ::setMissing),
-            deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.content),
-        )
+        mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeText).let { merged ->
+            edited.copy(content = merged.items, deletedContent = merged.deleted)
+        }
 
     private fun mergeRow(edited: Table.Row, rendered: Table.Row): Table.Row =
-        edited.copy(
-            cells = mergeList(edited, edited.cells, rendered.cells, edited.deletedCells, ::mergeCell, ::updateVariableValues, ::setMissing),
-            deletedCells = prunedDeleted(edited.deletedCells, edited.cells, rendered.cells),
-        )
+        mergeList(edited, edited.cells, rendered.cells, edited.deletedCells, ::mergeCell).let { merged ->
+            edited.copy(cells = merged.items, deletedCells = merged.deleted)
+        }
 
     private fun mergeCell(edited: Table.Cell, rendered: Table.Cell): Table.Cell =
-        edited.copy(
-            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeText, ::updateVariableValues, ::setMissing),
-            deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.content),
-        )
-
-    private fun updateVariableValues(block: Block): Block =
-        when (block) {
-            is Block.TextBlock -> block.withContent(block.content.map(::updateVariableValues), block.deletedContent)
-            is Block.ListBlock -> block.withItems(block.items.map(::updateVariableValues), block.deletedItems)
-            is Table -> block.copy(
-                header = block.header.copy(colSpec = block.header.colSpec.map(::updateVariableValues)),
-                rows = block.rows.map(::updateVariableValues),
-            )
+        mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeText).let { merged ->
+            edited.copy(content = merged.items, deletedContent = merged.deleted)
         }
 
-    private fun updateVariableValues(text: Text): Text =
-        when (text) {
-            is Text.Literal -> text
-            is Text.Variable -> variableValues[text.id]
-                ?.let { text.copy(text = it) }
-                ?: Text.Literal(
-                    id = text.id,
-                    text = text.text,
-                    fontType = text.fontType,
-                    parentId = text.parentId,
-                )
-
-            is Text.NewLine -> text
+    @Suppress("UNCHECKED_CAST")
+    private fun <E : EditV2.Identifiable> withDecision(element: E, decision: Block.DecisionRequest): E =
+        when (element) {
+            is Block.Title2 -> element.copy(decision = decision) as E
+            is Block.Title3 -> element.copy(decision = decision) as E
+            is Block.Title4 -> element.copy(decision = decision) as E
+            is Block.Paragraph -> element.copy(decision = decision) as E
+            is Block.ItemList -> element.copy(decision = decision) as E
+            is Block.NumberedList -> element.copy(decision = decision) as E
+            is Table -> element.copy(decision = decision) as E
+            is Text,
+            is Item,
+            is Table.Header,
+            is Table.ColumnSpec,
+            is Table.Row,
+            is Table.Cell,
+                -> element
         }
-
-    private fun updateVariableValues(item: Item): Item =
-        item.copy(content = item.content.map(::updateVariableValues))
-
-    private fun updateVariableValues(columnSpec: Table.ColumnSpec): Table.ColumnSpec =
-        columnSpec.copy(content = columnSpec.content.map(::updateVariableValues))
-
-    private fun updateVariableValues(row: Table.Row): Table.Row =
-        row.copy(cells = row.cells.map(::updateVariableValues))
-
-    private fun updateVariableValues(cell: Table.Cell): Table.Cell =
-        cell.copy(content = cell.content.map(::updateVariableValues))
-
-    private fun setMissing(block: Block): Block =
-        when (block) {
-            is Block.Title2 -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
-            is Block.Title3 -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
-            is Block.Title4 -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
-            is Block.Paragraph -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
-            is Block.ItemList -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
-            is Block.NumberedList -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
-            is Table -> block.copy(decision = Block.DecisionRequest.missingFromRenderedPending)
-        }
-
-    private fun setMissing(text: Text): Text = text
-
-    private fun setMissing(item: Item): Item = item
-
-    private fun setMissing(columnSpec: Table.ColumnSpec): Table.ColumnSpec = columnSpec
-
-    private fun setMissing(row: Table.Row): Table.Row = row
-
-    private fun setMissing(cell: Table.Cell): Table.Cell = cell
 }

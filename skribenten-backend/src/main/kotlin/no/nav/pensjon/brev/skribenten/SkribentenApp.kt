@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.skribenten.common.updateBrevredigeringJson
 import no.nav.pensjon.brev.skribenten.common.updateRedigertVedleggJson
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
 import no.nav.pensjon.brev.skribenten.services.*
 import org.apache.pdfbox.pdmodel.font.PDType1Font
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts
@@ -207,6 +208,8 @@ private fun Throwable.isInfoLogLevel(): Boolean =
 
 private val sensitiveEditedLetterTypes = listOf(
     Edit.Letter::class,
+    EditV2.Letter::class,
+    EditV2.Attachment::class,
     VersjonertBrev.V1::class,
     VersjonertBrev.V2::class,
     VersjonertVedlegg.V1::class,

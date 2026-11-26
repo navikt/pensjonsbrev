@@ -95,7 +95,7 @@ object EditV2 {
         val navAvsenderEnhet: String,
     )
 
-    interface Identifiable {
+    sealed interface Identifiable {
         val id: Int?
         val parentId: Int?
 
