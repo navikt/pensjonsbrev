@@ -52,14 +52,14 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 text(bokmal {
                     +"Klagen av "
                     +fritekst("dato") + " over Nav familie- og pensjonsytelser sitt vedtak av " + fritekst("dato") + " avvises fordi "
-                    +fritekst("påpek mangler i begrunnelsen (f.eks. for sent fremsatt, manglende fullmakt)")
+                    +fritekst("påpek mangelen (f.eks. klagen er sent framsatt, vi ikke har mottatt nødvendig fullmakt)")
                 })
             }
 
             title1 { text(bokmal { +"Rettslig grunnlag" }) }
             paragraph {
                 text(bokmal {
-                    +"Det organet som har fattet vedtaket som er påklaget skal avvise saken hvis vilkårene for å behandle den ikke foreligger. "
+                    +"Det organet som har fattet vedtaket som er påklaget, skal avvise saken hvis vilkårene for å behandle den ikke foreligger. "
                     +"Dette framgår av folketrygdloven § 21-1, jf. forvaltningsloven § 33 andre ledd."
                 })
             }
@@ -82,8 +82,8 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
             showIf(forSentFramsattKlage.equalTo(true)) {
                 paragraph {
                     text(bokmal {
-                        +"I vedtaket ble du orientert om klageadgang og klagefrist. Klagen din oversitter klagefristen med "
-                        +fritekst("antall dager/måneder") + " og er framsatt for sent."
+                        +"I vedtaket ble du orientert om klageadgangen og klagefristen. Klagen din er framsatt "
+                        +fritekst("antall dager/måneder") + " etter klagefristens utløp og er derfor framsatt for sent."
                     })
                 }
                 paragraph {
@@ -109,7 +109,7 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 }
                 paragraph {
                     text(bokmal {
-                        +"Du har ikke påberopt deg særlige grunner til at klagen er fremsatt for sent. "
+                        +"Du har ikke påberopt deg særlige grunner til at klagen er framsatt for sent. "
                         +"Etter en gjennomgang av saken kan vi heller ikke se at det foreligger forhold ved vedtakets innhold som kan utgjøre en særlig grunn til å behandle saken på nytt til tross for at klagefristen er oversittet."
                     })
                 }
@@ -127,8 +127,8 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 paragraph {
                     text(bokmal {
                         +"Den "
-                        +fritekst("dato") + " sendte vi deg et brev hvor vi opplyste om mangler ved klagen. "
-                        +"Fristen for å rette disse manglene ble satt til "
+                        +fritekst("dato") + " sendte vi deg et brev hvor vi opplyste om manglen ved klagen. "
+                        +"Fristen for å rette mangelen ble satt til "
                         +fritekst("dato") + ". Vi har ikke mottatt tilbakemelding på dette."
                     })
                 }
@@ -182,9 +182,10 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                         +fritekst("Oppgi relevant faktum som viser at fullmakten mangler")
                     })
                 }
-                paragraph {
-                    text(bokmal { +"Vilkårene for å behandle klagen er dermed ikke oppfylt og klagen avvises, jf. forvaltningsloven § 33 andre ledd." })
-                }
+            }
+
+            paragraph {
+                text(bokmal { +"Vilkårene for å behandle klagen er dermed ikke oppfylt og klagen avvises, jf. forvaltningsloven § 33 andre ledd." })
             }
 
             title1 { text(bokmal { +"Informasjon om klageadgang " }) }
