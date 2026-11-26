@@ -49,6 +49,57 @@ describe("typing over a selection", () => {
     );
   });
 
+  describe("across the title/body boundary", () => {
+    const body = letter(paragraph([literal("Første setning")]));
+    const state = {
+      ...body,
+      redigertBrev: { ...body.redigertBrev, title: { text: [bold("Vedtak")], deletedContent: [] } },
+    };
+    const selection = {
+      start: { blockIndex: TITLE_INDEX, contentIndex: 0, cursorPosition: 3 },
+      end: { blockIndex: 0, contentIndex: 0, cursorPosition: 7 },
+    };
+
+    it("types into the title, leaving unselected body text in its paragraph", () => {
+      const result = Actions.replaceSelectionWithText(state, selection, "legg");
+      expect(result.redigertBrev.title.text).toMatchObject([{ editedText: "Vedlegg", fontType: "BOLD" }]);
+      expect(projectLetter(result)).toEqual(["P: setning"]);
+      expect(result.focus).toEqual({ ...selection.start, cursorPosition: 7 });
+      expect(historyLength(result)).toBe(1);
+    });
+
+    it("Enter starts a body paragraph and Shift+Enter inserts a line break in the title", () => {
+      const enter = Actions.replaceSelectionWithBreak(state, selection, "paragraph");
+      expect(enter.redigertBrev.title.text.map(text)).toEqual(["Ved"]);
+      expect(enter.redigertBrev.blocks).toHaveLength(2);
+      expect(enter.redigertBrev.blocks[0]).toMatchObject({ type: "PARAGRAPH", content: [{ type: "LITERAL" }] });
+      expect(enter.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 0 });
+      expect(historyLength(enter)).toBe(1);
+
+      const soft = Actions.replaceSelectionWithBreak(state, selection, "lineBreak");
+      expect(soft.redigertBrev.title.text.map((node) => node.type)).toEqual(["LITERAL", "NEW_LINE", "LITERAL"]);
+      expect(soft.focus).toEqual({ blockIndex: TITLE_INDEX, contentIndex: 2, cursorPosition: 0 });
+      expect(projectLetter(soft)).toEqual(["P: setning"]);
+      expect(historyLength(soft)).toBe(1);
+    });
+
+    it("Enter at a collapsed title caret moves the suffix and tracks moved template content", () => {
+      const suffix = variable("navn");
+      const title = { text: [literal("Hei "), suffix], deletedContent: [] };
+      const result = Actions.split(
+        { ...body, redigertBrev: { ...body.redigertBrev, title } },
+        { blockIndex: TITLE_INDEX, contentIndex: 0 },
+        4,
+      );
+      expect(result.redigertBrev.title).toEqual({ text: [title.text[0]], deletedContent: [suffix.id] });
+      expect(result.redigertBrev.blocks[0]).toMatchObject({
+        type: "PARAGRAPH",
+        content: [{ type: "LITERAL" }, suffix],
+      });
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 0 });
+    });
+  });
+
   it("does nothing for a selection that ends before it starts", () => {
     const result = Actions.replaceSelectionWithText(
       state,

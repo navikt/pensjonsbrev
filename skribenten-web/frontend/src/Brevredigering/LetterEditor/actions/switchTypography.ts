@@ -17,7 +17,7 @@ export const switchTypography: Action<LetterEditorState, [typography: "PARAGRAPH
     const literalIndex = draft.focus;
     const block = editedLetter.blocks[literalIndex.blockIndex];
 
-    if (!isTextContent(block.content[literalIndex.contentIndex])) {
+    if (!block || !isTextContent(block.content[literalIndex.contentIndex])) {
       return;
     }
 

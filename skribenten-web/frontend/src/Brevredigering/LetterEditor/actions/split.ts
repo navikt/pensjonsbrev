@@ -4,11 +4,21 @@ import { type AnyBlock, type Content, type ItemList, type TextContent, TITLE_IND
 
 import { type Action, withPatches } from "../lib/actions";
 import { type ItemContentIndex, type LetterEditorState, type LiteralIndex } from "../model/state";
-import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
+import {
+  isEmptyBlock,
+  isEmptyContent,
+  isEmptyItem,
+  isItemList,
+  isLiteral,
+  isTextContent,
+  isVariable,
+} from "../model/utils";
 import {
   addElements,
   breakOutEmptyItem,
   isAtStartOfBlock,
+  isBlockContentIndex,
+  isValidTextOffset,
   newItem,
   newLiteral,
   newParagraph,
@@ -21,6 +31,21 @@ export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
 
 export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number) {
   if (literalIndex.blockIndex === TITLE_INDEX) {
+    const { title, blocks, deletedBlocks } = draft.redigertBrev;
+    const index = literalIndex.contentIndex;
+    const content = title.text[index];
+    if (!isBlockContentIndex(literalIndex) || !isTextContent(content) || !isValidTextOffset(content, offset)) return;
+
+    const parent = { content: title.text, deletedContent: title.deletedContent, id: null };
+    const deletedContent = [...title.deletedContent];
+    const suffix = isLiteral(content)
+      ? splitContentArrayAtLiteral(parent, index, offset)
+      : removeElements(offset === 0 ? index : index + 1, title.text.length, parent);
+    if (title.text.length === 0) title.text.push(newLiteral());
+    if (!isLiteral(suffix[0])) suffix.unshift(newLiteral());
+    addElements([newParagraph({ content: suffix, deletedContent })], 0, blocks, deletedBlocks);
+    draft.focus = { blockIndex: 0, contentIndex: 0, cursorPosition: 0 };
+    draft.saveStatus = "DIRTY";
     return;
   }
 

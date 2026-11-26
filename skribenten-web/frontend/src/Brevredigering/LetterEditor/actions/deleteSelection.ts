@@ -17,9 +17,11 @@ import {
   isItemContentIndex,
   isTable,
   isValidIndex,
+  isValidTextOffset,
   newLiteral,
   removeElements,
   text,
+  textContentAtIndex,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget, mergeRecipe } from "~/Brevredigering/LetterEditor/actions/merge";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
@@ -68,46 +70,89 @@ export const replaceSelectionWithBreak: Action<
   }
 });
 
-/** Returns false when the selection is invalid and nothing was deleted. */
+/** A valid range collapses to its insertion point; an invalid range leaves the draft untouched. */
 export function deleteSelectionRecipe(draft: LetterEditorState, selection: SelectionIndex): boolean {
   const redigertBrev = draft.redigertBrev;
 
-  if (selection.start.blockIndex === TITLE_INDEX || selection.end.blockIndex === TITLE_INDEX) {
-    if (
-      selection.start.blockIndex !== TITLE_INDEX ||
-      selection.end.blockIndex !== TITLE_INDEX ||
-      !isBlockContentIndex(selection.start) ||
-      !isBlockContentIndex(selection.end) ||
-      !isIndexAfter(selection.start, selection.end)
-    ) {
-      return false;
-    }
-    const titleParent = {
-      content: redigertBrev.title.text,
-      deletedContent: redigertBrev.title.deletedContent,
-      id: null,
-    };
-    const titleStart = titleParent.content[selection.start.contentIndex];
-    const titleEnd = titleParent.content[selection.end.contentIndex];
-    if (!isTextContent(titleStart) || !isTextContent(titleEnd)) return false;
-    removeInTextContentParent(titleParent, selection.start, selection.end);
-    const clampedIdx = Math.min(selection.start.contentIndex, titleParent.content.length - 1);
-    const targetNode = titleParent.content[clampedIdx];
-    const maxPos = isTextContent(targetNode) ? text(targetNode).length : 0;
-    draft.focus = {
-      blockIndex: TITLE_INDEX,
-      contentIndex: clampedIdx,
-      cursorPosition: Math.min(selection.start.cursorPosition, maxPos),
-    };
-    draft.saveStatus = "DIRTY";
-    return true;
-  }
-
-  // If selection is not valid, do nothing
-  if (!isValidIndex(redigertBrev, selection.start) || !isValidIndex(redigertBrev, selection.end)) return false;
-  // Selection must end after it starts
+  const startNode = textContentAtIndex(redigertBrev, selection.start);
+  const endNode = textContentAtIndex(redigertBrev, selection.end);
+  if (!startNode || !endNode) return false;
   if (!isIndexAfter(selection.start, selection.end)) return false;
 
+  if (selection.start.blockIndex === TITLE_INDEX) {
+    if (
+      !isValidTextOffset(startNode, selection.start.cursorPosition) ||
+      !isValidTextOffset(endNode, selection.end.cursorPosition)
+    )
+      return false;
+    deleteFromTitle(draft, selection, startNode);
+  } else {
+    deleteBodySelection(draft, selection);
+  }
+  return true;
+}
+
+function deleteFromTitle(draft: LetterEditorState, selection: SelectionIndex, startNode: TextContent) {
+  const redigertBrev = draft.redigertBrev;
+  const { start, end } = selection;
+  const titleParent = {
+    content: redigertBrev.title.text,
+    deletedContent: redigertBrev.title.deletedContent,
+    id: null,
+  };
+  const startLength = text(startNode).length;
+
+  if (end.blockIndex === TITLE_INDEX) {
+    removeInTextContentParent(titleParent, start, end);
+    const contentIndex = Math.min(start.contentIndex, titleParent.content.length - 1);
+    const length = text(titleParent.content[contentIndex]).length;
+    draft.focus = {
+      blockIndex: TITLE_INDEX,
+      contentIndex,
+      cursorPosition:
+        contentIndex < start.contentIndex
+          ? length
+          : titleParent.content[contentIndex] === startNode
+            ? Math.min(start.cursorPosition, length)
+            : 0,
+    };
+  } else {
+    // The H1 and body are separate model slots. Remove the selected text on
+    // each side, without pulling the surviving body suffix into the title.
+    const atTitleEnd = start.contentIndex === titleParent.content.length - 1 && start.cursorPosition === startLength;
+    if (atTitleEnd && end.blockIndex === 0 && end.contentIndex === 0 && isAtContentStart(end)) {
+      draft.focus = { ...start };
+      delete draft.selection;
+      return;
+    }
+
+    if (start.cursorPosition === startLength && (startLength > 0 || isLiteral(startNode))) {
+      removeElements(start.contentIndex + 1, titleParent.content.length, titleParent);
+    } else {
+      removeInTextContentParent(titleParent, start);
+    }
+    if (!isLiteral(titleParent.content.at(-1))) {
+      titleParent.content.push(newLiteral());
+    }
+    draft.focus = {
+      blockIndex: TITLE_INDEX,
+      contentIndex: titleParent.content.length - 1,
+      cursorPosition: text(titleParent.content[titleParent.content.length - 1]).length,
+    };
+
+    removeElements(0, end.blockIndex, {
+      content: redigertBrev.blocks,
+      deletedContent: redigertBrev.deletedBlocks,
+      id: null,
+    });
+    deleteBeforeTitleSelectionEnd(redigertBrev.blocks[0], end);
+    applyTableSeparatorNormalization(redigertBrev);
+  }
+  draft.saveStatus = "DIRTY";
+}
+
+function deleteBodySelection(draft: LetterEditorState, selection: SelectionIndex) {
+  const redigertBrev = draft.redigertBrev;
   const start = { ...selection.start };
   const end = { ...selection.end };
 
@@ -192,7 +237,20 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
   applyTableSeparatorNormalization(redigertBrev);
 
   draft.saveStatus = "DIRTY";
-  return true;
+}
+
+function deleteBeforeTitleSelectionEnd(block: Draft<AnyBlock>, end: SelectionIndex["end"]) {
+  removeElements(0, end.contentIndex, block);
+  if (!isAtContentStart(end)) {
+    deleteInContentToOffset(block, block.content[0], { ...end, contentIndex: 0 });
+  }
+  makeSureBlockIsValid(block);
+}
+
+function isAtContentStart(index: SelectionIndex["end"]) {
+  return (
+    isAtStartOfItemList(index) || isAtStartOfTable(index) || (isBlockContentIndex(index) && index.cursorPosition === 0)
+  );
 }
 
 function shouldMergeAfterDeletetion(indexAfterDeletion: Focus, { start, end }: SelectionIndex): boolean {

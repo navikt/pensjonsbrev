@@ -5,6 +5,7 @@ import {
   createNewLine,
   isBlockContentIndex,
   isItemContentIndex,
+  isValidTextOffset,
   newLiteral,
   splitLiteralAtOffset,
   text,
@@ -17,7 +18,23 @@ import { type Content, TITLE_INDEX } from "~/types/brevbakerTypes";
 export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches(addNewLineRecipe);
 
 export function addNewLineRecipe(draft: Draft<LetterEditorState>, focus: Focus) {
-  if (focus.blockIndex === TITLE_INDEX) return;
+  if (focus.blockIndex === TITLE_INDEX) {
+    const { text: content, deletedContent } = draft.redigertBrev.title;
+    const literal = content[focus.contentIndex];
+    if (
+      !isBlockContentIndex(focus) ||
+      !isLiteral(literal) ||
+      focus.cursorPosition === undefined ||
+      !isValidTextOffset(literal, focus.cursorPosition)
+    )
+      return;
+    const index = insertNewLineInContent(content, deletedContent, focus.contentIndex, focus.cursorPosition);
+    if (index !== null) {
+      draft.focus = { blockIndex: TITLE_INDEX, contentIndex: index, cursorPosition: 0 };
+      draft.saveStatus = "DIRTY";
+    }
+    return;
+  }
 
   const block = draft.redigertBrev.blocks[focus.blockIndex];
 

@@ -1,8 +1,9 @@
+import { applyPatches } from "immer";
 import { describe, expect, it } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import { type Cell, type ItemList, type LiteralValue, type Row, type Table } from "~/types/brevbakerTypes";
+import { type Cell, type ItemList, type LiteralValue, type Row, type Table, TITLE_INDEX } from "~/types/brevbakerTypes";
 import {
   cell,
   item,
@@ -18,6 +19,71 @@ import {
 } from "~test/support/letterEditorTestUtils";
 
 describe("Actions.deleteSelection", () => {
+  describe("title through body", () => {
+    const title = { text: [literal("Nav"), literal(" vedtar")], deletedContent: [] };
+    const list = itemList({ items: [item(literal("one")), item(literal("two"))] });
+    const body = letter(paragraph([literal("covered")]), paragraph([literal("prefix"), list]));
+    const state = { ...body, redigertBrev: { ...body.redigertBrev, title } };
+
+    it("keeps the title and list suffix in their own slots and restores both in one undo", () => {
+      const result = Actions.deleteSelection(state, {
+        start: { blockIndex: TITLE_INDEX, contentIndex: 1, cursorPosition: 0 },
+        end: { blockIndex: 1, contentIndex: 1, itemIndex: 1, itemContentIndex: 0, cursorPosition: 1 },
+      });
+      expect(result.redigertBrev.title).toEqual({ text: [title.text[0]], deletedContent: [title.text[1].id] });
+      expect(result.focus).toEqual({ blockIndex: TITLE_INDEX, contentIndex: 0, cursorPosition: 3 });
+      expect(result.redigertBrev.deletedBlocks).toEqual([body.redigertBrev.blocks[0].id]);
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(result.redigertBrev.blocks[0]).toMatchObject({
+        id: body.redigertBrev.blocks[1].id,
+        deletedContent: [body.redigertBrev.blocks[1].content[0].id],
+        content: [{ id: list.id, deletedItems: [list.items[0].id], items: [{ content: [{ editedText: "wo" }] }] }],
+      });
+      expect(result.history.entries).toHaveLength(1);
+      const entry = result.history.entries[0];
+      expect(entry.type).toBe("PATCH");
+      if (entry.type === "PATCH")
+        expect(applyPatches(result, entry.inversePatches).redigertBrev).toEqual(state.redigertBrev);
+    });
+
+    it("keeps an editable empty title and preserves the table grid up to a nested endpoint", () => {
+      const grid = table([cell(literal("header"))], [row(cell(literal("first"))), row(cell(literal("last")))]);
+      const body = letter(paragraph([grid]));
+      const result = Actions.deleteSelection(
+        { ...body, redigertBrev: { ...body.redigertBrev, title } },
+        {
+          start: { blockIndex: TITLE_INDEX, contentIndex: 0, cursorPosition: 0 },
+          end: { blockIndex: 0, contentIndex: 0, rowIndex: 1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 1 },
+        },
+      );
+      expect(result.redigertBrev.title.text.map(text)).toEqual([""]);
+      expect(result.redigertBrev.title.deletedContent).toEqual(title.text.map((node) => node.id));
+      expect(result.focus).toEqual({ blockIndex: TITLE_INDEX, contentIndex: 0, cursorPosition: 0 });
+      const updated = select<Table>(result, { blockIndex: 0, contentIndex: 0 });
+      expectEmptyCell(updated.header.colSpec[0].headerContent);
+      expectEmptyCell(updated.rows[0].cells[0]);
+      expect(updated.rows[1].cells[0].text[0]).toMatchObject({ editedText: "ast" });
+    });
+
+    it("collapses a selection containing only the structural boundary without dirtying the letter", () => {
+      const start = { blockIndex: TITLE_INDEX, contentIndex: 1, cursorPosition: 7 };
+      const selection = { start, end: { blockIndex: 0, contentIndex: 0, cursorPosition: 0 } };
+      const result = Actions.deleteSelection({ ...state, selection }, selection);
+      expect(result.redigertBrev).toBe(state.redigertBrev);
+      expect(result.saveStatus).toBe("SAVED");
+      expect(result.focus).toEqual(start);
+      expect(result.selection).toBeUndefined();
+    });
+
+    it("does not truncate the title if the nested end is invalid", () => {
+      const result = Actions.deleteSelection(state, {
+        start: { blockIndex: TITLE_INDEX, contentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 1, contentIndex: 1, itemIndex: 99, itemContentIndex: 0, cursorPosition: 0 },
+      });
+      expect(result).toBe(state);
+    });
+  });
+
   describe("start and end in TextContent", () => {
     const state = letter(
       title1(literal("Første tittel for "), variable("2025"), literal(" brev")),

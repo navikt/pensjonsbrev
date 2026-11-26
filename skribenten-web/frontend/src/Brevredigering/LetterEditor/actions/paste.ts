@@ -22,6 +22,7 @@ import {
   splitLiteralAtOffset,
   splitMixedListBlock,
   text,
+  textContentAtIndex,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
 import { getRtfClipboardData, parseRtfClipboard } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
@@ -80,7 +81,8 @@ import {
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   withPatches((draft, literalIndex, offset, clipboard) => {
     if (literalIndex.blockIndex === TITLE_INDEX) {
-      return;
+      const target = textContentAtIndex(draft.redigertBrev, literalIndex);
+      if (!target || !Number.isInteger(offset) || offset < 0 || offset > text(target).length) return;
     }
     // Since we always paste where the cursor is, then focus has to be at literalIndex and offset.
     // (Tests typically break this assertions)
@@ -92,17 +94,17 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
 
 export const pasteReplacingSelection: Action<LetterEditorState, [selection: SelectionIndex, clipboard: DataTransfer]> =
   withPatches((draft, selection, clipboard) => {
-    if (selection.start.blockIndex === TITLE_INDEX) {
-      return;
-    }
     if (!isValidIndex(draft.redigertBrev, selection.start) || !isValidIndex(draft.redigertBrev, selection.end)) {
       return;
     }
     // What fits depends on where the caret ends up after deletion (deleting a whole table leaves it in a paragraph),
     // so the clipboard is resolved against a tentative deletion, and the selection is only deleted if something fits.
-    const afterDeletion = produce(current(draft), (tentative) => {
+    const beforeDeletion = current(draft);
+    const afterDeletion = produce(beforeDeletion, (tentative) => {
       deleteSelectionRecipe(tentative, selection);
     });
+    // A title range with an invalid offset is left untouched; don't paste at the old caret instead.
+    if (selection.start.blockIndex === TITLE_INDEX && afterDeletion === beforeDeletion) return;
     const insertion = resolveClipboardInsertion(afterDeletion, afterDeletion.focus, clipboard);
     if (!insertion) return;
 
@@ -185,6 +187,7 @@ function fitToFocus(
   if (insertion.kind === "text") return insertion.text.length > 0 ? insertion : undefined;
   const elements = insertion.elements.filter((element) => element.type !== "TABLE" || hasCells(element));
   if (elements.length === 0) return undefined;
+  if (focus.blockIndex === TITLE_INDEX) return { kind: "elements", elements };
   if (isTableCellIndex(focus)) {
     const inlineText = inlineTextOf(elements);
     return inlineText ? { kind: "elements", elements: inlineText } : undefined;
@@ -229,11 +232,38 @@ function canInsertTableAt(draft: LetterEditorState, focus: Focus): boolean {
 }
 
 function insertInLetter(draft: Draft<LetterEditorState>, insertion: ClipboardInsertion) {
-  if (insertion.kind === "text") {
+  if (draft.focus.blockIndex === TITLE_INDEX) {
+    insertAtTitle(draft, insertion);
+  } else if (insertion.kind === "text") {
     insertTextInLetter(draft, insertion.text, FontType.PLAIN, false);
   } else {
     insertParsedElements(draft, insertion.elements);
   }
+}
+
+function insertAtTitle(draft: Draft<LetterEditorState>, insertion: ClipboardInsertion) {
+  const elements =
+    insertion.kind === "text"
+      ? insertion.text.split(/\r\n?|\n/).map<ParagraphElement>((line) => ({
+          type: "P",
+          content: [{ type: "TEXT", text: line, font: FontType.PLAIN }],
+        }))
+      : insertion.elements;
+  // Only the first text line fits in the document title. A leading list or table belongs entirely in the body.
+  let bodyStart = 0;
+  while (elements[bodyStart]?.type === "TEXT") bodyStart++;
+  const first = elements[0];
+  let inline = elements.slice(0, bodyStart);
+  if (bodyStart === 0 && first.type !== "ITEM" && first.type !== "TABLE" && first.type !== "TEXT") {
+    inline = first.content;
+    bodyStart = 1;
+  }
+  insertParsedElements(draft, inline);
+  if (bodyStart === elements.length) return;
+
+  splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+  insertTraversedElements(draft, elements.slice(bodyStart), true);
+  if (isItemContentIndex(draft.focus)) splitMixedListBlock(draft, draft.focus.blockIndex);
 }
 
 /** Logs the pasted formats, their lengths and metadata, never the content: letters may contain personopplysninger. */
@@ -291,29 +321,27 @@ function insertTextInLetter(
       setContentIndex(draft.focus, contentIndex);
       draft.focus.cursorPosition = insertString.length;
     } else {
-      const insertAtIndex = offset <= 0 ? getContentIndex(draft.focus) : getContentIndex(draft.focus) + 1;
-      addElements(
-        [newLiteral({ editedText: insertString, fontType })],
-        insertAtIndex,
-        parent.content,
-        parent.deletedContent,
-      );
-      setContentIndex(draft.focus, insertAtIndex);
-      draft.focus.cursorPosition = insertString.length;
+      insertLiteralAt(offset <= 0 ? getContentIndex(draft.focus) : getContentIndex(draft.focus) + 1);
     }
     draft.saveStatus = "DIRTY";
   } else if (content !== undefined) {
-    // Variables and line breaks can't hold text, so the text goes in a new literal right after them.
-    const insertAtIndex = getContentIndex(draft.focus) + 1;
+    // Variables and line breaks can't hold text. A caret at the start of a title variable precedes it.
+    insertLiteralAt(getContentIndex(draft.focus) + (draft.focus.blockIndex === TITLE_INDEX && offset === 0 ? 0 : 1));
+    draft.saveStatus = "DIRTY";
+  }
+
+  function insertLiteralAt(insertAtIndex: number) {
+    const previousCount = parent.content.length;
     addElements(
       [newLiteral({ editedText: insertString, fontType })],
       insertAtIndex,
       parent.content,
       parent.deletedContent,
     );
-    setContentIndex(draft.focus, insertAtIndex);
-    draft.focus.cursorPosition = insertString.length;
-    draft.saveStatus = "DIRTY";
+    // addElements may merge the insertion into its left neighbour.
+    const index = parent.content.length === previousCount ? insertAtIndex - 1 : insertAtIndex;
+    setContentIndex(draft.focus, index);
+    draft.focus.cursorPosition = text(parent.content[index] as LiteralValue).length;
   }
 }
 
@@ -568,7 +596,11 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table): bool
 }
 
 /** Returns false if none of the elements could be inserted. */
-function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]): boolean {
+function insertTraversedElements(
+  draft: Draft<LetterEditorState>,
+  elements: TraversedElement[],
+  joinLastParagraph = false,
+): boolean {
   let inserted = false;
   let trailingBlock: Draft<AnyBlock> | undefined;
   let pastedListType: ListType | undefined;
@@ -598,7 +630,20 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         break;
       }
       case "P": {
-        insertBlock(draft, "PARAGRAPH", element.content);
+        if (joinLastParagraph && index === elements.length - 1) {
+          // Keep the suffix split from the document title on this last pasted line.
+          for (const run of element.content) insertTextInLetter(draft, run.text, run.font, false);
+        } else if (joinLastParagraph && element.content.every((run) => !run.text) && isAtStartOfBlock(draft.focus)) {
+          addElements(
+            [newParagraph({ content: [newLiteral()] })],
+            draft.focus.blockIndex,
+            draft.redigertBrev.blocks,
+            draft.redigertBrev.deletedBlocks,
+          );
+          draft.focus.blockIndex++;
+        } else {
+          insertBlock(draft, "PARAGRAPH", element.content);
+        }
         break;
       }
       case "ITEM": {

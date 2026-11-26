@@ -1010,16 +1010,29 @@ export function safeIndex(index: number, array: unknown[]) {
 }
 
 export function isValidIndex(letter: EditedDocument, index: LiteralIndex) {
+  return textContentAtIndex(letter, index) !== undefined;
+}
+
+export function isValidTextOffset(content: TextContent, offset: number) {
+  return Number.isInteger(offset) && offset >= 0 && offset <= text(content).length;
+}
+
+export function textContentAtIndex(letter: EditedDocument, index: LiteralIndex): TextContent | undefined {
+  if (index.blockIndex === TITLE_INDEX) {
+    return isBlockContentIndex(index) ? letter.title.text[index.contentIndex] : undefined;
+  }
   const content = letter.blocks[index.blockIndex]?.content[index.contentIndex];
 
   if (isItemList(content) && isItemContentIndex(index)) {
-    return content.items[index.itemIndex]?.content[index.itemContentIndex] !== undefined;
+    return content.items[index.itemIndex]?.content[index.itemContentIndex];
   } else if (isTable(content) && isTableCellIndex(index)) {
-    return index.rowIndex >= 0
-      ? content.rows[index.rowIndex]?.cells[index.cellIndex]?.text[index.cellContentIndex] !== undefined
-      : content.header.colSpec[index.cellIndex]?.headerContent?.text[index.cellContentIndex] !== undefined;
+    const cell =
+      index.rowIndex === -1
+        ? content.header.colSpec[index.cellIndex]?.headerContent
+        : content.rows[index.rowIndex]?.cells[index.cellIndex];
+    return cell?.text[index.cellContentIndex];
   } else {
-    return isTextContent(content) && isBlockContentIndex(index);
+    return isTextContent(content) && isBlockContentIndex(index) ? content : undefined;
   }
 }
 
