@@ -22,7 +22,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
@@ -147,16 +146,26 @@ class BrevmalService(
     suspend fun hentBrevmaler(includeEblanketter: Boolean): List<Api.Brevmal> =
         hentAlleMaler(includeEblanketter).toList()
 
-    suspend fun hentBrevmalerForSak(sakType: Sakstype, includeEblanketter: Boolean): List<Api.Brevmal> =
-        hentMaler(sakType, includeEblanketter)
+    suspend fun hentBrevmalerForSak(saksId: SaksId, sakType: Sakstype, includeEblanketter: Boolean): List<Api.Brevmal> {
+        val ikkeStoettedeBrevkoder =
+            stoettetAvDatabygger(saksId, null).stoettet.filterValues { !it }.keys.map { it.kode() }
+        return hentMaler(sakType, includeEblanketter)
             .filter { it.isForSakskontekst }
+            .filter { it.brevkode !in ikkeStoettedeBrevkoder }
             .map { it.toApi() }
             .toList()
+    }
 
-    suspend fun hentBrevmalerForVedtak(sakstype: Sakstype, includeEblanketter: Boolean, vedtaksId: VedtaksId): List<Api.Brevmal> {
+    suspend fun hentBrevmalerForVedtak(
+        saksId: SaksId,
+        sakstype: Sakstype,
+        includeEblanketter: Boolean,
+        vedtaksId: VedtaksId,
+    ): List<Api.Brevmal> {
         // Finner hvilke brev som skal filtreres vekk basert på om vi har en brevdatabygger i PEN som sier at den ikke støttes.
         // Denne logikken skal på sikt reverteres slik at PEN gir en liste med brevmaler som støttes for et et gitt vedtak.
-        val ikkeStoettedeBrevkoder = brevdataByggerStoettedeVedtak(vedtaksId).kravStoettet.filterValues { !it }.keys
+        val ikkeStoettedeBrevkoder =
+            stoettetAvDatabygger(saksId, vedtaksId).stoettet.filterValues { !it }.keys.map { it.kode() }
 
         return hentMaler(sakstype, includeEblanketter)
             .filter { it.isForVedtakskontekst }
@@ -166,9 +175,11 @@ class BrevmalService(
             .toList()
     }
 
-    // TODO rename vekk fra "krav..." når alle tolkninger er over i spring component data-bygger
-    private suspend fun brevdataByggerStoettedeVedtak(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult =
-        penClient.hentIsKravStoettetAvDatabygger(vedtaksId) ?: KravStoettetAvDatabyggerResult()
+    private suspend fun stoettetAvDatabygger(
+        saksId: SaksId,
+        vedtaksId: VedtaksId?,
+    ): PenClient.StoettetAvDatabyggerResult =
+        penClient.hentIsStoettetAvDatabygger(saksId, vedtaksId) ?: PenClient.StoettetAvDatabyggerResult()
 
     private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: Sakstype, vedtaksId: VedtaksId): Sequence<LetterMetadata> {
         val erKravPaaGammeltRegelverk = if (sakstype == Sakstype("ALDER")) {

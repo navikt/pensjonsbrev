@@ -1,7 +1,10 @@
 package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.KeyDeserializer
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.call.*
@@ -15,6 +18,7 @@ import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.*
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
@@ -37,19 +41,23 @@ import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger(PentHttpClient::class.java)
 
+private object RedigerbarBrevkodeKeyDeserializer : KeyDeserializer() {
+    override fun deserializeKey(key: String, ctxt: DeserializationContext): Brevkode.Redigerbart = RedigerbarBrevkode(key)
+}
+
 interface PenClient {
     suspend fun hentSak(saksId: SaksId): Pen.SakSelection?
     suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse
     suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse?
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
+    suspend fun hentIsStoettetAvDatabygger(saksId: SaksId, vedtaksId: VedtaksId?): StoettetAvDatabyggerResult?
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean?
-    suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult?
     suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data
     suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto
     suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse
 
-    data class KravStoettetAvDatabyggerResult(
-        val kravStoettet: Map<String, Boolean> = emptyMap()
+    data class StoettetAvDatabyggerResult(
+        val stoettet: Map<Brevkode.Redigerbart, Boolean> = emptyMap(),
     )
 }
 
@@ -80,10 +88,11 @@ class PentHttpClient(config: PenSettings, authService: AuthService, engine: Http
         install(HttpTimeout) {
             requestTimeoutMillis = 15.seconds.inWholeMilliseconds
         }
-        installRetry(logger, shouldNotRetry = { method, _, _ -> method != HttpMethod.Get })
+        installRetry(logger, shouldNotRetry = { method, url, _ -> method != HttpMethod.Get && url.segments.last() != "isStoettetAvDatabygger" })
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
+                registerModule(SimpleModule().addKeyDeserializer(Brevkode.Redigerbart::class.java, RedigerbarBrevkodeKeyDeserializer))
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
@@ -168,10 +177,20 @@ class PentHttpClient(config: PenSettings, authService: AuthService, engine: Http
             metricsRoute("brev/skribenten/vedtak/{vedtaksId}/isKravPaaGammeltRegelverk")
         }.bodyOrThrow()
 
-    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): PenClient.KravStoettetAvDatabyggerResult? =
-        client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravStoettetAvDatabygger") {
-            metricsRoute("brev/skribenten/vedtak/{vedtaksId}/isKravStoettetAvDatabygger")
+    override suspend fun hentIsStoettetAvDatabygger(
+        saksId: SaksId,
+        vedtaksId: VedtaksId?,
+    ): PenClient.StoettetAvDatabyggerResult? =
+        client.post("brev/skribenten/isStoettetAvDatabygger") {
+            metricsRoute("brev/skribenten/isStoettetAvDatabygger")
+            setBody(Brevkontekst(saksId, vedtaksId))
+            contentType(ContentType.Application.Json)
         }.bodyOrThrow()
+
+    private data class Brevkontekst(
+        val saksId: SaksId,
+        val vedtaksId: VedtaksId?,
+    )
 
     override suspend fun hentPesysBrevdata(
         saksId: SaksId,
