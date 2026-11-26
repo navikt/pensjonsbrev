@@ -87,13 +87,9 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
             )
             includePhrase(RettigheterPersonopplysninger)
             includePhrase(RettTilAaKlageAfpPrivat)
-            includePhrase(HarDuSpoersmaal.alder)
+            includePhrase(HarDuSpoersmaal.afpPrivat)
         }
 
         includeAttachmentIfNotNull(vedleggDinAfpPrivatBeregning, pesysData.dinAfpPrivatBeregning)
-
-        // PE_AF_oversikt_over_pensjonen_RTF — inkluderes når vedtaket har flere
-        // beregningsperioder (i Exstream: BeregningAntallPerioder > 1).
-       // includeAttachmentIfNotNull( vedleggOversiktOverPensjonenAfpPrivat,pesysData.oversiktOverPensjonen,)
     }
 }
