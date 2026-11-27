@@ -267,28 +267,28 @@ test.describe("Switch font type", () => {
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-weight", "400");
 
         // Re-select and unbold
-        await selectFullElement(page, "teste piltast");
+        await selectTextInElement(page, "teste piltast", "teste piltast");
         await page.getByTestId("fonttype-bold-button").click();
         await expect(page.getByText("Er laget for")).toHaveCSS("font-weight", "400");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-weight", "400");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-weight", "400");
 
         // With shortcut keys - bold on
-        await selectFullElement(page, "teste piltast");
+        await selectTextInElement(page, "teste piltast", "teste piltast");
         await page.keyboard.press("Control+f");
         await expect(page.getByText("Er laget for")).toHaveCSS("font-weight", "400");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-weight", "700");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-weight", "400");
 
         // With shortcut keys - bold off
-        await selectFullElement(page, "teste piltast");
+        await selectTextInElement(page, "teste piltast", "teste piltast");
         await page.keyboard.press("Control+f");
         await expect(page.getByText("Er laget for")).toHaveCSS("font-weight", "400");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-weight", "400");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-weight", "400");
 
-        // Integrity maintained: paragraph should now have 5 child nodes
-        expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(5);
+        // Removing the formatting merges the text back into one literal
+        expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
       });
 
       test("handles switching plain/italic/plain", async ({ page }) => {
@@ -310,27 +310,28 @@ test.describe("Switch font type", () => {
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-style", "normal");
 
         // Italic off with toolbar
-        await selectFullElement(page, "teste piltast");
+        await selectTextInElement(page, "teste piltast", "teste piltast");
         await page.getByTestId("fonttype-italic-button").click();
         await expect(page.getByText("Er laget for")).toHaveCSS("font-style", "normal");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-style", "normal");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-style", "normal");
 
         // Italic on with shortcut
-        await selectFullElement(page, "teste piltast");
+        await selectTextInElement(page, "teste piltast", "teste piltast");
         await page.keyboard.press("Control+i");
         await expect(page.getByText("Er laget for")).toHaveCSS("font-style", "normal");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-style", "italic");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-style", "normal");
 
         // Italic off with shortcut
-        await selectFullElement(page, "teste piltast");
+        await selectTextInElement(page, "teste piltast", "teste piltast");
         await page.keyboard.press("Control+i");
         await expect(page.getByText("Er laget for")).toHaveCSS("font-style", "normal");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-style", "normal");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-style", "normal");
 
-        expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(5);
+        // Removing the formatting merges the text back into one literal
+        expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
       });
 
       test("handles switching plain/bold/italic", async ({ page }) => {
@@ -462,7 +463,8 @@ test.describe("Switch font type", () => {
         await expect(page.getByText(mainText)).toHaveCSS("font-weight", "400");
         await expect(page.getByText("variable.")).toHaveCSS("font-weight", "400");
 
-        expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(4);
+        // Removing the formatting merges the word back into its literal
+        expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
       });
 
       test("handles switching plain/italic/plain", async ({ page }) => {
@@ -497,7 +499,8 @@ test.describe("Switch font type", () => {
         await expect(page.getByText(mainText)).toHaveCSS("font-style", "normal");
         await expect(page.getByText("variable.")).toHaveCSS("font-style", "normal");
 
-        expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(4);
+        // Removing the formatting merges the word back into its literal
+        expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
       });
 
       test("handles switching plain/bold/italic", async ({ page }) => {
@@ -548,7 +551,8 @@ test.describe("Switch font type", () => {
         await expect(page.getByText(mainText)).toHaveCSS("font-style", "normal");
         await expect(page.getByText("variable.")).toHaveCSS("font-style", "normal");
 
-        expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(4);
+        // Removing the formatting merges the word back into its literal
+        expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
       });
     });
   });
@@ -747,5 +751,97 @@ test.describe("Switch font type keeps the selection", () => {
 
     await page.keyboard.type("X");
     await expect(paragraphText(page)).toHaveText("Noen stoler X i rom 4A.");
+  });
+});
+
+test.describe("Switch font type across differently formatted text", () => {
+  const parts = ["Du får ", "alderspensjon", " fra 1. mai 2025 etter ", "folketrygdloven § 20-2"];
+  const sentence = parts.join("");
+
+  test.beforeEach(async ({ page }) => {
+    await setupBrevRoute(
+      page,
+      brevResponse({
+        info: editorInfo(),
+        redigertBrev: editedLetter({
+          sakspart: baseSakspart(),
+          blocks: [
+            paragraph({
+              id: 1,
+              content: [
+                makeLiteral(11, 1, parts[0]),
+                { ...makeLiteral(12, 1, parts[1]), fontType: "BOLD" },
+                makeLiteral(13, 1, parts[2]),
+                { ...makeLiteral(14, 1, parts[3]), fontType: "ITALIC" },
+              ],
+            }),
+          ],
+          signatur: baseSignatur(),
+        }) as EditedLetter,
+      }),
+    );
+    await navigateToEditor(page);
+  });
+
+  const fontTypes = (page: Page) =>
+    page
+      .locator(".editor-surface > .PARAGRAPH")
+      .first()
+      .locator("[data-literal]")
+      .evaluateAll((literals) => literals.map((literal) => (literal as HTMLElement).dataset.fontType ?? "PLAIN"));
+  const selectedText = (page: Page) => page.evaluate(() => globalThis.getSelection()?.toString());
+  const boldButton = (page: Page) => page.getByTestId("fonttype-bold-button");
+  const italicButton = (page: Page) => page.getByTestId("fonttype-italic-button");
+
+  async function selectSentence(page: Page) {
+    await page.evaluate((parts) => {
+      const literals = [...document.querySelectorAll<HTMLElement>(".editor-surface > .PARAGRAPH [data-literal]")];
+      const first = literals.find((literal) => literal.textContent === parts[0])!;
+      const last = literals.find((literal) => literal.textContent === parts.at(-1))!;
+      first.closest<HTMLElement>('[contenteditable="true"]')!.focus();
+      const range = document.createRange();
+      range.setStart(first.firstChild!, 0);
+      range.setEnd(last.firstChild!, last.textContent!.length);
+      getSelection()!.removeAllRanges();
+      getSelection()!.addRange(range);
+    }, parts);
+    await expect.poll(() => selectedText(page)).toBe(sentence);
+  }
+
+  test("Bold and Italic apply to all of it and remove from all of it, from the toolbar and shortcuts", async ({
+    page,
+  }) => {
+    const bold = process.platform === "darwin" ? "Meta+b" : "Control+b";
+    const italic = process.platform === "darwin" ? "Meta+i" : "Control+i";
+    await selectSentence(page);
+    await expect(boldButton(page)).toHaveAttribute("aria-pressed", "mixed");
+    await expect(italicButton(page)).toHaveAttribute("aria-pressed", "mixed");
+
+    await boldButton(page).click();
+    await expect.poll(() => fontTypes(page)).toEqual(["BOLD", "BOLD", "BOLD", "BOLD"]);
+    await expect(boldButton(page)).toHaveAttribute("aria-pressed", "true");
+    await expect(italicButton(page)).toHaveAttribute("aria-pressed", "false");
+    await expect.poll(() => selectedText(page)).toBe(sentence);
+
+    await page.keyboard.press(bold);
+    await expect.poll(() => fontTypes(page)).toEqual(["PLAIN", "PLAIN", "PLAIN", "PLAIN"]);
+    await page.keyboard.press(italic);
+    await expect.poll(() => fontTypes(page)).toEqual(["ITALIC", "ITALIC", "ITALIC", "ITALIC"]);
+    await italicButton(page).click();
+    await expect.poll(() => fontTypes(page)).toEqual(["PLAIN", "PLAIN", "PLAIN", "PLAIN"]);
+    await expect.poll(() => selectedText(page)).toBe(sentence);
+
+    for (let step = 0; step < 4; step++) await page.keyboard.press("ControlOrMeta+z");
+    await expect.poll(() => fontTypes(page)).toEqual(["PLAIN", "BOLD", "PLAIN", "ITALIC"]);
+  });
+
+  test("the toolbar follows the word at the caret", async ({ page }) => {
+    await page.locator(".editor").getByText("alderspensjon", { exact: true }).click();
+    await expect(boldButton(page)).toHaveAttribute("aria-pressed", "true");
+    await expect(italicButton(page)).toHaveAttribute("aria-pressed", "false");
+
+    await page.locator(".editor").getByText("folketrygdloven § 20-2", { exact: true }).click();
+    await expect(boldButton(page)).toHaveAttribute("aria-pressed", "false");
+    await expect(italicButton(page)).toHaveAttribute("aria-pressed", "true");
   });
 });
