@@ -193,6 +193,9 @@ export function initInnblikk(matchRoute: MatchRoute): void {
 
   globalThis.sanitizeSkribentenInnblikkPayload = (type, payload) => {
     const result = beforeSend(payload, matchRoute);
+    if (import.meta.env.DEV && type === "event" && !result.name) {
+      console.info("[Innblikk] Sidevisning", { type, payload: result });
+    }
     if (type !== "identify" && result.id) {
       identify(result.id);
     }
@@ -201,7 +204,9 @@ export function initInnblikk(matchRoute: MatchRoute): void {
 
   const script = document.createElement("script");
   script.id = SCRIPT_ID;
-  script.src = "https://cdn.nav.no/team-researchops/sporing/sporing.js";
+  script.src = import.meta.env.DEV
+    ? "https://cdn.nav.no/team-researchops/sporing/sporing-dev.js"
+    : "https://cdn.nav.no/team-researchops/sporing/sporing.js";
   script.defer = true;
   script.dataset.websiteId = websiteId;
   script.dataset.hostUrl = hostUrl;

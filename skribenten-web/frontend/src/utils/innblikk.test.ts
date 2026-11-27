@@ -30,6 +30,7 @@ afterEach(() => {
   document.getElementById("skribenten-innblikk-sporing")?.dispatchEvent(new Event("error"));
   vi.useRealTimers();
   vi.restoreAllMocks();
+  vi.unstubAllEnvs();
   vi.unstubAllGlobals();
   jsdom.reconfigure({ url: "http://localhost:3000" });
   for (const node of document.querySelectorAll('meta[name^="umami-"], #skribenten-innblikk-sporing')) {
@@ -137,7 +138,33 @@ describe("sanitering av sporingsdata", () => {
 });
 
 describe("oppstart av Innblikk", () => {
-  it("installerer callback før sporingsskriptet kan kjøre, og laster bare én gang", () => {
+  it.each([true, false])("logger bare sidevisninger i utviklingsmodus (DEV=%s)", (dev) => {
+    vi.stubEnv("DEV", dev);
+    configure();
+    getCookie.mockReturnValue(id);
+    initInnblikk(matchRoute);
+
+    const callback = globalThis.sanitizeSkribentenInnblikkPayload;
+    const pageview = callback?.("event", { ...payload, url: "/personvern?skjult=verdi#fragment" });
+    callback?.("event", { ...payload, name: "brev opprettet" });
+    callback?.("identify", payload);
+
+    expect(pageview?.url).toBe("/personvern");
+    if (dev) {
+      expect(console.info).toHaveBeenCalledExactlyOnceWith("[Innblikk] Sidevisning", {
+        type: "event",
+        payload: pageview,
+      });
+    } else {
+      expect(console.info).not.toHaveBeenCalled();
+    }
+  });
+
+  it.each([
+    [true, "sporing-dev.js"],
+    [false, "sporing.js"],
+  ])("installerer callback før %s-skriptet kan kjøre, og laster bare én gang (%s)", (dev, scriptName) => {
+    vi.stubEnv("DEV", dev);
     configure();
     getCookie.mockReturnValue(id);
     const append = vi.spyOn(document.head, "appendChild");
@@ -150,7 +177,7 @@ describe("oppstart av Innblikk", () => {
     initInnblikk(matchRoute);
     expect(callbackResult).toMatchObject({ id });
     const script = append.mock.calls[0][0] as HTMLScriptElement;
-    expect(script.src).toBe("https://cdn.nav.no/team-researchops/sporing/sporing.js");
+    expect(script.src).toBe(`https://cdn.nav.no/team-researchops/sporing/${scriptName}`);
     expect(script.dataset).toMatchObject({
       websiteId: "skribenten-website",
       hostUrl: "https://reops-event-proxy.nav.no",

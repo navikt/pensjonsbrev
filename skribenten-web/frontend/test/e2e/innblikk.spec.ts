@@ -8,7 +8,7 @@ const COOKIE_NAME = "pensjon-psak-innblikk-uuid";
 const WEBSITE_ID = "85abe8ab-e9d6-4179-b727-9c856715343f";
 const PENNY_ID = "ec458791-8536-41b6-bf86-a5fe83226946";
 const NEXT_ID = "f1b85a1a-86fe-4bcc-af02-a287defeb106";
-const SCRIPT_URL = "https://cdn.nav.no/team-researchops/sporing/sporing.js";
+const SCRIPT_URL = /^https:\/\/cdn\.nav\.no\/team-researchops\/sporing\/sporing(?:-dev)?\.js$/;
 
 type AnalyticsEvent = {
   type: string;
@@ -17,7 +17,7 @@ type AnalyticsEvent = {
 
 async function interceptAnalytics(context: BrowserContext, baseURL: string, origin: string) {
   const events: AnalyticsEvent[] = [];
-  // Pinned copy of SCRIPT_URL: exercise the tracker without CDN access or real analytics traffic.
+  // Pinned copy of sporing.js: both variants use the same hook and payload.
   await context.route(SCRIPT_URL, (route) =>
     route.fulfill({ path: "test/e2e/fixtures/sporing.js.txt", contentType: "application/javascript" }),
   );

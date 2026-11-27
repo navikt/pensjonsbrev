@@ -64,7 +64,7 @@ export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: nu
       <Tabs
         className="brev-og-vedlegg-editor-sidepanel"
         css={{
-          "> div:first-child": {
+          "> div:first-of-type": {
             position: "sticky",
             top: 0,
             zIndex: 1,
