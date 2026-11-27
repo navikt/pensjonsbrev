@@ -31,7 +31,7 @@ import { useAttestantDiff } from "./diff/AttestantDiffContext";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { remapFocus } from "./model/remapFocus";
-import { type LetterEditorState } from "./model/state";
+import { type Focus, type LetterEditorState } from "./model/state";
 import { useRedigeringsflate } from "./RedigeringsflateContext";
 import { copyAsSemanticHtml } from "./services/semanticCopy";
 import { useEditorKeyboardShortcuts } from "./utils";
@@ -46,6 +46,7 @@ export const LetterEditor = ({
   showDebug,
   renderTilbakestillModal,
   diffToggleMenu,
+  restoreFocusFromOutside,
 }: {
   freeze: boolean;
   error: boolean;
@@ -55,9 +56,20 @@ export const LetterEditor = ({
   /** Owned by the caller because what "tilbakestill" resets depends on the document being edited. */
   renderTilbakestillModal?: (args: { open: boolean; onClose: () => void }) => React.ReactNode;
   diffToggleMenu?: React.ReactNode;
+  restoreFocusFromOutside?: React.RefObject<boolean>;
 }) => {
   const redigeringsflate = useRedigeringsflate();
   const letter = editorState.redigertBrev;
+  // Signature focus must not replace the text caret used when tabbing back into the letter.
+  const lastTextFocus = useRef({ document: letter, focus: editorState.focus });
+  if (editorState.focus.contentIndex >= 0) {
+    lastTextFocus.current = { document: letter, focus: editorState.focus };
+  } else if (lastTextFocus.current.document !== letter) {
+    lastTextFocus.current = {
+      document: letter,
+      focus: remapFocus(lastTextFocus.current.focus, lastTextFocus.current.document, letter),
+    };
+  }
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
@@ -151,8 +163,19 @@ export const LetterEditor = ({
   }, [freeze, setEditorState]);
 
   return (
-    <VStack height="100%" overflowY="hidden">
-      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
+    <VStack data-letter-editor height="100%" overflowY="hidden">
+      <EditorStateContext.Provider
+        value={{
+          freeze,
+          error,
+          editorState,
+          setEditorState,
+          undo,
+          redo,
+          restoreFocusFromOutside,
+          tabEntryFocus: lastTextFocus.current.focus,
+        }}
+      >
         <EditorMenu
           canRedo={canRedo}
           canUndo={canUndo}
@@ -276,6 +299,8 @@ export const EditorStateContext = createContext<{
   setEditorState: CallbackReceiver<LetterEditorState>;
   undo: () => void;
   redo: () => void;
+  restoreFocusFromOutside?: React.RefObject<boolean>;
+  tabEntryFocus?: Focus;
 }>({
   freeze: false,
   error: false,

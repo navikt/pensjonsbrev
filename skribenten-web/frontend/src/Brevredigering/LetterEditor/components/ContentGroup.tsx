@@ -2,7 +2,6 @@ import React, { useLayoutEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
-  collectAllLiteralValues,
   fontTypeOf,
   isBlockContentIndex,
   isItemContentIndex,
@@ -243,9 +242,11 @@ const isTextMutatingKey = (event: React.KeyboardEvent<HTMLSpanElement>): boolean
 
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
+  const caretSavedOnBlur = useRef<Focus | undefined>(undefined);
+  const focusedByPointer = useRef(false);
   const pasteViaKeyboardRef = useRef(false);
   const pasteViaContextMenuRef = useRef(false);
-  const { freeze, editorState, setEditorState, undo, redo } = useEditor();
+  const { freeze, editorState, setEditorState, undo, redo, restoreFocusFromOutside, tabEntryFocus } = useEditor();
   const highlightedIds = useInsertedTekstValgHighlight();
   const isInserted = isTekstValgHighlighted(highlightedIds, content);
 
@@ -260,11 +261,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   // hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
   const erFritekst = isUneditedFritekst(content);
-  const isTitleTabEntry =
-    !freeze &&
-    literalIndex.blockIndex === TITLE_INDEX &&
-    literalIndex.contentIndex === editorState.redigertBrev.title.text.findIndex((text) => text.type === "LITERAL") &&
-    !collectAllLiteralValues(editorState.redigertBrev).some(isUneditedFritekst);
+  const savedCaret = tabEntryFocus ?? editorState.focus;
+  const isCaretTabEntry = !freeze && hasFocus(savedCaret, literalIndex);
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
 
@@ -285,7 +283,19 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       element.textContent = text;
     }
 
-    if (!freeze && shouldBeFocused) {
+    if (!freeze && shouldBeFocused && editorState.focus !== caretSavedOnBlur.current) {
+      const activeElement = document.activeElement;
+      const editor = element.closest("[data-letter-editor]");
+      if (
+        activeElement &&
+        activeElement !== document.body &&
+        editor &&
+        !editor.contains(activeElement) &&
+        !restoreFocusFromOutside?.current
+      ) {
+        return;
+      }
+
       // Preserve full selection for untouched fritekst placeholders (first key should replace it).
       if (shouldPreserveFullSelection(erFritekst, element)) {
         return;
@@ -344,6 +354,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     diffSegments,
     diffVersion,
     diffHash,
+    restoreFocusFromOutside,
   ]);
 
   // Editing and diff decoration are mutually exclusive. The first edit attempt disables
@@ -846,6 +857,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnMouseDown = (e: React.MouseEvent) => {
+    focusedByPointer.current = true;
     pasteViaContextMenuRef.current = false;
     // Native trippelklikk markerer hele avsnittet ved mousedown, noe som avgrenses til første literal i blokken.
     // Blokker dette og marker heller hele literalen det ble klikket i.
@@ -869,16 +881,42 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnFocus = (e: React.FocusEvent<HTMLSpanElement>) => {
+    const restoreCaret = !focusedByPointer.current && isCaretTabEntry && savedCaret.cursorPosition !== undefined;
+    focusedByPointer.current = false;
     // I word vil endring av fonttype beholde markering av teksten, mens denne focus state endringen vil fjerne markeringen
     const offset = getCursorOffset();
     setEditorState((oldState) => ({
       ...oldState,
       // offset > 0: store known positive position. Skip 0 (ambiguous from programmatic focus) and -1 (no selection).
-      focus: { ...literalIndex, ...(offset > 0 && { cursorPosition: offset }) },
+      focus: restoreCaret ? { ...savedCaret } : { ...literalIndex, ...(offset > 0 && { cursorPosition: offset }) },
     }));
     if (!erFritekst) return;
     e.preventDefault();
     setSelection(e.currentTarget);
+  };
+
+  const handleOnBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
+    focusedByPointer.current = false;
+    if (freeze || e.relatedTarget?.closest("[data-literal-index]")) return;
+    const element = e.currentTarget;
+    const selection = globalThis.getSelection();
+    if (
+      !selection?.isCollapsed ||
+      !selection.anchorNode ||
+      !selection.focusNode ||
+      !element.contains(selection.anchorNode) ||
+      !element.contains(selection.focusNode)
+    ) {
+      return;
+    }
+
+    const focus: Focus = {
+      ...literalIndex,
+      cursorPosition: text === ZERO_WIDTH_SPACE ? 0 : getEditableCharacterOffset(element),
+    };
+    // Saving a position on blur must not refocus this literal during the native focus transition.
+    caretSavedOnBlur.current = focus;
+    setEditorState((state) => (hasFocus(state.focus, literalIndex) ? { ...state, focus } : state));
   };
 
   const handleOnClick = (e: React.MouseEvent<HTMLSpanElement>) => {
@@ -961,6 +999,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       data-font-type={fontTypeOf(content) === FontType.PLAIN ? undefined : fontTypeOf(content)}
       data-literal-index={JSON.stringify(literalIndex)}
       onBeforeInput={hasDiffDecoration ? handleBeforeInput : undefined}
+      onBlur={handleOnBlur}
       onClick={handleOnClick}
       onContextMenu={handleOnContextMenu}
       onDoubleClick={handleOnDoubleClick}
@@ -971,7 +1010,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       onMouseDown={handleOnMouseDown}
       onPaste={handleOnPaste}
       ref={contentEditableReference}
-      tabIndex={erFritekst || isTitleTabEntry ? 0 : -1}
+      tabIndex={erFritekst || isCaretTabEntry ? 0 : -1}
     />
   );
 }

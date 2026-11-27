@@ -302,6 +302,7 @@ function RedigerBrev({
   const { oppdaterBrevMutation } = useOppdaterBrevMutation(saksId);
   const [finalizing, setFinalizing] = useState(false);
   const finalizingRef = useRef(false);
+  const restoreFocusFromOutside = useRef(false);
 
   const { form, onValgChange, cancelPendingChange } = useSaksbehandlerValgForm({
     isLocked: () => finalizingRef.current,
@@ -414,7 +415,15 @@ function RedigerBrev({
     <FormProvider {...form}>
       <Box asChild background="default" maxWidth="1106px" minWidth="945px">
         <VStack asChild height="100%" marginInline="auto">
-          <form onSubmit={guardedSubmit}>
+          <form
+            onKeyDownCapture={() => {
+              restoreFocusFromOutside.current = false;
+            }}
+            onPointerDownCapture={() => {
+              restoreFocusFromOutside.current = false;
+            }}
+            onSubmit={guardedSubmit}
+          >
             <WarnModal {...warnModalProps} />
             <ReservertBrevError
               doRetry={doReload}
@@ -456,12 +465,21 @@ function RedigerBrev({
                         <Heading size="small" spacing>
                           {brevmal.data?.name}
                         </Heading>
-                        <BrevmalAlternativer
-                          brevkode={brev.info.brevkode}
-                          propertyUsage={brev.propertyUsage ?? undefined}
-                          readOnly={finalizing || oppdaterBrevMutation.isPending || resetting}
-                          submitOnChange={onValgChange}
-                        />
+                        <div
+                          onClickCapture={(event) => {
+                            restoreFocusFromOutside.current =
+                              event.detail > 0 &&
+                              event.target instanceof HTMLInputElement &&
+                              (event.target.type === "checkbox" || event.target.type === "radio");
+                          }}
+                        >
+                          <BrevmalAlternativer
+                            brevkode={brev.info.brevkode}
+                            propertyUsage={brev.propertyUsage ?? undefined}
+                            readOnly={finalizing || oppdaterBrevMutation.isPending || resetting}
+                            submitOnChange={onValgChange}
+                          />
+                        </div>
                         <UnderskriftTextField
                           of="Saksbehandler"
                           readOnly={finalizing || oppdaterBrevMutation.isPending || resetting}
@@ -477,7 +495,13 @@ function RedigerBrev({
                     freeze={oppdaterBrevMutation.isPending || awaitingValgMerge}
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                        <ManagedLetterEditor canReset error={error} freeze={freeze} showDebug={showDebug} />
+                        <ManagedLetterEditor
+                          canReset
+                          error={error}
+                          freeze={freeze}
+                          restoreFocusFromOutside={restoreFocusFromOutside}
+                          showDebug={showDebug}
+                        />
                       </InsertedTekstValgHighlightProvider>
                     )}
                     saksId={saksId}

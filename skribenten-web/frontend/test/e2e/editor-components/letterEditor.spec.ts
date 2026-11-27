@@ -501,6 +501,28 @@ test.describe("LetterEditor", () => {
   });
 
   test.describe("Focus", () => {
+    test("places the caret where the user clicks when switching between literals", async ({ page }) => {
+      for (const [label, offset] of [
+        ["CP1-1", 5],
+        ["CP2-1", 9],
+        ["CP1-1", 12],
+        ["CP1-1", 3],
+      ] as const) {
+        const literal = page.locator("[data-literal-index]", { hasText: label });
+        const point = await literal.evaluate((element, offset) => {
+          const text = element.firstChild;
+          if (!text) throw new Error("Missing literal text");
+          const range = document.createRange();
+          range.setStart(text, offset);
+          range.collapse(true);
+          const { x, y, height } = range.getBoundingClientRect();
+          return { x, y: y + height / 2 };
+        }, offset);
+        await page.mouse.click(point.x, point.y);
+        await assertCaret(page, label, offset, { expectExact: true });
+      }
+    });
+
     test("invalid focus is ignored", async ({ page }) => {
       // This replicates the Cypress component test that mounted with an out-of-bounds cursorPosition,
       // verifying the clamping at ContentGroup.tsx (Math.min(cursorPosition, text.length)).
