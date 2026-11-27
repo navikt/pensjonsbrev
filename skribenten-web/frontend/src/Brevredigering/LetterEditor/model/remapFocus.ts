@@ -2,7 +2,7 @@ import { isItemContentIndex, isTable, text } from "~/Brevredigering/LetterEditor
 import { type Content, type EditedDocument, type Table, type TextContent, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { type Focus, type LiteralIndex, SIGNATURE_FOCUS, type TableCellIndex } from "./state";
-import { isItemList, isTableCellIndex, isTextContent } from "./utils";
+import { isItemList, isLiteral, isTableCellIndex, isTextContent } from "./utils";
 
 type Identified = { id?: number | null };
 type MappingDirection = "forward" | "reverse";
@@ -130,18 +130,73 @@ function remapLiteral(
   );
 }
 
-function startOfBlock(document: EditedDocument, blockIndex: number): Focus | undefined {
-  const first = document.blocks[blockIndex]?.content[0];
-  if (isTextContent(first)) return { blockIndex, contentIndex: 0, cursorPosition: 0 };
-  if (isItemList(first) && isTextContent(first.items[0]?.content[0])) {
-    return { blockIndex, contentIndex: 0, itemIndex: 0, itemContentIndex: 0, cursorPosition: 0 };
+type Edge = "start" | "end";
+
+function indices<T>(list: readonly T[], edge: Edge): number[] {
+  const all = list.map((_, index) => index);
+  return edge === "start" ? all : all.reverse();
+}
+
+function literalAt(texts: readonly Content[], edge: Edge): { index: number; cursorPosition: number } | undefined {
+  for (const index of indices(texts, edge)) {
+    const content = texts[index];
+    if (isLiteral(content)) return { index, cursorPosition: edge === "start" ? 0 : text(content).length };
+  }
+  return undefined;
+}
+
+/** Only literals are editable; variables and new lines cannot receive the caret. */
+function literalInBlock(document: EditedDocument, blockIndex: number, edge: Edge): Focus | undefined {
+  const content = document.blocks[blockIndex]?.content ?? [];
+  for (const contentIndex of indices(content, edge)) {
+    const element = content[contentIndex];
+    if (isLiteral(element)) {
+      return { blockIndex, contentIndex, cursorPosition: edge === "start" ? 0 : text(element).length };
+    }
+    if (isItemList(element)) {
+      for (const itemIndex of indices(element.items, edge)) {
+        const found = literalAt(element.items[itemIndex].content, edge);
+        if (found) {
+          return {
+            blockIndex,
+            contentIndex,
+            itemIndex,
+            itemContentIndex: found.index,
+            cursorPosition: found.cursorPosition,
+          };
+        }
+      }
+    }
+    if (isTable(element)) {
+      const cells: { rowIndex: number; cellIndex: number; texts: readonly Content[] }[] = [
+        ...element.header.colSpec.map((col, cellIndex) => ({ rowIndex: -1, cellIndex, texts: col.headerContent.text })),
+        ...element.rows.flatMap((row, rowIndex) =>
+          row.cells.map((cell, cellIndex) => ({ rowIndex, cellIndex, texts: cell.text })),
+        ),
+      ];
+      for (const index of indices(cells, edge)) {
+        const { rowIndex, cellIndex, texts } = cells[index];
+        const found = literalAt(texts, edge);
+        if (found) {
+          return {
+            blockIndex,
+            contentIndex,
+            rowIndex,
+            cellIndex,
+            cellContentIndex: found.index,
+            cursorPosition: found.cursorPosition,
+          };
+        }
+      }
+    }
   }
   return undefined;
 }
 
 /**
  * Moves focus from a position in `from` to the same content in `to`, e.g. after a template merge has
- * inserted or removed blocks. Falls back to the start of the nearest preceding block that still exists.
+ * inserted or removed blocks. Falls back to the end of the last literal in the nearest preceding block
+ * that still exists, i.e. where the removed content used to be.
  */
 export function remapFocus(
   focus: Focus,
@@ -158,8 +213,12 @@ export function remapFocus(
 
   for (let blockIndex = Math.min(focus.blockIndex, from.blocks.length - 1); blockIndex >= 0; blockIndex--) {
     const toBlockIndex = correspondingIndex(from.blocks, to.blocks, blockIndex, direction);
-    const start = toBlockIndex === undefined ? undefined : startOfBlock(to, toBlockIndex);
+    const end = toBlockIndex === undefined ? undefined : literalInBlock(to, toBlockIndex, "end");
+    if (end) return end;
+  }
+  for (let blockIndex = 0; blockIndex < to.blocks.length; blockIndex++) {
+    const start = literalInBlock(to, blockIndex, "start");
     if (start) return start;
   }
-  return startOfBlock(to, 0) ?? { blockIndex: 0, contentIndex: 0, cursorPosition: 0 };
+  return { blockIndex: 0, contentIndex: 0, cursorPosition: 0 };
 }

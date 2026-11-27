@@ -2,7 +2,17 @@ import { describe, expect, test } from "vitest";
 
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
 import { editedLetter } from "~test/support/brevFixtures";
-import { cell, item, itemList, literal, paragraph, row, table } from "~test/support/letterEditorTestUtils";
+import {
+  cell,
+  item,
+  itemList,
+  literal,
+  newLine,
+  paragraph,
+  row,
+  table,
+  variable,
+} from "~test/support/letterEditorTestUtils";
 
 import { remapFocus } from "./remapFocus";
 import { SIGNATURE_FOCUS } from "./state";
@@ -113,14 +123,78 @@ describe("remapFocus", () => {
     expect(remapFocus(SIGNATURE_FOCUS, from, to)).toBe(SIGNATURE_FOCUS);
   });
 
-  test("faller tilbake til starten av nærmeste foregående avsnitt når innholdet er fjernet", () => {
+  test("faller tilbake til slutten av nærmeste foregående avsnitt når innholdet er fjernet", () => {
     const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
     const from = editedLetter({ blocks: [avsnitt, fjernet] });
     const to = editedLetter({ blocks: [flettetInn, avsnitt] });
 
     expect(remapFocus({ blockIndex: 1, contentIndex: 0, cursorPosition: 3, selectAll: true }, from, to)).toEqual({
       blockIndex: 1,
-      contentIndex: 0,
+      contentIndex: 1,
+      cursorPosition: "Redigert tekst".length,
+    });
+  });
+
+  test("faller tilbake til en redigerbar literal når foregående avsnitt starter eller slutter med variabel", () => {
+    const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
+    const variabelAvsnitt = paragraph({
+      id: 60,
+      content: [variable("1 000 kr"), literal({ id: 61, text: " utbetales" }), newLine(), variable("1. mai")],
+    });
+    const from = editedLetter({ blocks: [variabelAvsnitt, fjernet] });
+    const to = editedLetter({ blocks: [variabelAvsnitt] });
+
+    expect(remapFocus({ blockIndex: 1, contentIndex: 0, cursorPosition: 3 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      cursorPosition: " utbetales".length,
+    });
+  });
+
+  test("faller tilbake til siste punkt i foregående avsnitt", () => {
+    const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
+    const liste = itemList({
+      id: 30,
+      items: [
+        item({ id: 31, content: [literal({ id: 32, text: "Første" })] }),
+        item({ id: 33, content: [literal({ id: 34, text: "Siste" }), variable("variabel")] }),
+      ],
+    });
+    const listeAvsnitt = paragraph({ id: 70, content: [literal({ id: 71, text: "Innledning" }), liste] });
+    const from = editedLetter({ blocks: [listeAvsnitt, fjernet] });
+    const to = editedLetter({ blocks: [listeAvsnitt] });
+
+    expect(remapFocus({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      itemIndex: 1,
+      itemContentIndex: 0,
+      cursorPosition: "Siste".length,
+    });
+  });
+
+  test("hopper over foregående avsnitt uten redigerbar literal", () => {
+    const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
+    const kunVariabel = paragraph({ id: 80, content: [variable("Ola Nordmann")] });
+    const from = editedLetter({ blocks: [avsnitt, kunVariabel, fjernet] });
+    const to = editedLetter({ blocks: [avsnitt, kunVariabel] });
+
+    expect(remapFocus({ blockIndex: 2, contentIndex: 0, cursorPosition: 0 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      cursorPosition: "Redigert tekst".length,
+    });
+  });
+
+  test("faller tilbake til første redigerbare literal når ingen foregående avsnitt finnes", () => {
+    const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
+    const variabelAvsnitt = paragraph({ id: 60, content: [variable("1 000 kr"), literal({ id: 61, text: " kr" })] });
+    const from = editedLetter({ blocks: [fjernet, variabelAvsnitt] });
+    const to = editedLetter({ blocks: [variabelAvsnitt] });
+
+    expect(remapFocus({ blockIndex: 0, contentIndex: 0, cursorPosition: 2 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
       cursorPosition: 0,
     });
   });
