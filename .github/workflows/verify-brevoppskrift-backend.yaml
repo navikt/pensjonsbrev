@@ -17,7 +17,10 @@ on:
       - .tool-versions
       - brevoppskrift-web/frontend/src/verksted/api-types.ts
       - .github/workflows/verify-brevoppskrift-backend.yaml
+      - .github/workflows/deploy-brevoppskrift-backend.yaml
+      - .github/workflows/.build-backend.yaml
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read

@@ -54,8 +54,6 @@ docker-compose up -d --build
    ```bash
    (cd skribenten-web/bff && npm ci && npm run build)
    (cd skribenten-web/frontend && npm ci)
-   (cd brevoppskrift-web/bff && npm ci && npm run build)
-   (cd brevoppskrift-web/frontend && npm ci)
    ./gradlew build -x test
    ```
 
@@ -68,6 +66,14 @@ docker-compose up -d --build
    npm run dev --prefix skribenten-web/frontend
    ```
 7. Åpne http://localhost:8083/vite-on for å koble front-enden opp mot bff(backend for front-end).
+
+### Lokal kjøring av brevoppskrift
+
+Brevoppskrift bruker `docker-compose.brevoppskrift.yml` sammen med
+`docker-compose.yml`, ikke Skribenten-profilen. Se
+[lokal stack og dev-utrulling](brevoppskrift-backend/README.md#lokal-stack)
+for Azure-oppsett, bygg og oppstart. Eksisterende mallesing er anonym;
+workshopproxy og verkstedruter er ennå ikke koblet inn.
 
 ### Debugge tjenester i docker
 

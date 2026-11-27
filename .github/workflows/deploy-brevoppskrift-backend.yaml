@@ -1,0 +1,48 @@
+name: "deploy: brevoppskrift-backend"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+
+concurrency:
+  group: brevoppskrift-backend-dev
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/verify-brevoppskrift-backend.yaml
+    secrets: inherit
+
+  build:
+    needs: [verify]
+    uses: ./.github/workflows/.build-backend.yaml
+    with:
+      image_suffix: brevoppskrift-backend
+      path: brevoppskrift-backend
+      target: brevoppskrift-backend
+      gradleTarget: brevoppskrift-backend
+      buildTask: build
+      buildImage: true
+    secrets: inherit
+
+  attest:
+    needs: [build]
+    uses: ./.github/workflows/.salsa.yaml
+    with:
+      image: ${{ needs.build.outputs.image }}
+    secrets: inherit
+
+  deploy-dev:
+    needs: [build, attest]
+    uses: ./.github/workflows/.deploy.yaml
+    with:
+      image: ${{ needs.build.outputs.image }}
+      resource: brevoppskrift-backend/.nais/nais.yaml
+      vars: brevoppskrift-backend/.nais/dev.yaml
+      cluster: dev-gcp
+    secrets: inherit

@@ -31,7 +31,19 @@ spec:
         - id: elastic
         - id: loki
 
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: true
+      replyURLs:
+        - "http://localhost:8088/oauth2/callback"
+    sidecar:
+      enabled: true
+      autoLogin: false
+
   accessPolicy:
+    inbound:
+      rules: []
     outbound:
       rules:
         {{#each outboundApps as |rule|}}

@@ -2,7 +2,6 @@
 *
 
 # except
-!.env
 !src/
 !tsconfig.json
 !package*.json

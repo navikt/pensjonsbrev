@@ -1,0 +1,18 @@
+app-name: brevoppskrift-backend
+
+database:
+  postgresVersion: POSTGRES_18
+
+editor-group-id: c331c338-5d39-45eb-a9c7-4e909c81768a
+
+inboundRules:
+  - application: brevoppskrift-web
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+
+externalHosts:
+  - api.github.com
+
+env:
+  - name: PUBLIC_WEB_URL
+    value: https://pensjon-brevoppskrift.intern.dev.nav.no

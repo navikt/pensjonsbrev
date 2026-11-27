@@ -8,7 +8,10 @@ som JSONB med revisjonskontroll, unik aktiv kilde og arkivering.
 `openDatabase` kjører migreringene i `src/main/resources/db/migration`
 før tilkoblingspoolen returneres. Ktor-applikasjonen bruker det samme
 lagringslaget og pakker katalog, generator og forhåndsvisning.
-Backend er ikke deployet eller koblet til BFF.
+Backend har container- og dev-oppsett, men deploy krever en separat
+operatørhandling. BFF har Entra-identitet og Wonderwall uten automatisk
+innlogging. Workshopproxy og verkstedruter er ikke koblet inn; gammel
+mallesing og Word-eksport er fortsatt anonyme.
 
 Bygg og test:
 
@@ -212,3 +215,101 @@ HTML er ikke en garanti for ferdig PDF-layout eller full semantikk i
 originalmalen. Faktisk rendring må fortsatt kontrolleres med målmodulens
 tester. Forhåndsvisningen er en ren transformasjon uten HTTP-server,
 nettverkskall eller lagringsendringer.
+
+## Lokal stack
+
+Bruk Docker Compose 2.24.4 eller nyere, med Buildx/BuildKit og
+[packages.read-oppsett for npm og Gradle](../README.md#oppsett-av-packagesread-token).
+Oppsettet er et tillegg til
+`docker-compose.yml`, med eget nettverk og en vedvarende PostgreSQL 18-
+database. Publiserte porter bindes til loopback. Ikke start eller stopp
+en eksisterende delt stack; kontroller først at portene 8080, 8081, 8087,
+8088 og debugportene er ledige.
+
+Etter merge av B-stacken bruker lokal kjøring Entra-identitetene til
+`brevoppskrift-backend` og `brevoppskrift-web` i `dev-gcp`. Begge dev-
+applikasjonene må være deployet med Azure-konfigurasjon først; det
+opprettes ingen egne lokale Entra-registreringer. BFF-manifestet inkluderer
+`http://localhost:8088/oauth2/callback` for lokal Wonderwall.
+
+Fetch-scriptene finner gjeldende Azure-secret via dev-applikasjonens
+miljøkonfigurasjon, etter samme mønster som Skribenten. Hent denne og
+Brevbakers Unleash-konfigurasjon med Nais-tilgang. Kommandoene henter
+secrets; ikke logg eller commit innholdet.
+
+```shell
+./brevoppskrift-backend/fetch-secrets.sh
+./brevoppskrift-web/bff/fetch-secrets.sh
+(cd pensjon/brevbaker && ./fetch-secrets.sh)
+./gradlew :brevoppskrift-backend:build :pensjon:brevbaker:build :brevbaker:pdf-bygger:build
+npm ci --prefix brevoppskrift-web/bff
+npm ci --prefix brevoppskrift-web/frontend
+npm run build --prefix brevoppskrift-web/bff
+docker compose -p brevoppskrift -f docker-compose.yml -f docker-compose.brevoppskrift.yml up -d --build
+npm run dev --prefix brevoppskrift-web/frontend
+```
+
+Åpne `http://localhost:8088/vite-on`. Wonderwall videresender anonym
+mallesing til BFF; BFF videresender `/brevbaker` til lokal Brevbaker.
+Backend kan kontrolleres direkte på `http://localhost:8087/isReady`;
+`/api/v1/meg` skal gi 401 uten token. Texas og backend er klare for
+senere workshopproxy, men denne BFF-versjonen bruker dem ikke.
+Ingen KI-, Slack- eller GitHub-konfigurasjon lastes av Compose-oppsettet.
+
+Azure-filer og midlertidige fetch-filer er ignorert av Git. Backendens
+Docker-kontekst inneholder bare installerte biblioteker; BFF-konteksten
+inkluderer ikke `.env`. Nye lokale credentials skal aldri bakes inn i image.
+
+```shell
+docker compose -p brevoppskrift -f docker-compose.yml -f docker-compose.brevoppskrift.yml down
+```
+
+Ikke bruk `down -v` hvis lokale utkast skal beholdes.
+
+## Dev-utrulling og stoppgrense
+
+Bare workflowen `deploy: brevoppskrift-backend` deployer backend.
+Den startes manuelt fra `main`, etter merge og separat deploygodkjenning.
+Andre refs stoppes før verifisering, imagebygg og deploy. Workflowen krever
+backendtester, kontraktdrift-kontroll, ekte generert Kotlin-/render-/DTO-
+verifisering og signert/attestert image før deploy til `dev-gcp`.
+Det finnes ingen automatisk backend-deploy eller prod-deploy.
+
+BFF deployes av sin eksisterende workflow ved merge. Provisjoner og
+kontroller først BFF-ens Entra-identitet; backendens inbound-regel må
+resultere i korrekt BFF-klient i `AZURE_APP_PRE_AUTHORIZED_APPS`.
+Backend får Cloud SQL, tre forbindelser per pod, editorgruppen
+`c331c338-5d39-45eb-a9c7-4e909c81768a` og ingen offentlig ingress.
+Bekreft gruppe-ID og operatørens tilgang før første utrulling.
+Integrasjonene forblir av uten credentials. Utgående tilgang til GitHub API
+(`api.github.com`) er klargjort; dette aktiverer ikke GitHub-adapteren.
+
+Før neste BFF-lag merges, kontroller begge backend-replikaer:
+
+- `/isAlive` og `/isReady` gir 200, og migrering/katalogoppstart er ferdig.
+- Manglende, ugyldig eller feil klienttoken gir 401 på `/api/v1`.
+- Et OBO-token fra riktig BFF med Nav-brukerkontekst gir lesertilgang;
+  skriving krever editorgruppen og avvises ellers med 403.
+- Et syntetisk utkast kan lagres, hentes og gjenåpnes etter omstart.
+- Begge eksisterende BFF-ingresser tillater anonym mallesing og Word-eksport
+  uten innloggingsredirect. Ingen verkstedinngang er åpnet.
+
+Dette krever en reell dev-verifisering av en autorisert operatør.
+Lokal syntetisk verifisering erstatter ikke Entra-/nettverkskontrollen.
+
+## Observerbarhet og rollback
+
+`/metrics` skrapes av Nais. Følg readiness, pod-restarts/OOM, Hikari-poolen,
+`ktor_http_server_requests_seconds_*` og integrasjonenes faste
+tjeneste-/operasjonsmetrikker. Undersøk vedvarende 5xx, økte 401/403,
+full tilkoblingspool og PR-jobber som blir stående etter lease-utløp.
+Loki/Elastic får strukturerte logger uten brevtekst eller credentials.
+Alarmregler og dashboard er ikke provisjonert av dette oppsettet.
+
+Ved feil: behold databasen og Entra-registreringene, og redeploy et kjent
+kompatibelt, attestert image fra main. Ikke slett applikasjon/Cloud SQL
+eller bruk migreringsrollback for et imageproblem. Dette laget endrer
+ingen databaseskjemaer. BFF kan rulles tilbake til tidligere runtime
+uten workshopproxy; behold identitet og nettverksregler når senere lag
+bruker dem. Verifiser readiness, autentisering, lagring og anonym lesing
+på nytt etter rollback.

@@ -6,8 +6,8 @@ services:
     environment:
       - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Dlog4j2.configurationFile=log4j2-local.xml
     ports:
-      - "8081:8080"
-      - "5016:5016"
+      - "127.0.0.1:8081:8080"
+      - "127.0.0.1:5016:5016"
   pensjon-brevbaker:
     environment:
       - NAIS_APP_NAME=brevbaker
@@ -20,9 +20,11 @@ services:
       # Allows requests without auth-header #opens up debug port
       - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5015 -Dconfig.resource=application-local.conf -Dlog4j2.configurationFile=log4j2-local.xml
     build: ./pensjon/brevbaker
+    depends_on:
+      - pdf-bygger
     ports:
-      - "8080:8080"
-      - "5015:5015" # debug port
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:5015:5015" # debug port
     env_file:
       - ./pensjon/brevbaker/secrets/unleash.env
   skribenten-backend:
@@ -115,19 +117,6 @@ services:
       NAIS_TOKEN_ENDPOINT: http://texas:3000/api/v1/token
       NAIS_TOKEN_EXCHANGE_ENDPOINT: http://texas:3000/api/v1/token/exchange
       NAIS_TOKEN_INTROSPECTION_ENDPOINT: http://texas:3000/api/v1/introspect
-
-  brevoppskrift:
-    profiles:
-      - skribenten
-    build:
-      context: brevoppskrift-web/bff
-    ports:
-      - "8088:8088"
-    environment:
-      NODE_ENV: "development"
-      EXPRESS_PORT: "8088"
-      EXPRESS_HOST: "::"
-      BREVBAKER_API_URL: "http://pensjon-brevbaker:8080"
 
   locust-master:
     depends_on:
