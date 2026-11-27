@@ -96,6 +96,7 @@ describe("EditableText - updateFocus respects user selection", () => {
   test("stores the collapsed caret position when focus leaves the literal", () => {
     const { getByText } = renderEditable(setEditorState);
     const span = getByText("Test tekst");
+    fireEvent.mouseDown(span);
     selectText(span, 4, 4, true);
 
     fireEvent.blur(span);
@@ -104,6 +105,17 @@ describe("EditableText - updateFocus respects user selection", () => {
       ...literalIndex,
       cursorPosition: 4,
     });
+  });
+
+  test("does not store a caret the editor placed without user interaction", () => {
+    const { getByText } = renderEditable(setEditorState);
+    const span = getByText("Test tekst");
+    selectText(span, 0, 0, true);
+
+    fireEvent.blur(span);
+
+    const state = createEditorState();
+    expect(setEditorStateMock.mock.lastCall?.[0](state)).toBe(state);
   });
 
   test("does not restore editor focus over a focused side-panel control after unfreezing", () => {

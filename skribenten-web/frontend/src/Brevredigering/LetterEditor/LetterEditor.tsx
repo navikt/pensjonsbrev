@@ -9,6 +9,7 @@ import React, {
   type SetStateAction,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -30,7 +31,7 @@ import { SignaturView } from "./components/SignaturView";
 import { useAttestantDiff } from "./diff/AttestantDiffContext";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
-import { remapFocus } from "./model/remapFocus";
+import { remapFocus, tabEntryFocus } from "./model/remapFocus";
 import { type Focus, type LetterEditorState } from "./model/state";
 import { useRedigeringsflate } from "./RedigeringsflateContext";
 import { copyAsSemanticHtml } from "./services/semanticCopy";
@@ -70,6 +71,8 @@ export const LetterEditor = ({
       focus: remapFocus(lastTextFocus.current.focus, lastTextFocus.current.document, letter),
     };
   }
+  const savedTextFocus = lastTextFocus.current.focus;
+  const tabEntry = useMemo(() => tabEntryFocus(letter, savedTextFocus), [letter, savedTextFocus]);
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
@@ -173,7 +176,7 @@ export const LetterEditor = ({
           undo,
           redo,
           restoreFocusFromOutside,
-          tabEntryFocus: lastTextFocus.current.focus,
+          tabEntryFocus: tabEntry,
         }}
       >
         <EditorMenu
@@ -300,7 +303,8 @@ export const EditorStateContext = createContext<{
   undo: () => void;
   redo: () => void;
   restoreFocusFromOutside?: React.RefObject<boolean>;
-  tabEntryFocus?: Focus;
+  /** The literal Tab enters the letter at; null when no literal should be a tab stop besides fritekst. */
+  tabEntryFocus?: Focus | null;
 }>({
   freeze: false,
   error: false,

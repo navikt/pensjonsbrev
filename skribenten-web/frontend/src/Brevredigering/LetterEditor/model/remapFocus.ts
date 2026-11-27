@@ -1,8 +1,14 @@
-import { isItemContentIndex, isTable, text } from "~/Brevredigering/LetterEditor/actions/common";
-import { type Content, type EditedDocument, type Table, type TextContent, TITLE_INDEX } from "~/types/brevbakerTypes";
+import {
+  collectAllLiteralValues,
+  isItemContentIndex,
+  isTable,
+  isUneditedFritekst,
+  text,
+} from "~/Brevredigering/LetterEditor/actions/common";
+import { type Content, type EditedDocument, type Table, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { type Focus, type LiteralIndex, SIGNATURE_FOCUS, type TableCellIndex } from "./state";
-import { isItemList, isLiteral, isTableCellIndex, isTextContent } from "./utils";
+import { isItemList, isLiteral, isTableCellIndex } from "./utils";
 
 type Identified = { id?: number | null };
 type MappingDirection = "forward" | "reverse";
@@ -36,8 +42,9 @@ function correspondingIndex(
   return undefined;
 }
 
-function withLiteral(focus: Focus, index: LiteralIndex, literal: TextContent | undefined): Focus | undefined {
-  if (!isTextContent(literal)) return undefined;
+function withLiteral(focus: Focus, index: LiteralIndex, literal: Content | undefined): Focus | undefined {
+  // Only literals are editable; a variable or new line with the same id cannot receive the caret.
+  if (!isLiteral(literal)) return undefined;
   return {
     ...index,
     cursorPosition:
@@ -79,7 +86,7 @@ function remapContent(
     );
   }
 
-  return isTextContent(to) ? withLiteral(focus, { blockIndex, contentIndex }, to) : undefined;
+  return withLiteral(focus, { blockIndex, contentIndex }, to);
 }
 
 /** Row index -1 is the header row. */
@@ -221,4 +228,37 @@ export function remapFocus(
     if (start) return start;
   }
   return { blockIndex: 0, contentIndex: 0, cursorPosition: 0 };
+}
+
+function contentAt(document: EditedDocument, focus: Focus): Content | undefined {
+  if (focus.blockIndex === TITLE_INDEX) return document.title.text[focus.contentIndex];
+  const content = document.blocks[focus.blockIndex]?.content[focus.contentIndex];
+  if (isItemContentIndex(focus)) {
+    return isItemList(content) ? content.items[focus.itemIndex]?.content[focus.itemContentIndex] : undefined;
+  }
+  if (isTableCellIndex(focus)) {
+    if (!isTable(content)) return undefined;
+    const cell =
+      focus.rowIndex === -1
+        ? content.header.colSpec[focus.cellIndex]?.headerContent
+        : content.rows[focus.rowIndex]?.cells[focus.cellIndex];
+    return cell?.text[focus.cellContentIndex];
+  }
+  return content;
+}
+
+/**
+ * The literal that Tab enters the letter at: the saved caret when the user has placed one in a literal. Otherwise
+ * the first literal of the title (then the letter), unless untouched fritekst placeholders already are the tab stops.
+ */
+export function tabEntryFocus(document: EditedDocument, focus: Focus): Focus | null {
+  if (focus.cursorPosition !== undefined && isLiteral(contentAt(document, focus))) return focus;
+  if (collectAllLiteralValues(document).some(isUneditedFritekst)) return null;
+  const titleIndex = document.title.text.findIndex(isLiteral);
+  if (titleIndex !== -1) return { blockIndex: TITLE_INDEX, contentIndex: titleIndex };
+  for (let blockIndex = 0; blockIndex < document.blocks.length; blockIndex++) {
+    const start = literalInBlock(document, blockIndex, "start");
+    if (start) return { ...start, cursorPosition: undefined };
+  }
+  return null;
 }

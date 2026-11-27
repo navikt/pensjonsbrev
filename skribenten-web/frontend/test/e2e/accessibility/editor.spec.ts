@@ -182,6 +182,11 @@ test.describe("Letter editor accessibility", () => {
         expectTitle: true,
       },
       {
+        name: "the title when the letter starts with a variable",
+        blocks: [paragraph([variable("1 000 kr"), literal(" utbetales")])],
+        expectTitle: true,
+      },
+      {
         name: "the title when fritekst has been filled in",
         blocks: [paragraph([literal({ text: placeholder, editedText: "Utfylt tekst", tags: [ElementTags.FRITEKST] })])],
         expectTitle: true,
