@@ -307,10 +307,10 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 paragraph {
                     text(
                         bokmal {
-                            +"Da uføregraden din ble økt i " + data.virkningFom.year.minus(1).format() + ", fikk vi opplyst hvilken inntekt du skulle ha fremover (IEU). Denne inntekten blir regulert hvert år etter justeringer i grunnbeløpet. Det er derfor ekstra viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. Forventer du en annen inntekt i " + data.virkningFom.year.format() + ", må du gå inn i inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
+                            +"Da uføregraden din ble økt i " + data.virkningFom.year.minus(1).format() + ", fikk vi opplyst hvilken inntekt du skulle ha fremover. Denne inntekten blir regulert hvert år etter justeringer i grunnbeløpet. Det er derfor ekstra viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. Forventer du en annen inntekt i " + data.virkningFom.year.format() + ", må du gå inn i inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
                         },
                         nynorsk {
-                            +"Då uføregraden din blei auka i " + data.virkningFom.year.minus(1).format() + ", fekk vi opplyst kva inntekt du skulle ha framover (IEU). Denne inntekta blir regulert kvart år etter justeringar i grunnbeløpet. Det er derfor ekstra viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda, er korrekt. Forventar du ei anna inntekt i " + data.virkningFom.year.format() + ", må du gå inn i inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år."
+                            +"Då uføregraden din blei auka i " + data.virkningFom.year.minus(1).format() + ", fekk vi opplyst kva inntekt du skulle ha framover. Denne inntekta blir regulert kvart år etter justeringar i grunnbeløpet. Det er derfor ekstra viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda er korrekt. Forventar du ei anna inntekt i " + data.virkningFom.year.format() + ", må du gå inn i inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år."
                         }
                     )
                 }
