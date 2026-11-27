@@ -58,11 +58,11 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                     +fritekst("dato") + " avvises fordi "
                 })
 
-                showIf(forSentFramsattKlage and not(manglendeRettsligKlageinteresse and manglendeUnderskrift and manglendeFullmakt and ikkePartISaken)) {
+                showIf(forSentFramsattKlage and not(manglendeRettsligKlageinteresse or manglendeUnderskrift or manglendeFullmakt or ikkePartISaken)) {
                     text(bokmal { +"klagen er framsatt for sent." })
-                }.orShowIf(manglendeUnderskrift and not(forSentFramsattKlage and manglendeRettsligKlageinteresse and manglendeFullmakt and ikkePartISaken)) {
+                }.orShowIf(manglendeUnderskrift and not(forSentFramsattKlage or manglendeRettsligKlageinteresse or manglendeFullmakt or ikkePartISaken)) {
                     text(bokmal { +"klagen ikke er underskrevet." })
-                }.orShowIf(manglendeRettsligKlageinteresse and not(manglendeUnderskrift and ikkePartISaken and manglendeFullmakt and forSentFramsattKlage)) {
+                }.orShowIf(manglendeRettsligKlageinteresse and not(manglendeUnderskrift or ikkePartISaken or manglendeFullmakt or forSentFramsattKlage)) {
                     text(bokmal { +"klageren mangler rettslig klageinteresse." })
                 }.orShowIf(ikkePartISaken and not(forSentFramsattKlage or manglendeFullmakt or manglendeUnderskrift or manglendeRettsligKlageinteresse)) {
                     text(bokmal { +"klageren ikke er part i saken." })
