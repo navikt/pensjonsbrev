@@ -58,14 +58,16 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                     +fritekst("dato") + " avvises fordi "
                 })
 
-                showIf(forSentFramsattKlage and not(manglendeRettsligKlageinteresse or manglendeUnderskrift or manglendeFullmakt or ikkePartISaken)) {
+                showIf(forSentFramsattKlage and not(manglendeRettsligKlageinteresse and manglendeUnderskrift and manglendeFullmakt and ikkePartISaken)) {
                     text(bokmal { +"klagen er framsatt for sent." })
-                }.orShowIf(manglendeUnderskrift and not(forSentFramsattKlage or manglendeRettsligKlageinteresse or manglendeFullmakt or ikkePartISaken)) {
-                    text(bokmal { +"klagen mangler underskrift." })
-                }.orShowIf(manglendeRettsligKlageinteresse and not(manglendeUnderskrift or ikkePartISaken or manglendeFullmakt or forSentFramsattKlage)) {
-                    text(bokmal { +"klagen mangler rettslig klageinteresse." })
+                }.orShowIf(manglendeUnderskrift and not(forSentFramsattKlage and manglendeRettsligKlageinteresse and manglendeFullmakt and ikkePartISaken)) {
+                    text(bokmal { +"klagen ikke er underskrevet." })
+                }.orShowIf(manglendeRettsligKlageinteresse and not(manglendeUnderskrift and ikkePartISaken and manglendeFullmakt and forSentFramsattKlage)) {
+                    text(bokmal { +"klageren mangler rettslig klageinteresse." })
                 }.orShowIf(ikkePartISaken and not(forSentFramsattKlage or manglendeFullmakt or manglendeUnderskrift or manglendeRettsligKlageinteresse)) {
                     text(bokmal { +"klageren ikke er part i saken." })
+                }.orShowIf(manglendeFullmakt and not(forSentFramsattKlage or manglendeUnderskrift or manglendeRettsligKlageinteresse or ikkePartISaken)) {
+                    text(bokmal { +"det ikke er lagt frem en skriftlig fullmakt." })
                 }.orShow {
                     text(bokmal { +fritekst("påpek mangelen (f.eks. klagen er sent framsatt, vi ikke har mottatt nødvendig fullmakt)") })
                 }
@@ -79,18 +81,15 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 })
             }
 
-            title1
-            { text(bokmal { +"Vurdering og konklusjon" }) }
-            paragraph
-            {
+            title1 { text(bokmal { +"Vurdering og konklusjon" }) }
+            paragraph {
                 text(bokmal {
                     +"Nav familie- og pensjonsytelser fattet den "
                     +fritekst("dato") + " vedtak om "
                     +fritekst("kort om innholdet i vedtaket") + ". "
                 })
             }
-            paragraph
-            {
+            paragraph {
                 text(bokmal {
                     +"Den "
                     +fritekst("dato") + " mottok vi klagen over dette vedtaket."
@@ -206,8 +205,7 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 }
             }
 
-            paragraph
-            {
+            paragraph {
                 text(bokmal { +"Vilkårene for å behandle klagen er dermed ikke oppfylt og klagen avvises, jf. forvaltningsloven § 33 andre ledd." })
             }
 
@@ -235,4 +233,5 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
     }
+}
 
