@@ -18,7 +18,7 @@ import java.io.IOException
 import java.nio.channels.UnresolvedAddressException
 import java.time.Duration
 
-enum class ClientOperation { REQUEST, TOKEN, GENERATE, NOTIFY }
+enum class ClientOperation { REQUEST, TOKEN, GENERATE, NOTIFY, PULL_REQUEST, CONTENT, REFERENCE, COMPARE, COMMIT, TREE }
 
 private val operationKey = AttributeKey<ClientOperation>("BrevoppskriftClientOperation")
 private val measureKey = AttributeKey<ClientCallMeasure>("BrevoppskriftHttpClientMeasure")

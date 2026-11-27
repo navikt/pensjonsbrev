@@ -61,6 +61,7 @@ updates:
           - "no.nav*"
           - "org.apache.pdfbox*"
           - "org.assertj:assertj-core"
+          - "org.bouncycastle*"
           - "org.flyway*"
           - "org.jetbrains*"
           - "org.junit*"

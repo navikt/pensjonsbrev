@@ -58,6 +58,7 @@ data class IntegrationsConfig(
     override val webUrl: WorkshopUrl = WorkshopUrl("https://pensjon-brevoppskrift.intern.dev.nav.no"),
     override val vertex: VertexConfig = VertexConfig(),
     override val slackWebhookUrl: SlackWebhookUrl? = null,
+    override val github: GitHubConfig = GitHubConfig(),
 ) : NotificationSettings, ExternalIntegrationSettings
 
 @Serializable
@@ -75,4 +76,22 @@ data class VertexConfig(
     private companion object {
         val PATH_SEGMENT_PATTERN = Regex("[A-Za-z0-9_.-]+")
     }
+}
+
+@Serializable
+data class GitHubConfig(
+    val appId: GitHubAppId? = null,
+    val installationId: GitHubInstallationId? = null,
+    val privateKey: String? = null,
+) {
+    val enabled: Boolean get() = appId != null
+
+    init {
+        require(listOf(appId, installationId, privateKey).all { it == null } ||
+            (appId != null && installationId != null && !privateKey.isNullOrBlank() &&
+                listOf(appId.value, installationId.value).all { Regex("[1-9][0-9]*").matches(it) })
+        ) { "GitHub requires valid appId, installationId and privateKey" }
+    }
+
+    override fun toString() = "GitHubConfig(appId=$appId, installationId=$installationId, privateKeyConfigured=${privateKey != null})"
 }
