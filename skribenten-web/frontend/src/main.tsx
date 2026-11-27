@@ -14,7 +14,6 @@ import { initInnblikk } from "~/utils/innblikk";
 import { routeTree } from "./routeTree.gen";
 
 enablePatches();
-initInnblikk();
 
 // Disable staggered retries in tests to speed them up
 const isBrowserAutomation = typeof navigator !== "undefined" && navigator.webdriver;
@@ -44,6 +43,11 @@ const router = createRouter({
   // Since we're using React Query, we don't want loader calls to ever be stale
   // This will ensure that the loader is always called when the route is preloaded or visited
   defaultPreloadStaleTime: 0,
+});
+
+initInnblikk((pathname) => {
+  const [, params, route] = router.getMatchedRoutes(pathname);
+  return params["**"] ? undefined : route?.fullPath;
 });
 
 // Register things for typesafety

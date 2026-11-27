@@ -13,11 +13,12 @@ const payload = {
   website: "skribenten-website",
   screen: "1200x800",
   language: "nb",
-  title: "Skribenten",
+  title: "/personvern",
   hostname: "pensjon-skribenten.intern.nav.no",
   url: "/personvern",
   referrer: "",
 };
+const matchRoute = (pathname: string) => (pathname === "/personvern" ? pathname : undefined);
 
 beforeEach(() => {
   getCookie.mockReset();
@@ -34,7 +35,7 @@ afterEach(() => {
   for (const node of document.querySelectorAll('meta[name^="umami-"], #skribenten-innblikk-sporing')) {
     node.remove();
   }
-  globalThis.addSkribentenInnblikkIdentity = undefined;
+  globalThis.sanitizeSkribentenInnblikkPayload = undefined;
   globalThis.sporing = undefined;
 });
 
@@ -102,22 +103,36 @@ describe("felles cookie med Penny", () => {
     getCookie.mockImplementation(() => {
       throw new DOMException("Blocked", "SecurityError");
     });
-    expect(beforeSend("event", payload)).toEqual({ ...payload, id: undefined });
+    expect(beforeSend(payload, matchRoute)).toEqual({ ...payload, id: undefined });
   });
 
   it("gir sidevisninger og egendefinerte hendelser samme identitet uten å endre innholdet", () => {
     getCookie.mockReturnValue(id);
     const event = { ...payload, name: "brev opprettet", data: { brevkode: "E001" } };
-    expect(beforeSend("event", payload)).toEqual({ ...payload, id });
-    expect(beforeSend("event", event)).toEqual({ ...event, id });
+    expect(beforeSend(payload, matchRoute)).toEqual({ ...payload, id });
+    expect(beforeSend(event, matchRoute)).toEqual({ ...event, id });
     expect(payload).not.toHaveProperty("id");
   });
 
   it("leser cookien på nytt for hver hendelse, også etter endring eller sletting", () => {
     getCookie.mockReturnValueOnce(id).mockReturnValueOnce("changed").mockReturnValue(undefined);
-    expect(beforeSend("event", payload).id).toBe(id);
-    expect(beforeSend("event", payload).id).toBe("changed");
-    expect(beforeSend("event", payload).id).toBeUndefined();
+    expect(beforeSend(payload, matchRoute).id).toBe(id);
+    expect(beforeSend(payload, matchRoute).id).toBe("changed");
+    expect(beforeSend(payload, matchRoute).id).toBeUndefined();
+  });
+});
+
+describe("sanitering av sporingsdata", () => {
+  it.each([
+    ["", ""],
+    ["/personvern?skjult=verdi#fragment", "/personvern"],
+    ["/ukjent/identifikator", "<ukjent>"],
+    ["https://[", "<ukjent>"],
+    ["https://ekstern.example/personvern?skjult=verdi#fragment", "<ekstern>"],
+  ])("sender ikke rå URL-er (%s)", (referrer, expected) => {
+    expect(
+      beforeSend({ ...payload, url: "/ukjent/identifikator", title: "Privat tittel", referrer }, matchRoute),
+    ).toMatchObject({ url: "<ukjent>", title: "<ukjent>", referrer: expected });
   });
 });
 
@@ -126,23 +141,23 @@ describe("oppstart av Innblikk", () => {
     configure();
     getCookie.mockReturnValue(id);
     const append = vi.spyOn(document.head, "appendChild");
-    let callbackResult: ReturnType<NonNullable<typeof globalThis.addSkribentenInnblikkIdentity>> | undefined;
+    let callbackResult: ReturnType<typeof beforeSend> | undefined;
     append.mockImplementationOnce((node) => {
-      callbackResult = globalThis.addSkribentenInnblikkIdentity?.("event", payload);
+      callbackResult = globalThis.sanitizeSkribentenInnblikkPayload?.("event", payload);
       return node;
     });
 
-    initInnblikk();
+    initInnblikk(matchRoute);
     expect(callbackResult).toMatchObject({ id });
     const script = append.mock.calls[0][0] as HTMLScriptElement;
     expect(script.src).toBe("https://cdn.nav.no/team-researchops/sporing/sporing.js");
     expect(script.dataset).toMatchObject({
       websiteId: "skribenten-website",
       hostUrl: "https://reops-event-proxy.nav.no",
-      beforeSend: "addSkribentenInnblikkIdentity",
+      beforeSend: "sanitizeSkribentenInnblikkPayload",
     });
     document.head.appendChild(script);
-    initInnblikk();
+    initInnblikk(matchRoute);
     expect(document.querySelectorAll("#skribenten-innblikk-sporing")).toHaveLength(1);
     expect(append).toHaveBeenCalledTimes(2);
   });
@@ -151,18 +166,18 @@ describe("oppstart av Innblikk", () => {
     configure();
     const meta = document.querySelector<HTMLMetaElement>('meta[name="umami-website-id"]');
     if (meta) meta.content = websiteId;
-    initInnblikk();
+    initInnblikk(matchRoute);
     expect(document.getElementById("skribenten-innblikk-sporing")).toBeNull();
   });
 
   it("laster ikke skriptet når konfigurasjonen mangler", () => {
-    initInnblikk();
+    initInnblikk(matchRoute);
     expect(document.getElementById("skribenten-innblikk-sporing")).toBeNull();
   });
 
   it.each(["load", "error"])("avslutter køen når skriptet melder %s", (event) => {
     configure();
-    initInnblikk();
+    initInnblikk(matchRoute);
     trackEvent("pesys feil");
     const track = vi.fn();
     globalThis.sporing = { identify: vi.fn(), track };
@@ -179,7 +194,7 @@ describe("oppstart av Innblikk", () => {
 describe("hendelser under lasting av sporingsskriptet", () => {
   function startLoading() {
     configure();
-    initInnblikk();
+    initInnblikk(matchRoute);
     return document.getElementById("skribenten-innblikk-sporing") as HTMLScriptElement;
   }
 
@@ -206,7 +221,7 @@ describe("hendelser under lasting av sporingsskriptet", () => {
     trackEvent("pesys feil");
     script.dispatchEvent(new Event("error"));
     trackEvent("pesys feil");
-    initInnblikk();
+    initInnblikk(matchRoute);
     const track = vi.fn();
     globalThis.sporing = { identify: vi.fn(), track };
     document.getElementById("skribenten-innblikk-sporing")?.dispatchEvent(new Event("load"));
@@ -253,9 +268,9 @@ describe("hendelser under lasting av sporingsskriptet", () => {
     getCookie.mockReturnValue(id);
     const identify = vi.fn();
     globalThis.sporing = { identify, track: vi.fn() };
-    initInnblikk();
+    initInnblikk(matchRoute);
 
-    const callback = globalThis.addSkribentenInnblikkIdentity;
+    const callback = globalThis.sanitizeSkribentenInnblikkPayload;
     expect(callback?.("event", payload)).toMatchObject({ id });
     expect(callback?.("event", payload)).toMatchObject({ id });
     expect(identify).toHaveBeenCalledOnce();
@@ -270,9 +285,9 @@ describe("hendelser under lasting av sporingsskriptet", () => {
     getCookie.mockReturnValue(undefined);
     const identify = vi.fn();
     globalThis.sporing = { identify, track: vi.fn() };
-    initInnblikk();
+    initInnblikk(matchRoute);
 
-    globalThis.addSkribentenInnblikkIdentity?.("event", payload);
+    globalThis.sanitizeSkribentenInnblikkPayload?.("event", payload);
     expect(identify).not.toHaveBeenCalled();
   });
 
@@ -281,9 +296,9 @@ describe("hendelser under lasting av sporingsskriptet", () => {
     getCookie.mockReturnValue(id);
     const identify = vi.fn();
     globalThis.sporing = { identify, track: vi.fn() };
-    initInnblikk();
+    initInnblikk(matchRoute);
 
-    expect(globalThis.addSkribentenInnblikkIdentity?.("identify", payload)).toMatchObject({ id });
+    expect(globalThis.sanitizeSkribentenInnblikkPayload?.("identify", payload)).toMatchObject({ id });
     expect(identify).not.toHaveBeenCalled();
   });
 });

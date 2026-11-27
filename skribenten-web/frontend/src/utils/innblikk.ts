@@ -48,14 +48,17 @@ type InnblikkPayload = {
   data?: Record<string, unknown>;
 };
 
+type MatchRoute = (pathname: string) => string | undefined;
+
 declare global {
   var sporing: SporingApi | undefined;
-  var addSkribentenInnblikkIdentity: ((type: string, payload: InnblikkPayload) => InnblikkPayload) | undefined;
+  var sanitizeSkribentenInnblikkPayload: ((type: string, payload: InnblikkPayload) => InnblikkPayload) | undefined;
 }
 
 const USER_ID_COOKIE = "pensjon-psak-innblikk-uuid";
 const SCRIPT_ID = "skribenten-innblikk-sporing";
 const SHARED_DOMAINS = ["intern.nav.no", "dev.nav.no"];
+const UNKNOWN_ROUTE = "<ukjent>";
 
 let trackerLoading = false;
 let identifiedSporing: SporingApi | undefined;
@@ -129,8 +132,30 @@ export function getOrCreateUserId(): string | undefined {
   }
 }
 
-export function beforeSend(_type: string, payload: InnblikkPayload): InnblikkPayload {
-  return { ...payload, id: getOrCreateUserId() };
+function sanitizeUrl(value: string, matchRoute: MatchRoute): string {
+  if (!value) {
+    return "";
+  }
+  const origin = globalThis.location.origin;
+  if (!URL.canParse(value, origin)) {
+    return UNKNOWN_ROUTE;
+  }
+  const url = new URL(value, origin);
+  if (url.origin !== origin) {
+    return "<ekstern>";
+  }
+  return matchRoute(url.pathname)?.replace(/\/\$(\w+)/g, "/:$1") ?? UNKNOWN_ROUTE;
+}
+
+export function beforeSend(payload: InnblikkPayload, matchRoute: MatchRoute): InnblikkPayload {
+  const url = sanitizeUrl(payload.url, matchRoute) || UNKNOWN_ROUTE;
+  return {
+    ...payload,
+    id: getOrCreateUserId(),
+    url,
+    title: url,
+    referrer: sanitizeUrl(payload.referrer, matchRoute),
+  };
 }
 
 /**
@@ -155,25 +180,24 @@ function identify(id: string): void {
   }
 }
 
-function addIdentityBeforeSend(type: string, payload: InnblikkPayload): InnblikkPayload {
-  const result = beforeSend(type, payload);
-  if (type !== "identify" && result.id) {
-    identify(result.id);
-  }
-  return result;
-}
-
-export function initInnblikk(): void {
+export function initInnblikk(matchRoute: MatchRoute): void {
   const websiteId = document.querySelector<HTMLMetaElement>('meta[name="umami-website-id"]')?.content;
   const hostUrl = document.querySelector<HTMLMetaElement>('meta[name="umami-host-url"]')?.content;
   if (!websiteId || !hostUrl || websiteId.includes("{{") || hostUrl.includes("{{")) {
     return;
   }
 
-  globalThis.addSkribentenInnblikkIdentity = addIdentityBeforeSend;
   if (document.getElementById(SCRIPT_ID)) {
     return;
   }
+
+  globalThis.sanitizeSkribentenInnblikkPayload = (type, payload) => {
+    const result = beforeSend(payload, matchRoute);
+    if (type !== "identify" && result.id) {
+      identify(result.id);
+    }
+    return result;
+  };
 
   const script = document.createElement("script");
   script.id = SCRIPT_ID;
@@ -181,7 +205,7 @@ export function initInnblikk(): void {
   script.defer = true;
   script.dataset.websiteId = websiteId;
   script.dataset.hostUrl = hostUrl;
-  script.dataset.beforeSend = "addSkribentenInnblikkIdentity";
+  script.dataset.beforeSend = "sanitizeSkribentenInnblikkPayload";
   script.addEventListener(
     "load",
     () => {

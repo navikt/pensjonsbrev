@@ -12,7 +12,7 @@ const SCRIPT_URL = "https://cdn.nav.no/team-researchops/sporing/sporing.js";
 
 type AnalyticsEvent = {
   type: string;
-  payload: { id?: string; website: string; name?: string; data?: Record<string, unknown> };
+  payload: { id?: string; website: string; url: string; name?: string; data?: Record<string, unknown> };
 };
 
 async function interceptAnalytics(context: BrowserContext, baseURL: string, origin: string) {
@@ -77,6 +77,7 @@ test("sender oppstartshendelser etter forsinket skriptlasting uten å blokkere a
     payload: {
       website: WEBSITE_ID,
       id: cookie?.value,
+      url: "/aapne/brev/:brevId",
       data: { feiltype: "ugyldig brev-id", brevId: "ugyldig" },
     },
   });
@@ -122,8 +123,12 @@ for (const environment of [
         route.fulfill({ path: "test/e2e/fixtures/bestillBrevEblankett.json", contentType: "application/json" }),
       );
 
-      await page.goto(`${environment.skribenten}/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815`);
-      await expect.poll(() => events.some((event) => event.type === "event" && !event.payload.name)).toBe(true);
+      await page.goto(`${environment.skribenten}/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815#fragment`);
+      await expect
+        .poll(() => events.find((event) => event.type === "event" && !event.payload.name))
+        .toMatchObject({
+          payload: { url: "/saksnummer/:saksId/brevvelger", title: "/saksnummer/:saksId/brevvelger", referrer: "" },
+        });
       await page.getByRole("textbox", { name: "Mottaker" }).fill("Testmottaker");
       await page.getByTestId("order-letter").click();
       await expect
@@ -133,6 +138,7 @@ for (const environment of [
           payload: {
             id: PENNY_ID,
             website: WEBSITE_ID,
+            url: "/saksnummer/:saksId/brevvelger",
             data: { brevkode: "E001", brevsystem: "exstream", landkode: "NOR" },
           },
         });
@@ -140,6 +146,18 @@ for (const environment of [
       const cookies = (await context.cookies()).filter((cookie) => cookie.name === COOKIE_NAME);
       expect(cookies).toHaveLength(1);
       expect(cookies[0].expires).toBe(expires);
+
+      await page.evaluate(() => {
+        history.pushState({}, "", "/saksnummer/123456/brev/987654?brevId=987654#fragment");
+      });
+      await expect
+        .poll(() =>
+          events.find(
+            (event) =>
+              event.type === "event" && !event.payload.name && event.payload.url === "/saksnummer/:saksId/brev/:brevId",
+          ),
+        )
+        .toMatchObject({ payload: { referrer: "/saksnummer/:saksId/brevvelger" } });
     });
 
     test("lager felles cookie før første sidevisning og observerer endringer fra Penny", async ({
