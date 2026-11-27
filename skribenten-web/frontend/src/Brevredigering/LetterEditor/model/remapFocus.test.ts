@@ -1,0 +1,265 @@
+import { describe, expect, test } from "vitest";
+
+import { ElementTags, TITLE_INDEX } from "~/types/brevbakerTypes";
+import { editedLetter } from "~test/support/brevFixtures";
+import {
+  cell,
+  item,
+  itemList,
+  literal,
+  newLine,
+  paragraph,
+  row,
+  table,
+  variable,
+} from "~test/support/letterEditorTestUtils";
+
+import { remapFocus, tabEntryFocus } from "./remapFocus";
+import { SIGNATURE_FOCUS } from "./state";
+
+const redigert = literal({ id: 1, text: "Redigert tekst" });
+const avsnitt = paragraph({ id: 10, content: [literal({ id: 2, text: "Først" }), redigert] });
+const flettetInn = paragraph({ id: 20, content: [literal({ id: 3, text: "Nytt fra malen" })] });
+
+describe("remapFocus", () => {
+  test("følger innholdet når malen setter inn et avsnitt foran", () => {
+    const from = editedLetter({ blocks: [avsnitt] });
+    const to = editedLetter({ blocks: [flettetInn, avsnitt] });
+
+    expect(remapFocus({ blockIndex: 0, contentIndex: 1, cursorPosition: 4 }, from, to)).toEqual({
+      blockIndex: 1,
+      contentIndex: 1,
+      cursorPosition: 4,
+    });
+  });
+
+  test("følger nye elementer uten id etter rekkefølge og begrenser markøren til teksten", () => {
+    const nyttAvsnitt = paragraph({ content: [{ ...literal("Ny tekst"), id: null }] });
+    const from = editedLetter({ blocks: [avsnitt, nyttAvsnitt] });
+    const to = editedLetter({
+      blocks: [flettetInn, avsnitt, paragraph({ content: [{ ...literal("Ny"), id: null }] })],
+    });
+
+    expect(remapFocus({ blockIndex: 1, contentIndex: 0, cursorPosition: 8 }, from, to)).toEqual({
+      blockIndex: 2,
+      contentIndex: 0,
+      cursorPosition: 2,
+    });
+  });
+
+  test("følger punkter og tabellceller", () => {
+    const liste = itemList({ id: 30, items: [item({ id: 31, content: [literal({ id: 32, text: "Punkt" })] })] });
+    const tabell = table(
+      [cell(literal({ id: 40, text: "Overskrift" }))],
+      [row(cell(literal({ id: 41, text: "Celle" })))],
+    );
+    const from = editedLetter({ blocks: [paragraph({ id: 11, content: [liste, tabell] })] });
+    const to = editedLetter({
+      blocks: [flettetInn, paragraph({ id: 11, content: [literal({ id: 12, text: "Innledning" }), liste, tabell] })],
+    });
+
+    expect(
+      remapFocus({ blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0, cursorPosition: 1 }, from, to),
+    ).toEqual({ blockIndex: 1, contentIndex: 1, itemIndex: 0, itemContentIndex: 0, cursorPosition: 1 });
+    expect(
+      remapFocus(
+        { blockIndex: 0, contentIndex: 1, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 2 },
+        from,
+        to,
+      ),
+    ).toEqual({ blockIndex: 1, contentIndex: 2, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 2 });
+    expect(
+      remapFocus(
+        { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 3 },
+        from,
+        to,
+      ),
+    ).toEqual({ blockIndex: 1, contentIndex: 2, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 3 });
+  });
+
+  test("følger riktig forekomst når malen setter inn et element med samme id foran", () => {
+    const og = literal({ id: 1, text: " og " });
+    const from = editedLetter({ blocks: [paragraph({ id: 10, content: [literal({ id: 2, text: "Beløp" }), og] })] });
+    const to = editedLetter({
+      blocks: [paragraph({ id: 10, content: [og, literal({ id: 2, text: "Beløp" }), og] })],
+    });
+
+    expect(remapFocus({ blockIndex: 0, contentIndex: 1, cursorPosition: 2 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 2,
+      cursorPosition: 2,
+    });
+  });
+
+  test("følger forekomsten med samme id ved angre av en innsatt forekomst", () => {
+    const og = literal({ id: 1, text: " og " });
+    const før = editedLetter({ blocks: [paragraph({ id: 10, content: [literal({ id: 2, text: "Beløp" }), og] })] });
+    const etter = editedLetter({
+      blocks: [paragraph({ id: 10, content: [og, literal({ id: 2, text: "Beløp" }), og] })],
+    });
+
+    expect(remapFocus({ blockIndex: 0, contentIndex: 2, cursorPosition: 2 }, etter, før, "reverse")).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      cursorPosition: 2,
+    });
+  });
+
+  test("beholder fokus i tittelen", () => {
+    const from = editedLetter({ blocks: [avsnitt] });
+    const to = editedLetter({ blocks: [flettetInn, avsnitt] });
+
+    expect(remapFocus({ blockIndex: TITLE_INDEX, contentIndex: 0, cursorPosition: 3 }, from, to)).toEqual({
+      blockIndex: TITLE_INDEX,
+      contentIndex: 0,
+      cursorPosition: 3,
+    });
+  });
+
+  test("beholder signaturfokus når flettingen setter inn et avsnitt", () => {
+    const from = editedLetter({ blocks: [avsnitt] });
+    const to = editedLetter({ blocks: [flettetInn, avsnitt] });
+
+    expect(remapFocus(SIGNATURE_FOCUS, from, to)).toBe(SIGNATURE_FOCUS);
+  });
+
+  test("faller tilbake til slutten av nærmeste foregående avsnitt når innholdet er fjernet", () => {
+    const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
+    const from = editedLetter({ blocks: [avsnitt, fjernet] });
+    const to = editedLetter({ blocks: [flettetInn, avsnitt] });
+
+    expect(remapFocus({ blockIndex: 1, contentIndex: 0, cursorPosition: 3, selectAll: true }, from, to)).toEqual({
+      blockIndex: 1,
+      contentIndex: 1,
+      cursorPosition: "Redigert tekst".length,
+    });
+  });
+
+  test("faller tilbake til en redigerbar literal når foregående avsnitt starter eller slutter med variabel", () => {
+    const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
+    const variabelAvsnitt = paragraph({
+      id: 60,
+      content: [variable("1 000 kr"), literal({ id: 61, text: " utbetales" }), newLine(), variable("1. mai")],
+    });
+    const from = editedLetter({ blocks: [variabelAvsnitt, fjernet] });
+    const to = editedLetter({ blocks: [variabelAvsnitt] });
+
+    expect(remapFocus({ blockIndex: 1, contentIndex: 0, cursorPosition: 3 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      cursorPosition: " utbetales".length,
+    });
+  });
+
+  test("faller tilbake til siste punkt i foregående avsnitt", () => {
+    const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
+    const liste = itemList({
+      id: 30,
+      items: [
+        item({ id: 31, content: [literal({ id: 32, text: "Første" })] }),
+        item({ id: 33, content: [literal({ id: 34, text: "Siste" }), variable("variabel")] }),
+      ],
+    });
+    const listeAvsnitt = paragraph({ id: 70, content: [literal({ id: 71, text: "Innledning" }), liste] });
+    const from = editedLetter({ blocks: [listeAvsnitt, fjernet] });
+    const to = editedLetter({ blocks: [listeAvsnitt] });
+
+    expect(remapFocus({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      itemIndex: 1,
+      itemContentIndex: 0,
+      cursorPosition: "Siste".length,
+    });
+  });
+
+  test("hopper over foregående avsnitt uten redigerbar literal", () => {
+    const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
+    const kunVariabel = paragraph({ id: 80, content: [variable("Ola Nordmann")] });
+    const from = editedLetter({ blocks: [avsnitt, kunVariabel, fjernet] });
+    const to = editedLetter({ blocks: [avsnitt, kunVariabel] });
+
+    expect(remapFocus({ blockIndex: 2, contentIndex: 0, cursorPosition: 0 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      cursorPosition: "Redigert tekst".length,
+    });
+  });
+
+  test("faller tilbake til første redigerbare literal når ingen foregående avsnitt finnes", () => {
+    const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
+    const variabelAvsnitt = paragraph({ id: 60, content: [variable("1 000 kr"), literal({ id: 61, text: " kr" })] });
+    const from = editedLetter({ blocks: [fjernet, variabelAvsnitt] });
+    const to = editedLetter({ blocks: [variabelAvsnitt] });
+
+    expect(remapFocus({ blockIndex: 0, contentIndex: 0, cursorPosition: 2 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      cursorPosition: 0,
+    });
+  });
+
+  test("faller tilbake til en literal når innholdet med samme id ikke lenger er en literal", () => {
+    const from = editedLetter({ blocks: [avsnitt] });
+    const to = editedLetter({
+      blocks: [paragraph({ id: 10, content: [literal({ id: 2, text: "Først" }), { ...variable("1 000 kr"), id: 1 }] })],
+    });
+
+    expect(remapFocus({ blockIndex: 0, contentIndex: 1, cursorPosition: 4 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 0,
+      cursorPosition: "Først".length,
+    });
+  });
+});
+
+describe("tabEntryFocus", () => {
+  const variabelFørst = paragraph({ id: 60, content: [variable("1 000 kr"), literal({ id: 61, text: " utbetales" })] });
+
+  test("bruker lagret markør når den peker på en literal", () => {
+    const letter = editedLetter({ blocks: [avsnitt] });
+    const focus = { blockIndex: 0, contentIndex: 1, cursorPosition: 4 };
+
+    expect(tabEntryFocus(letter, focus)).toBe(focus);
+  });
+
+  test("faller tilbake til tittelen før brukeren har plassert markøren", () => {
+    const letter = editedLetter({ blocks: [avsnitt] });
+
+    expect(tabEntryFocus(letter, { blockIndex: 0, contentIndex: 0 })).toEqual({
+      blockIndex: TITLE_INDEX,
+      contentIndex: 0,
+    });
+  });
+
+  test("faller tilbake til tittelen når markøren står på en variabel eller i en liste uten punkt", () => {
+    const liste = itemList({ id: 30, items: [item({ id: 31, content: [literal({ id: 32, text: "Punkt" })] })] });
+    const letter = editedLetter({ blocks: [variabelFørst, paragraph({ id: 70, content: [liste] })] });
+
+    expect(tabEntryFocus(letter, { blockIndex: 0, contentIndex: 0, cursorPosition: 0 })).toEqual({
+      blockIndex: TITLE_INDEX,
+      contentIndex: 0,
+    });
+    expect(tabEntryFocus(letter, { blockIndex: 1, contentIndex: 0, cursorPosition: 0 })).toEqual({
+      blockIndex: TITLE_INDEX,
+      contentIndex: 0,
+    });
+  });
+
+  test("faller tilbake til første literal i brevet når tittelen ikke har noen literal", () => {
+    const letter = editedLetter({ title: { text: [variable("Tittel")], deletedContent: [] }, blocks: [variabelFørst] });
+
+    expect(tabEntryFocus(letter, { blockIndex: 0, contentIndex: 0 })).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      cursorPosition: undefined,
+    });
+  });
+
+  test("lar urørte fritekstfelt være tabstopp i stedet for reserven", () => {
+    const fritekst = literal({ id: 62, text: "Fyll inn", tags: [ElementTags.FRITEKST] });
+    const letter = editedLetter({ blocks: [paragraph({ id: 60, content: [variable("1 000 kr"), fritekst] })] });
+
+    expect(tabEntryFocus(letter, { blockIndex: 0, contentIndex: 0 })).toBeNull();
+  });
+});

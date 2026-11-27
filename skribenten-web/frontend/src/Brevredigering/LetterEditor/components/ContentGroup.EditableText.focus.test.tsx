@@ -92,4 +92,59 @@ describe("EditableText - updateFocus respects user selection", () => {
     expect(selection?.getRangeAt(0).startOffset).toBe(4);
     expect(setEditorStateMock).toHaveBeenCalled();
   });
+
+  test("stores the collapsed caret position when focus leaves the literal", () => {
+    const { getByText } = renderEditable(setEditorState);
+    const span = getByText("Test tekst");
+    fireEvent.mouseDown(span);
+    selectText(span, 4, 4, true);
+
+    fireEvent.blur(span);
+
+    expect(setEditorStateMock.mock.lastCall?.[0](createEditorState()).focus).toEqual({
+      ...literalIndex,
+      cursorPosition: 4,
+    });
+  });
+
+  test("does not store a caret the editor placed without user interaction", () => {
+    const { getByText } = renderEditable(setEditorState);
+    const span = getByText("Test tekst");
+    selectText(span, 0, 0, true);
+
+    fireEvent.blur(span);
+
+    const state = createEditorState();
+    expect(setEditorStateMock.mock.lastCall?.[0](state)).toBe(state);
+  });
+
+  test("does not restore editor focus over a focused side-panel control after unfreezing", () => {
+    const editorState = { ...createEditorState(), focus: { ...literalIndex, cursorPosition: 4 } };
+    const content = editorState.redigertBrev.blocks[0].content[0] as LiteralValue;
+    const renderEditor = (freeze: boolean) => (
+      <EditorStateContext.Provider
+        value={{
+          freeze,
+          error: false,
+          editorState,
+          setEditorState,
+          undo: vi.fn(),
+          redo: vi.fn(),
+        }}
+      >
+        <button type="button">Tekstvalg</button>
+        <div data-letter-editor>
+          <EditableText content={content} literalIndex={literalIndex} />
+        </div>
+      </EditorStateContext.Provider>
+    );
+    const { getByRole, rerender } = render(renderEditor(false));
+    const tekstvalg = getByRole("button", { name: "Tekstvalg" });
+    tekstvalg.focus();
+
+    rerender(renderEditor(true));
+    rerender(renderEditor(false));
+
+    expect(document.activeElement).toBe(tekstvalg);
+  });
 });

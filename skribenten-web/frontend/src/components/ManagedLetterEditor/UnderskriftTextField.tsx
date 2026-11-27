@@ -3,6 +3,7 @@ import { type ChangeEvent, useCallback } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
+import { SIGNATURE_FOCUS } from "~/Brevredigering/LetterEditor/model/state";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 
 export const UnderskriftTextField = ({
@@ -26,11 +27,7 @@ export const UnderskriftTextField = ({
   );
 
   const onFocus = useCallback(
-    () =>
-      applyAction(Actions.updateFocus, setEditorState, {
-        blockIndex: -1,
-        contentIndex: -1,
-      }),
+    () => applyAction(Actions.updateFocus, setEditorState, SIGNATURE_FOCUS),
     [setEditorState],
   );
 

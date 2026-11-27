@@ -263,7 +263,7 @@ function RedigerBrev({
     navigateToDocument,
   });
 
-  const { editorState, redigertBrev, setEditorState, savingValg, resetting, registerSaveErrorReset } =
+  const { editorState, redigertBrev, setEditorState, awaitingValgMerge, resetting, registerSaveErrorReset } =
     useManagedLetterEditorContext();
 
   const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
@@ -302,6 +302,7 @@ function RedigerBrev({
   const { oppdaterBrevMutation } = useOppdaterBrevMutation(saksId);
   const [finalizing, setFinalizing] = useState(false);
   const finalizingRef = useRef(false);
+  const restoreFocusFromOutside = useRef(false);
 
   const { form, onValgChange, cancelPendingChange } = useSaksbehandlerValgForm({
     isLocked: () => finalizingRef.current,
@@ -399,7 +400,8 @@ function RedigerBrev({
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });
 
-  const freeze = finalizing || oppdaterBrevMutation.isPending || savingValg;
+  const saving = finalizing || oppdaterBrevMutation.isPending;
+  const freeze = saving || awaitingValgMerge;
   const error = oppdaterBrevMutation.isError;
   const hasUnsavedValg = form.formState.isDirty;
 
@@ -413,7 +415,15 @@ function RedigerBrev({
     <FormProvider {...form}>
       <Box asChild background="default" maxWidth="1106px" minWidth="945px">
         <VStack asChild height="100%" marginInline="auto">
-          <form onSubmit={guardedSubmit}>
+          <form
+            onKeyDownCapture={() => {
+              restoreFocusFromOutside.current = false;
+            }}
+            onPointerDownCapture={() => {
+              restoreFocusFromOutside.current = false;
+            }}
+            onSubmit={guardedSubmit}
+          >
             <WarnModal {...warnModalProps} />
             <ReservertBrevError
               doRetry={doReload}
@@ -439,7 +449,7 @@ function RedigerBrev({
                     >
                       Tilbake til brevvelger
                     </Button>
-                    <Button loading={freeze || documentCoordinator.savingPendingDocuments} size="small" type="submit">
+                    <Button loading={saving || documentCoordinator.savingPendingDocuments} size="small" type="submit">
                       <HStack align="center" gap="space-8">
                         <Label size="small">Fortsett</Label>
                       </HStack>
@@ -455,12 +465,21 @@ function RedigerBrev({
                         <Heading size="small" spacing>
                           {brevmal.data?.name}
                         </Heading>
-                        <BrevmalAlternativer
-                          brevkode={brev.info.brevkode}
-                          propertyUsage={brev.propertyUsage ?? undefined}
-                          readOnly={finalizing || oppdaterBrevMutation.isPending || resetting}
-                          submitOnChange={onValgChange}
-                        />
+                        <div
+                          onClickCapture={(event) => {
+                            restoreFocusFromOutside.current =
+                              event.detail > 0 &&
+                              event.target instanceof HTMLInputElement &&
+                              (event.target.type === "checkbox" || event.target.type === "radio");
+                          }}
+                        >
+                          <BrevmalAlternativer
+                            brevkode={brev.info.brevkode}
+                            propertyUsage={brev.propertyUsage ?? undefined}
+                            readOnly={finalizing || oppdaterBrevMutation.isPending || resetting}
+                            submitOnChange={onValgChange}
+                          />
+                        </div>
                         <UnderskriftTextField
                           of="Saksbehandler"
                           readOnly={finalizing || oppdaterBrevMutation.isPending || resetting}
@@ -473,10 +492,16 @@ function RedigerBrev({
                 right={
                   <BrevOgVedleggEditor
                     brev={brev}
-                    freeze={oppdaterBrevMutation.isPending || savingValg}
+                    freeze={oppdaterBrevMutation.isPending || awaitingValgMerge}
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                        <ManagedLetterEditor canReset error={error} freeze={freeze} showDebug={showDebug} />
+                        <ManagedLetterEditor
+                          canReset
+                          error={error}
+                          freeze={freeze}
+                          restoreFocusFromOutside={restoreFocusFromOutside}
+                          showDebug={showDebug}
+                        />
                       </InsertedTekstValgHighlightProvider>
                     )}
                     saksId={saksId}

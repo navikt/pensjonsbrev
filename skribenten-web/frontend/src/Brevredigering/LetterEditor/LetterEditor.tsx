@@ -9,6 +9,7 @@ import React, {
   type SetStateAction,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -30,7 +31,8 @@ import { SignaturView } from "./components/SignaturView";
 import { useAttestantDiff } from "./diff/AttestantDiffContext";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
-import { type LetterEditorState } from "./model/state";
+import { remapFocus, tabEntryFocus } from "./model/remapFocus";
+import { type Focus, type LetterEditorState } from "./model/state";
 import { useRedigeringsflate } from "./RedigeringsflateContext";
 import { copyAsSemanticHtml } from "./services/semanticCopy";
 import { useEditorKeyboardShortcuts } from "./utils";
@@ -45,6 +47,7 @@ export const LetterEditor = ({
   showDebug,
   renderTilbakestillModal,
   diffToggleMenu,
+  restoreFocusFromOutside,
 }: {
   freeze: boolean;
   error: boolean;
@@ -54,9 +57,22 @@ export const LetterEditor = ({
   /** Owned by the caller because what "tilbakestill" resets depends on the document being edited. */
   renderTilbakestillModal?: (args: { open: boolean; onClose: () => void }) => React.ReactNode;
   diffToggleMenu?: React.ReactNode;
+  restoreFocusFromOutside?: React.RefObject<boolean>;
 }) => {
   const redigeringsflate = useRedigeringsflate();
   const letter = editorState.redigertBrev;
+  // Signature focus must not replace the text caret used when tabbing back into the letter.
+  const lastTextFocus = useRef({ document: letter, focus: editorState.focus });
+  if (editorState.focus.contentIndex >= 0) {
+    lastTextFocus.current = { document: letter, focus: editorState.focus };
+  } else if (lastTextFocus.current.document !== letter) {
+    lastTextFocus.current = {
+      document: letter,
+      focus: remapFocus(lastTextFocus.current.focus, lastTextFocus.current.document, letter),
+    };
+  }
+  const savedTextFocus = lastTextFocus.current.focus;
+  const tabEntry = useMemo(() => tabEntryFocus(letter, savedTextFocus), [letter, savedTextFocus]);
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
@@ -103,7 +119,10 @@ export const LetterEditor = ({
               redigertBrev: structuredClone(entry.before.redigertBrev),
               redigertBrevHash: entry.before.redigertBrevHash,
               saksbehandlerValg: structuredClone(entry.before.saksbehandlerValg),
-              focus: entry.type === "DOCUMENT_SNAPSHOT" ? structuredClone(entry.beforeFocus) : current.focus,
+              focus:
+                entry.type === "DOCUMENT_SNAPSHOT"
+                  ? structuredClone(entry.beforeFocus)
+                  : remapFocus(current.focus, current.redigertBrev, entry.before.redigertBrev, "reverse"),
             }
           : applyPatches(current, entry.inversePatches);
       return {
@@ -129,7 +148,10 @@ export const LetterEditor = ({
               redigertBrev: structuredClone(entry.after.redigertBrev),
               redigertBrevHash: entry.after.redigertBrevHash,
               saksbehandlerValg: structuredClone(entry.after.saksbehandlerValg),
-              focus: entry.type === "DOCUMENT_SNAPSHOT" ? structuredClone(entry.afterFocus) : current.focus,
+              focus:
+                entry.type === "DOCUMENT_SNAPSHOT"
+                  ? structuredClone(entry.afterFocus)
+                  : remapFocus(current.focus, current.redigertBrev, entry.after.redigertBrev),
             }
           : applyPatches(current, entry.patches);
       return {
@@ -144,8 +166,19 @@ export const LetterEditor = ({
   }, [freeze, setEditorState]);
 
   return (
-    <VStack height="100%" overflowY="hidden">
-      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
+    <VStack data-letter-editor height="100%" overflowY="hidden">
+      <EditorStateContext.Provider
+        value={{
+          freeze,
+          error,
+          editorState,
+          setEditorState,
+          undo,
+          redo,
+          restoreFocusFromOutside,
+          tabEntryFocus: tabEntry,
+        }}
+      >
         <EditorMenu
           canRedo={canRedo}
           canUndo={canUndo}
@@ -217,6 +250,7 @@ export const LetterEditor = ({
                     {isMissingInRendered(block) && showMissingInRendered && (
                       <HStack className="missing-in-rendered-actions" gap="space-4" justify="end">
                         <Button
+                          disabled={freeze}
                           icon={<CheckmarkIcon aria-hidden />}
                           onClick={() => {
                             sporMissingInRenderedHandling("blokk beholdt", blockIndex);
@@ -229,6 +263,7 @@ export const LetterEditor = ({
                           Behold
                         </Button>
                         <Button
+                          disabled={freeze}
                           icon={<XMarkIcon aria-hidden />}
                           onClick={() => {
                             sporMissingInRenderedHandling("blokk slettet", blockIndex);
@@ -267,6 +302,9 @@ export const EditorStateContext = createContext<{
   setEditorState: CallbackReceiver<LetterEditorState>;
   undo: () => void;
   redo: () => void;
+  restoreFocusFromOutside?: React.RefObject<boolean>;
+  /** The literal Tab enters the letter at; null when no literal should be a tab stop besides fritekst. */
+  tabEntryFocus?: Focus | null;
 }>({
   freeze: false,
   error: false,

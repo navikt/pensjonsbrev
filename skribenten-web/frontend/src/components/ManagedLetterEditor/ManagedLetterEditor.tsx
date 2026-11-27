@@ -14,6 +14,7 @@ const ManagedLetterEditor = (props: {
   canReset?: boolean;
   showDebug?: boolean;
   diffToggleMenu?: React.ReactNode;
+  restoreFocusFromOutside?: React.RefObject<boolean>;
 }) => {
   const { editorState, setEditorState, saveFailed, resetLetter, resetting } = useManagedLetterEditorContext();
 
@@ -28,6 +29,7 @@ const ManagedLetterEditor = (props: {
           ? ({ open, onClose }) => <TilbakestillMalModal onClose={onClose} resetLetter={resetLetter} åpen={open} />
           : undefined
       }
+      restoreFocusFromOutside={props.restoreFocusFromOutside}
       setEditorState={setEditorState}
       showDebug={props.showDebug ?? false}
     />

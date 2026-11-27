@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBrev } from "~/api/brev-queries";
 import { useOppdaterBrevMutation } from "~/Brevredigering/hooks/useOppdaterBrevMutation";
 import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
+import { SIGNATURE_FOCUS } from "~/Brevredigering/LetterEditor/model/state";
 import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import {
   ManagedLetterEditorContextProvider,
@@ -60,6 +61,7 @@ type Harness = {
   beforeTekstvalgChange: (valg: SaksbehandlerValg) => void;
   lagreTekstvalg: () => void;
   simulerTasting: () => void;
+  fokuserUnderskrift: () => void;
 };
 
 const Testkomponent = ({ harness }: { harness: { current: Harness | null } }) => {
@@ -91,6 +93,7 @@ const Testkomponent = ({ harness }: { harness: { current: Harness | null } }) =>
       }),
     simulerTasting: () =>
       setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" })),
+    fokuserUnderskrift: () => setEditorState((state) => ({ ...state, focus: SIGNATURE_FOCUS })),
   };
 
   return null;
@@ -169,6 +172,21 @@ describe("tekstvalg-highlight ved lagring", () => {
 
     expect([...harness().highlightedIds]).toEqual([]);
     expect(harness().focus).toEqual({ blockIndex: 0, contentIndex: 0 });
+  });
+
+  test("beholder signaturfokus hvis brukeren flytter dit mens lagringen pågår", async () => {
+    const svar = utsattSvar();
+    const harness = renderHarness();
+
+    act(() => {
+      harness().beforeTekstvalgChange(nyeValg);
+      harness().lagreTekstvalg();
+      harness().fokuserUnderskrift();
+    });
+    await svar(brevMedTekstvalg);
+
+    await waitFor(() => expect([...harness().highlightedIds]).toContain(INSERTED_BLOCK_ID));
+    expect(harness().focus).toEqual(SIGNATURE_FOCUS);
   });
 
   test("lar ikke et tekstvalg som ikke satte inn noe markere en senere lagring", async () => {

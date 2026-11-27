@@ -22,7 +22,7 @@ export function useSaksbehandlerValgForm({
   isLocked: () => boolean;
   onBeforeChange: (valg: SaksbehandlerValg) => void;
 }) {
-  const { editorState, updateSaksbehandlerValg } = useManagedLetterEditorContext();
+  const { editorState, updateSaksbehandlerValg, registerLetterResetHandler } = useManagedLetterEditorContext();
   const editorValg = editorState.saksbehandlerValg;
   const defaultValues = useMemo(() => ({ saksbehandlerValg: { ...editorValg } }), [editorValg]);
   const form = useForm<SaksbehandlerValgFormData>({ defaultValues });
@@ -60,6 +60,16 @@ export function useSaksbehandlerValgForm({
     form.reset(defaultValues, { keepDirtyValues: hasNewerFormValues });
     previousEditorValg.current = defaultValues.saksbehandlerValg;
   }, [defaultValues, form]);
+
+  useEffect(() => {
+    // Resetting to the template discards choices that are still only in the form, e.g. awaiting a field debounce.
+    registerLetterResetHandler((response) => {
+      validationRevision.current++;
+      previousEditorValg.current = response.saksbehandlerValg;
+      form.reset({ saksbehandlerValg: { ...response.saksbehandlerValg } });
+    });
+    return () => registerLetterResetHandler(null);
+  }, [form, registerLetterResetHandler]);
 
   return { form, onValgChange, cancelPendingChange };
 }
