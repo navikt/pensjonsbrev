@@ -41,12 +41,13 @@ fun Route.sakRoute() {
             val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
             val brevmetadata = if (vedtaksId != null) {
                 brevmalService.hentBrevmalerForVedtak(
+                    saksId = sak.saksId,
                     sakstype = sak.sakType,
                     includeEblanketter = hasAccessToEblanketter,
                     vedtaksId = vedtaksId
                 )
             } else {
-                brevmalService.hentBrevmalerForSak(sak.sakType, hasAccessToEblanketter)
+                brevmalService.hentBrevmalerForSak(sak.saksId, sak.sakType, hasAccessToEblanketter)
             }
             call.respond(
                 Api.SakContext(
@@ -147,6 +148,7 @@ fun Route.sakRoute() {
         }
 
         sakBrev()
+        sakBrevV2()
     }
 }
 

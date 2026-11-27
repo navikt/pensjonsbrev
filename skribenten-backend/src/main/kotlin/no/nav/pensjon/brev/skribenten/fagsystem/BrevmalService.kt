@@ -1,3 +1,5 @@
+@file:OptIn(InterneDataklasser::class)
+
 package no.nav.pensjon.brev.skribenten.fagsystem
 
 import kotlinx.coroutines.Dispatchers
@@ -8,15 +10,18 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretBrev
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedleggMarkup
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupV2WithDataUsage
+import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
@@ -51,6 +56,20 @@ class BrevmalService(
             saksbehandlervalg = saksbehandlerValg.somSaksbehandlervalgIDSL()
         )
 
+    suspend fun renderMarkupV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        saksbehandlerValg: SaksbehandlervalgMap,
+        pesysData: BrevdataResponse.Data
+    ): MarkupV2WithDataUsage =
+        brevbakerService.renderMarkupV2(
+            brevkode = brevkode,
+            spraak = spraak,
+            felles = pesysData.felles,
+            fagsystemBrevdata = pesysData.brevdata,
+            saksbehandlervalg = saksbehandlerValg.somSaksbehandlervalgIDSL()
+        )
+
     suspend fun renderMarkup(
         markupVersjon: MarkupVersjon,
         brevkode: Brevkode.Redigerbart,
@@ -61,6 +80,14 @@ class BrevmalService(
         MarkupVersjon.V1 -> renderMarkup(brevkode, spraak, saksbehandlerValg, pesysData)
             .let { RendretBrev(VersjonertMarkup.V1(it.markup), it.letterDataUsage, it.stableHashCode) }
 
+        MarkupVersjon.V2 -> renderMarkupV2(brevkode, spraak, saksbehandlerValg, pesysData)
+            .let { rendret ->
+                RendretBrev(
+                    markup = VersjonertMarkup.V2(rendret.markup),
+                    letterDataUsage = rendret.letterDataUsage.map { LetterMarkupWithDataUsageImpl.PropertyImpl(it.typeName, it.propertyName) }.toSet(),
+                    stableHashCode = rendret.stableHashCode,
+                )
+            }
     }
 
     suspend fun renderMarkup(brev: Brevredigering, pesysData: BrevdataResponse.Data): RendretBrev =
@@ -95,6 +122,8 @@ class BrevmalService(
                 vedleggId = vedleggId,
             )?.let { VersjonertVedleggMarkup.V1(it) }
 
+            // TODO: Editable attachments for V2 letters are implemented in a later stage
+            MarkupVersjon.V2 -> throw FeilMarkupVersjonException(MarkupVersjon.V1, brev.markupVersjon)
         }
 
     suspend fun renderRedigerteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, VersjonertVedleggMarkup> =
@@ -117,16 +146,26 @@ class BrevmalService(
     suspend fun hentBrevmaler(includeEblanketter: Boolean): List<Api.Brevmal> =
         hentAlleMaler(includeEblanketter).toList()
 
-    suspend fun hentBrevmalerForSak(sakType: Sakstype, includeEblanketter: Boolean): List<Api.Brevmal> =
-        hentMaler(sakType, includeEblanketter)
+    suspend fun hentBrevmalerForSak(saksId: SaksId, sakType: Sakstype, includeEblanketter: Boolean): List<Api.Brevmal> {
+        val ikkeStoettedeBrevkoder =
+            stoettetAvDatabygger(saksId, null).stoettet.filterValues { !it }.keys.map { it.kode() }
+        return hentMaler(sakType, includeEblanketter)
             .filter { it.isForSakskontekst }
+            .filter { it.brevkode !in ikkeStoettedeBrevkoder }
             .map { it.toApi() }
             .toList()
+    }
 
-    suspend fun hentBrevmalerForVedtak(sakstype: Sakstype, includeEblanketter: Boolean, vedtaksId: VedtaksId): List<Api.Brevmal> {
+    suspend fun hentBrevmalerForVedtak(
+        saksId: SaksId,
+        sakstype: Sakstype,
+        includeEblanketter: Boolean,
+        vedtaksId: VedtaksId,
+    ): List<Api.Brevmal> {
         // Finner hvilke brev som skal filtreres vekk basert på om vi har en brevdatabygger i PEN som sier at den ikke støttes.
         // Denne logikken skal på sikt reverteres slik at PEN gir en liste med brevmaler som støttes for et et gitt vedtak.
-        val ikkeStoettedeBrevkoder = brevdataByggerStoettedeVedtak(vedtaksId).kravStoettet.filterValues { !it }.keys
+        val ikkeStoettedeBrevkoder =
+            stoettetAvDatabygger(saksId, vedtaksId).stoettet.filterValues { !it }.keys.map { it.kode() }
 
         return hentMaler(sakstype, includeEblanketter)
             .filter { it.isForVedtakskontekst }
@@ -136,9 +175,11 @@ class BrevmalService(
             .toList()
     }
 
-    // TODO rename vekk fra "krav..." når alle tolkninger er over i spring component data-bygger
-    private suspend fun brevdataByggerStoettedeVedtak(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult =
-        penClient.hentIsKravStoettetAvDatabygger(vedtaksId) ?: KravStoettetAvDatabyggerResult()
+    private suspend fun stoettetAvDatabygger(
+        saksId: SaksId,
+        vedtaksId: VedtaksId?,
+    ): PenClient.StoettetAvDatabyggerResult =
+        penClient.hentIsStoettetAvDatabygger(saksId, vedtaksId) ?: PenClient.StoettetAvDatabyggerResult()
 
     private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: Sakstype, vedtaksId: VedtaksId): Sequence<LetterMetadata> {
         val erKravPaaGammeltRegelverk = if (sakstype == Sakstype("ALDER")) {

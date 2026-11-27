@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.brevoppskrift
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.pensjon.brev.brevoppskrift.lagring.DraftRecord
 import no.nav.pensjon.brev.brevoppskrift.model.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -78,5 +79,16 @@ class SemanticSerializationTest {
                     .isEqualTo(draftObjectMapper.valueToTree<com.fasterxml.jackson.databind.JsonNode>(before.getOrThrow()))
             }
         }
+    }
+
+    @Test
+    fun `version one primitive document remains readable and byte shape compatible`() {
+        val json = requireNotNull(javaClass.getResourceAsStream("/semantic-draft-v1.json")).use { it.readBytes() }
+        val record = draftObjectMapper.readValue<DraftRecord>(json)
+        assertThat(draftObjectMapper.readTree(draftObjectMapper.writeValueAsBytes(record))).isEqualTo(draftObjectMapper.readTree(json))
+        assertThat(record.draft.scenarios.single().values[FieldId("field")]?.intValue()).isEqualTo(10)
+        assertThat(record.draft.scenarios.single().choices[ChoiceId("choice")]).isTrue()
+        assertThat(record.draft.source?.files?.get(RepositoryPath("ufoere/maler/Synthetic.kt"))?.value).isEqualTo("b".repeat(64))
+        assertThat(record.draft.attachments.single().id.value).isEqualTo("bound-copy")
     }
 }

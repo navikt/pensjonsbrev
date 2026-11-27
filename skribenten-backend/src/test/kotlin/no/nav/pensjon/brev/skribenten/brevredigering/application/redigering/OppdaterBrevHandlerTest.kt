@@ -1,8 +1,12 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV2
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
+import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
@@ -12,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.letter.letter
@@ -28,6 +33,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
     private val nyttRedigertBrev = editedLetter {
@@ -90,10 +96,58 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
             assertThat(it.redigertBrev.asV1().blocks[0].content).isEqualTo(listOf(Literal(2, text = "red pill", editedText = "blue pill", parentId = 1)))
             assertThat(it.redigertBrev.asV1().blocks[1].content).isEqualTo(listOf(Literal(4, "green pill", parentId = 3)))
             assertThat(it.redigertBrev.asV1().blocks[2].content).isEqualTo(listOf(Literal(6, "red pill", parentId = 5)))
-            assertThat(it.redigertBrev.asV1().blocks[0].missingFromTemplate).isTrue
-            assertThat(it.redigertBrev.asV1().blocks[1].missingFromTemplate).isNotEqualTo(true)
-            assertThat(it.redigertBrev.asV1().blocks[2].missingFromTemplate).isNotEqualTo(true)
+            assertThat(it.redigertBrev.asV1().blocks[0].decision?.status).isEqualTo(Edit.Block.DecisionRequest.Decision.PENDING)
+            assertThat(it.redigertBrev.asV1().blocks[1].decision).isNull()
+            assertThat(it.redigertBrev.asV1().blocks[2].decision).isNull()
         }
+    }
+
+    @Test
+    suspend fun `kan ikke oppdatere v1-brev med v2-brev`() {
+        val original = opprettBrev(reserverForRedigering = true).resultOrFail()
+
+        assertThrows<FeilMarkupVersjonException> {
+            withPrincipal(saksbehandler1Principal) {
+                oppdaterBrev(
+                    OppdaterBrevHandler.Request(
+                        brevId = original.info.id,
+                        saksId = sak1.saksId,
+                        nyttRedigertbrev = VersjonertMarkup.V2(letterV2()).toEdit(),
+                    )
+                )
+            }
+        }
+        assertThat(hentBrev(original.info.id).resultOrFail().redigertBrev).isEqualTo(original.redigertBrev)
+    }
+
+    @Test
+    suspend fun `kan ikke oppdatere v2-brev med v1-brev`() {
+        stageMarkupV2()
+        val original = opprettBrev(reserverForRedigering = true, markupVersjon = MarkupVersjon.V2).resultOrFail()
+
+        assertThrows<FeilMarkupVersjonException> {
+            oppdaterBrev(brevId = original.info.id, nyttRedigertbrev = letter.toEdit())
+        }
+        assertThat(hentBrev(original.info.id).resultOrFail().redigertBrev).isEqualTo(original.redigertBrev)
+    }
+
+    @Test
+    suspend fun `kan oppdatere v2-brev`() {
+        stageMarkupV2()
+        val original = opprettBrev(reserverForRedigering = true, markupVersjon = MarkupVersjon.V2).resultOrFail()
+        val paragraph = original.redigertBrev.asV2().blocks.single() as EditV2.Block.Paragraph
+        val literal = paragraph.content.single() as EditV2.Text.Literal
+        val redigert = original.redigertBrev.asV2().copy(
+            blocks = listOf(paragraph.copy(content = listOf(literal.copy(editedText = "blue pill")))),
+        )
+
+        val oppdatert = oppdaterBrevV2(brevId = original.info.id, nyttRedigertbrev = redigert)
+
+        assertThat(oppdatert).isSuccess {
+            assertThat(it.redigertBrev.asV2()).isEqualTo(redigert)
+            assertThat(it.redigertBrevHash).isNotEqualTo(original.redigertBrevHash)
+        }
+        assertThat(hentBrev(original.info.id).resultOrFail().redigertBrev.asV2()).isEqualTo(redigert)
     }
 
     @Test

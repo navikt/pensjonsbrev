@@ -142,7 +142,7 @@ test.describe("varslingsklokke i toppmenyen", () => {
     await expect(tour(page)).toBeVisible();
   });
 
-  test("viser bare «Les mer her» utenfor attesteringen", async ({ page }) => {
+  test("viser «Les mer» som tertiær knapp utenfor attesteringen", async ({ page }) => {
     await givenAcknowledged(page, ["diff-toggles"]);
     await page.goto("/saksnummer/123456/brev/1");
     await expect(page.getByText("weeks.")).toBeVisible();
@@ -151,8 +151,11 @@ test.describe("varslingsklokke i toppmenyen", () => {
 
     await expect(page.getByRole("heading", { name: BELL_TITLE })).toBeVisible();
     await expect(page.getByRole("button", { name: "Se hvordan", description: BELL_TITLE })).toHaveCount(0);
-    const docs = page.getByRole("link", { name: /^Les mer her/, description: BELL_TITLE });
+    const docs = page.getByRole("link", { name: /^Les mer\s*\(åpnes i ny fane\)$/, description: BELL_TITLE });
     await expect(docs).toBeVisible();
+    await expect(docs).toHaveAttribute("data-variant", "tertiary");
+    await expect(docs).toHaveAttribute("target", "_blank");
+    await expect(docs).toHaveAttribute("rel", "noopener noreferrer");
     await expect(docs).toHaveAttribute(
       "href",
       "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_hvilke_endringer_er_gjort_i_brevet",
@@ -180,7 +183,9 @@ test("saksbehandler uten attestantrolle ser nyheten med lenke til dokumentasjone
   await bell(page).click();
 
   await expect(page.getByRole("heading", { name: BELL_TITLE })).toBeVisible();
-  await expect(page.getByRole("link", { name: /^Les mer her/, description: BELL_TITLE })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /^Les mer\s*\(åpnes i ny fane\)$/, description: BELL_TITLE }),
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: "Se hvordan", description: BELL_TITLE })).toHaveCount(0);
 });
 

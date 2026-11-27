@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.ufore.barnetillegg
 
-import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUfoeretrygdDto.maanedligUfoeretrygdFoerSkatt
@@ -8,8 +7,10 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUf
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUfoeretrygdDto.pe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
-import no.nav.pensjon.brev.maler.legacy.fraser.*
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.ufore.fraser.Barnetillegg
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.SjekkUtbetalingene
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.SkattForDegSomBorIUtlandet
@@ -233,14 +234,26 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                     and btsbNetto.equalTo(0)
                     and btsbJusteringsbelopperAr.equalTo(0)
                     and (btfbNetto.notEqualTo(0) or not(btfbInnvilget)))) {
-                includePhrase(TBU1286_1_Generated(pe))
+                paragraph {
+                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                        text(bokmal { + "Barnetillegget for " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + ". Inntekten din er over grensen for å få utbetalt barnetillegg. "})
+                    }.orShow {
+                        text(bokmal { +"Barnetillegget blir ikke utbetalt fordi du har en samlet inntekt som er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + ". Inntekten din er over grensen for å få utbetalt barnetillegg. "})
+                    }
+                }
             }
 
             showIf((btfbInnvilget
                     and btfbNetto.equalTo(0)
                     and btfbJusteringsbelopperAr.equalTo(0)
                     and (btsbNetto.notEqualTo(0) or not(btsbInnvilget)))) {
-                includePhrase(TBU1286_2_Generated(pe))
+                paragraph {
+                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
+                        text(bokmal { + "Barnetillegget for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg. "})
+                    }.orShow {
+                        text(bokmal { + "Barnetillegget blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg."})
+                    }
+                }
             }
 
             showIf(btsbInnvilget and btfbInnvilget
@@ -248,14 +261,13 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                         and btsbJusteringsbelopperAr.equalTo(0)
                         and btfbNetto.equalTo(0)
                         and btfbJusteringsbelopperAr.equalTo(0)) {
-                includePhrase(TBU2490_Generated(pe))
+                paragraph {
+                    text (bokmal { + "Barnetillegget for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". Barnetillegget for " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + ". Inntektene er over grensen for å få utbetalt barnetillegg." })
+                }
             }
 
             showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv().greaterThan(0))) {
-                includePhrase(TBU5005_Generated)
-                paragraph {
-                    text(bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." })
-                }
+                includePhrase(Barnetillegg.BarnetilleggPavirkesAvUtlandsopphold)
             }
 
             paragraph {

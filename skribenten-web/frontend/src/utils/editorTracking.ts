@@ -1,15 +1,15 @@
 import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { type InnblikkEventData, trackEvent } from "~/utils/innblikk";
 
-export type MissingFromTemplateEventName = "blokk beholdt" | "blokk slettet";
+export type MissingInRenderedEventName = "blokk beholdt" | "blokk slettet";
 
 /**
  * Sporer at saksbehandler beholder eller sletter en blokk som ikke lenger finnes i malen.
  *
  * `redigeringsflate` er en sentral dimensjon for analysen og kan ikke overstyres av `eventData`.
  */
-export const trackMissingFromTemplateAction = (
-  eventName: MissingFromTemplateEventName,
+export const trackMissingInRenderedAction = (
+  eventName: MissingInRenderedEventName,
   redigeringsflate: Redigeringsflate,
   eventData?: InnblikkEventData,
 ): void => {

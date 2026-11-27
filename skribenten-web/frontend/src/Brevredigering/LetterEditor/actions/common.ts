@@ -709,7 +709,6 @@ export function newTitle(args: {
     editable: true,
     deletedContent: args.deletedContent ?? [],
     content: args.content,
-    missingFromTemplate: false,
   };
 }
 
@@ -725,7 +724,6 @@ export function newParagraph(args: {
     parentId: args.parentId ?? null,
     editable: true,
     deletedContent: args.deletedContent ?? [],
-    missingFromTemplate: false,
     content: args.content,
   };
 }
@@ -1059,7 +1057,7 @@ export function normalizeDeletedArrays(obj: unknown): unknown {
 }
 
 export function normalizeDocumentForComparison(obj: unknown): unknown {
-  const withoutNulls = JSON.parse(JSON.stringify(obj, (_, value) => (value === null ? undefined : value)));
+  const withoutNulls = JSON.parse(JSON.stringify(obj, (_key, value) => (value === null ? undefined : value)));
   return normalizeDeletedArrays(withoutNulls);
 }
 
@@ -1214,21 +1212,24 @@ export function findFirstUneditedFritekstFocus(letter: EditedDocument): Focus | 
   );
 }
 
-export const countMissingFromTemplateBlocks = (letter: EditedDocument): number => {
-  return letter.blocks.filter((block) => block.missingFromTemplate).length;
+export const isMissingInRendered = (block: AnyBlock): boolean =>
+  block.decision?.type === "MISSING_FROM_RENDERED" && block.decision.status === "PENDING";
+
+export const countMissingInRenderedBlocks = (letter: EditedDocument): number => {
+  return letter.blocks.filter(isMissingInRendered).length;
 };
 
 export function getBlockClassName(
   block: AnyBlock,
   isFlashHighlighted: boolean,
-  showMissingFromTemplate: boolean,
+  showMissingInRendered: boolean,
 ): string {
   const classNames: string[] = [block.type];
   if (isFlashHighlighted) {
     classNames.push("inserted-flash-block");
   }
-  if (block.missingFromTemplate && showMissingFromTemplate) {
-    classNames.push("missing-from-template-block");
+  if (isMissingInRendered(block) && showMissingInRendered) {
+    classNames.push("missing-in-rendered-block");
   }
   return classNames.join(" ");
 }

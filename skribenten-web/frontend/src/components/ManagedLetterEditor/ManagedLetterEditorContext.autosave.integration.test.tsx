@@ -1,8 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render } from "@testing-library/react";
+import { applyPatches } from "immer";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { useOppdaterBrevMutation } from "~/Brevredigering/hooks/useOppdaterBrevMutation";
+import Actions from "~/Brevredigering/LetterEditor/actions";
+import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import {
@@ -12,6 +15,7 @@ import {
 import { type BrevResponse } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { brevInfo, brevResponse } from "~test/support/brevFixtures";
+import { literal, paragraph, withMissingInRendered } from "~test/support/letterEditorTestUtils";
 
 const { oppdaterBrevMock, oppdaterBrevtekstMock, tilbakestillBrevMock } = vi.hoisted(() => ({
   oppdaterBrevMock: vi.fn(),
@@ -51,13 +55,13 @@ const Testkomponent = ({ result }: { result: { current?: AutosaveHarness } }) =>
   return null;
 };
 
-function renderAutosave() {
+function renderAutosave(brev = lagretBrev) {
   const result: { current?: AutosaveHarness } = {};
 
   render(
     <QueryClientProvider client={new QueryClient({ defaultOptions: { mutations: { retry: false } } })}>
       <RedigeringsflateProvider redigeringsflate="saksbehandler-redigering">
-        <ManagedLetterEditorContextProvider brev={lagretBrev}>
+        <ManagedLetterEditorContextProvider brev={brev}>
           <Testkomponent result={result} />
         </ManagedLetterEditorContextProvider>
       </RedigeringsflateProvider>
@@ -130,6 +134,51 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
     expect(harness().editorState.saksbehandlerValg).toEqual(nyeValg);
     expect(harness().redigertBrev.deletedBlocks).toEqual([101]);
     expect(harness().editorState.saveStatus).toBe("SAVED");
+  });
+
+  test("lagrer beslutningen etter Behold, autolagring og Angre", async () => {
+    const block = withMissingInRendered(paragraph([literal({ text: "behold meg" })]));
+    const brev = {
+      ...lagretBrev,
+      redigertBrev: {
+        ...lagretBrev.redigertBrev,
+        blocks: [block],
+      },
+    };
+    oppdaterBrevtekstMock.mockImplementation(({ redigertBrev }: { redigertBrev: EditedLetter }) =>
+      Promise.resolve({ ...brev, redigertBrev }),
+    );
+    const harness = renderAutosave(brev);
+    act(() => applyAction(Actions.keepMissingInRenderedBlock, harness().setEditorState, 0));
+
+    await vent(AUTOSAVE_TIMER);
+
+    expect(oppdaterBrevtekstMock).toHaveBeenCalledOnce();
+    expect(harness().editorState.saveStatus).toBe("SAVED");
+    expect(harness().redigertBrev.blocks[0].decision?.status).toBe("ACCEPTED");
+    expect(harness().editorState.history.entries).toHaveLength(1);
+
+    act(() =>
+      harness().setEditorState((state) => {
+        const entry = state.history.entries[state.history.entryPointer];
+        if (entry.type !== "PATCH") throw new Error("Forventet angrebare patcher");
+        return {
+          ...applyPatches(state, entry.inversePatches),
+          saveStatus: "DIRTY",
+          history: { ...state.history, entryPointer: state.history.entryPointer - 1 },
+        };
+      }),
+    );
+
+    expect(harness().redigertBrev.blocks[0].id).toBe(block.id);
+    expect(harness().redigertBrev.blocks[0].decision?.status).toBe("PENDING");
+
+    await vent(AUTOSAVE_TIMER);
+
+    expect(oppdaterBrevtekstMock).toHaveBeenCalledTimes(2);
+    expect(harness().editorState.saveStatus).toBe("SAVED");
+    expect(harness().redigertBrev.blocks[0].decision?.status).toBe("PENDING");
+    expect(harness().redigertBrev.blocks[0].content).toEqual(block.content);
   });
 
   for (const ytelse of ["Uføretrygd", "alderspensjon"]) {

@@ -6,6 +6,9 @@ import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.brev.brevbaker.markup.Attachment as AttachmentV2
+import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupV2
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupV2WithDataUsage
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -17,7 +20,6 @@ import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
@@ -147,6 +149,24 @@ open class FakeBrevbakerService(
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment? = notYetStubbed()
+    override suspend fun renderMarkupV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        felles: BrevbakerFelles,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+    ): MarkupV2WithDataUsage = notYetStubbed()
+    override suspend fun renderPdfV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+        felles: BrevbakerFelles,
+        redigertBrev: MarkupV2,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+        redigerteVedlegg: Map<VedleggId, AttachmentV2>,
+        pdfVedlegg: List<PDFVedleggTittel>,
+    ): LetterResponse = notYetStubbed()
 }
 
 private val objectMapper = jacksonObjectMapper()
@@ -175,8 +195,11 @@ open class PenClientStub : PenClient {
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse = notYetStubbed()
     override suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse = notYetStubbed()
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> = notYetStubbed()
+    override suspend fun hentIsStoettetAvDatabygger(
+        saksId: SaksId,
+        vedtaksId: VedtaksId?,
+    ): PenClient.StoettetAvDatabyggerResult? = notYetStubbed()
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean? = notYetStubbed()
-    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult = notYetStubbed()
     override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data = notYetStubbed()
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse = notYetStubbed()
     override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto = notYetStubbed()

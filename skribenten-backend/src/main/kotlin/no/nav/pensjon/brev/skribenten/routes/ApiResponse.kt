@@ -25,6 +25,16 @@ suspend inline fun RoutingContext.apiRespond(
     }
 }
 
+suspend inline fun RoutingContext.apiRespondV2(
+    dto2ApiService: Dto2ApiService,
+    outcome: Outcome<Dto.Brevredigering, BrevredigeringError>?,
+    successStatus: HttpStatusCode = HttpStatusCode.OK,
+) {
+    respondOutcome(dto2ApiService, outcome) { brevredigering ->
+        respond(status = successStatus, dto2ApiService.toApiV2(brevredigering))
+    }
+}
+
 @JvmName("apiRespondBrevInfo")
 suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,

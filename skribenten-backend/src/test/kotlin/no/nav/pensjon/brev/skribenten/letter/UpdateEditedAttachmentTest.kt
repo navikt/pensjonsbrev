@@ -43,7 +43,7 @@ class UpdateEditedAttachmentTest {
     }
 
     @Test
-    fun `edited block missing from template is kept and marked missingFromTemplate`() {
+    fun `edited block missing from template is kept with pending decision`() {
         val rendered = attachment(ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))))
         val edited = editedAttachment {
             paragraph(id = 1) { literal(id = 11, text = "Foerste", editedText = "Foerste redigert") }
