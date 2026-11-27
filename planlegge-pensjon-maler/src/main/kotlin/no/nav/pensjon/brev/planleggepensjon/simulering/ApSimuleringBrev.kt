@@ -21,7 +21,6 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.notNull
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -48,7 +47,9 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
         title {
             showIf(pesysData.simulering.afpPrivat.notNull()) {
                 text(bokmal { +"Beregning av alderspensjon og AFP i privat sektor" })
-            }.orShowIf(pesysData.simulering.afpOffentligTidsbegrenset.notNull() or pesysData.simulering.afpOffentligLivsvarig.notNull()) {
+            }.orShowIf(pesysData.simulering.afpOffentligLivsvarig.notNull()) {
+                text(bokmal { +"Beregning av alderspensjon med livsvarig AFP i offentlig sektor" })
+            }.orShowIf(pesysData.simulering.afpOffentligTidsbegrenset.notNull()) {
                 text(bokmal { +"Beregning av AFP i offentlig sektor etterfulgt av alderspensjon" })
             }.orShow {
                 text(bokmal { +"Beregning av alderspensjon" })
