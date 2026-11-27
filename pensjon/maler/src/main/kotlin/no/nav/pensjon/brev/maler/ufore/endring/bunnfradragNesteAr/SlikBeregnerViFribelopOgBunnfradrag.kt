@@ -14,19 +14,16 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsok
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.gradsokning.dato
 import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -137,20 +134,6 @@ data class SlikBeregnerViFribelopOgBunnfradrag(
 
             includePhrase(GrunnbelopFrase(grunnbelop))
             includePhrase(Fribelopsperioder(fribelopsperioder))
-
-            showIf(fribelopUtvikling.kategori.equalTo(FRIBELOP_04G_TIL_1G) and not(sokerMottarApIlaAret or opphorsdato.notNull())) {
-                paragraph {
-                    text(
-                        bokmal { +"Neste år: " },
-                        nynorsk { +"Neste år: " },
-                        FontType.BOLD,
-                    )
-                    text(
-                        bokmal { +"Fra " + vedtakVirkFom.year.plus(1).format() + " vil du få nytt bunnfradrag med en ganger folketrygdens grunnbeløp som fribeløp hele året. " },
-                        nynorsk { +"Frå " + vedtakVirkFom.year.plus(1).format() + " vil du få nytt botnfrådrag med ein gong grunnbeløpet i folketrygda som fribeløp heile året. " }
-                    )
-                }
-            }
         }
     }
 }
