@@ -97,8 +97,8 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
             assertThat(it.redigertBrev.asV1().blocks[1].content).isEqualTo(listOf(Literal(4, "green pill", parentId = 3)))
             assertThat(it.redigertBrev.asV1().blocks[2].content).isEqualTo(listOf(Literal(6, "red pill", parentId = 5)))
             assertThat(it.redigertBrev.asV1().blocks[0].decision?.status).isEqualTo(Edit.Block.DecisionRequest.Decision.PENDING)
-            assertThat(it.redigertBrev.asV1().blocks[1].decision).isNull()
-            assertThat(it.redigertBrev.asV1().blocks[2].decision).isNull()
+            assertThat(it.redigertBrev.asV1().blocks[1].decision?.type).isEqualTo(Edit.Block.DecisionRequest.Type.NEW_IN_RENDERED)
+            assertThat(it.redigertBrev.asV1().blocks[2].decision?.type).isEqualTo(Edit.Block.DecisionRequest.Type.NEW_IN_RENDERED)
         }
     }
 
@@ -203,7 +203,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(oppdatert).isSuccess {
             assertThat(it.redigertBrev).isNotEqualTo(original.redigertBrev)
-            assertThat(it.redigertBrev.asV1()).isEqualTo(original.redigertBrev.asV1().updateEditedLetter(freshRender))
+            assertThat(it.redigertBrev.asV1()).isEqualTo(original.redigertBrev.asV1().updateEditedLetter(freshRender, previousRender = letter.toEdit()))
         }
     }
 

@@ -415,6 +415,151 @@ class UpdateRenderedLetterTest {
     }
 
 
+    private val newInRendered = Edit.Block.DecisionRequest(Edit.Block.DecisionRequest.Type.NEW_IN_RENDERED, Edit.Block.DecisionRequest.Decision.PENDING)
+    private val pendingMissingFromRendered =
+        Edit.Block.DecisionRequest(Edit.Block.DecisionRequest.Type.MISSING_FROM_RENDERED, Edit.Block.DecisionRequest.Decision.PENDING)
+
+    @Test
+    fun `block not present in previous render is NEW_IN_RENDERED`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))).toEdit()
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        )
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2, decision = newInRendered) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(expected, previous.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
+    fun `block that was NEW_IN_RENDERED has no decision when also present in previous render`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))).toEdit()
+        val edited = editedLetter {
+            paragraph(id = 1, decision = newInRendered) { literal(id = 11, text = "Første", editedText = "Redigert") }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første", editedText = "Redigert") }
+        }
+
+        assertEquals(expected, edited.updateEditedLetter(letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))), previousRender = previous))
+    }
+
+    @Test
+    fun `block present in edited letter but not in previous render is NEW_IN_RENDERED`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))).toEdit()
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2) { literal(id = 21, text = "Andre") }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2, decision = newInRendered) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(expected, edited.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
+    fun `additional occurrence of an id from previous render is NEW_IN_RENDERED`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Gjentatt")))).toEdit()
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Gjentatt"))),
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Gjentatt"))),
+        )
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Gjentatt") }
+            paragraph(id = 1, decision = newInRendered) { literal(id = 11, text = "Gjentatt") }
+        }
+
+        assertEquals(expected, previous.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
+    fun `duplicate inserted before an existing occurrence is NEW_IN_RENDERED`() {
+        val previous = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Gjentatt"))),
+        ).toEdit()
+        val next = letter(
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Gjentatt"))),
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Gjentatt"))),
+        )
+        val expected = editedLetter {
+            paragraph(id = 2, decision = newInRendered) { literal(id = 21, text = "Gjentatt") }
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2) { literal(id = 21, text = "Gjentatt") }
+        }
+
+        assertEquals(expected, previous.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
+    fun `reordered block from previous render is not NEW_IN_RENDERED`() {
+        val previous = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        ).toEdit()
+        val next = letter(
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+        )
+
+        assertEquals(next.toEdit(), previous.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
+    fun `blocks added by saksbehandler and blocks missing from template are not NEW_IN_RENDERED`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))).toEdit()
+        val next = letter(ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))))
+        val edited = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første", editedText = "Redigert") }
+            paragraph { literal(text = "Ny tekst") }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1, decision = pendingMissingFromRendered) { literal(id = 11, text = "Første", editedText = "Redigert") }
+            paragraph { literal(text = "Ny tekst") }
+            paragraph(id = 2, decision = newInRendered) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(expected, edited.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
+    fun `edited block missing from template that reappears keeps pending MISSING_FROM_RENDERED`() {
+        val previous = letter(ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre")))).toEdit()
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        )
+        val edited = editedLetter {
+            paragraph(id = 1, decision = pendingMissingFromRendered) { literal(id = 11, text = "Første", editedText = "Redigert") }
+            paragraph(id = 2) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(edited, edited.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
+    fun `no block is NEW_IN_RENDERED without a previous render`() {
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        )
+        val edited = editedLetter {
+            paragraph(id = 1, decision = newInRendered) { literal(id = 11, text = "Første") }
+        }
+
+        assertEquals(next.toEdit(), edited.updateEditedLetter(next, previousRender = null))
+    }
+
     @Test
     fun `keeps new edited blocks in positions relative to original blocks`() {
         val next = letter(

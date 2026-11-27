@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV2
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
 import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2
 import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
@@ -70,7 +71,7 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val hentet = hentBrev(brevId = opprettet.info.id, reserverForRedigering = true)
 
         assertThat(hentet).isSuccess {
-            assertThat(it.redigertBrev.asV1()).isEqualTo(opprettet.redigertBrev.asV1().updateEditedLetter(freshRender))
+            assertThat(it.redigertBrev.asV1()).isEqualTo(opprettet.redigertBrev.asV1().updateEditedLetter(freshRender, previousRender = letter.toEdit()))
         }
     }
 
@@ -88,7 +89,10 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(hentet).isSuccess {
             assertThat(it.redigertBrev.asV2().blocks).hasSize(2)
-            assertThat(it.redigertBrev.asV2().blocks).isEqualTo(opprettet.redigertBrev.asV2().merge(letterV2(*freshBlocks)).blocks)
+            assertThat(it.redigertBrev.asV2().blocks).isEqualTo(
+                opprettet.redigertBrev.asV2().merge(letterV2(*freshBlocks), previousRender = opprettet.redigertBrev.asV2()).blocks
+            )
+            assertThat(it.redigertBrev.asV2().blocks.last().decision).isEqualTo(EditV2.Block.DecisionRequest.newInRenderedPending)
         }
     }
 

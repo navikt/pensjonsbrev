@@ -11,8 +11,8 @@ import no.nav.pensjon.brev.skribenten.letter.v2.EditV2.Text
 internal class UpdateEditedLetterV2(private val variableValues: VariableValuesUpdaterV2) {
 
     companion object {
-        fun merge(edited: EditV2.Letter, rendered: LetterMarkup): EditV2.Letter =
-            EditV2Markup.toEdit(rendered).let { UpdateEditedLetterV2(VariableValuesUpdaterV2(it)).mergeLetter(edited, it) }
+        fun merge(edited: EditV2.Letter, rendered: LetterMarkup, previousRender: EditV2.Letter? = null): EditV2.Letter =
+            EditV2Markup.toEdit(rendered).let { UpdateEditedLetterV2(VariableValuesUpdaterV2(it)).mergeLetter(edited, it, previousRender) }
 
         fun merge(edited: EditV2.Attachment, rendered: Attachment): EditV2.Attachment =
             EditV2Markup.toEdit(rendered).let { UpdateEditedLetterV2(VariableValuesUpdaterV2(it)).mergeAttachment(edited, it) }
@@ -31,8 +31,8 @@ internal class UpdateEditedLetterV2(private val variableValues: VariableValuesUp
             )
     }
 
-    private fun mergeLetter(edited: EditV2.Letter, rendered: EditV2.Letter): EditV2.Letter =
-        mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock).let { merged ->
+    private fun mergeLetter(edited: EditV2.Letter, rendered: EditV2.Letter, previousRender: EditV2.Letter?): EditV2.Letter =
+        mergeList(null, edited.blocks, withNewInRendered(rendered.blocks, previousRender), edited.deletedBlocks, ::mergeBlock).let { merged ->
             edited.copy(
                 title = mergeTitle(edited.title, rendered.title),
                 saksinformasjon = rendered.saksinformasjon,
@@ -130,6 +130,49 @@ internal class UpdateEditedLetterV2(private val variableValues: VariableValuesUp
                 } else {
                     variableValues.withUpdatedVariables(edited)
                 }
+        }.withDecision(mergeDecision(edited, rendered))
+
+    // A block missing from the template keeps its decision request until Saksbehandler decides to keep or remove it.
+    private fun mergeDecision(edited: Block, rendered: Block): Block.DecisionRequest? =
+        edited.decision.takeIf { it?.type == Block.DecisionRequest.Type.MISSING_FROM_RENDERED && it.status == Block.DecisionRequest.Decision.PENDING }
+            ?: rendered.decision
+
+    /**
+     * Marks blocks in the fresh render that were not present in [previousRender] with a pending
+     * [Block.DecisionRequest.Type.NEW_IN_RENDERED] decision request.
+     * Ids may occur several times in a render, so each occurrence in [previousRender] only accounts for one block.
+     * Occurrences aligned with [previousRender] (see [ListAlignmentV2.matchedRenderedIndices]) are reserved first, so that
+     * a duplicate inserted before an existing occurrence is the one marked. Remaining occurrences are then consumed
+     * by reordered blocks in render order. Without a [previousRender] no blocks are marked.
+     */
+    private fun withNewInRendered(rendered: List<Block>, previousRender: EditV2.Letter?): List<Block> {
+        if (previousRender == null) return rendered
+        val matchedIndices = ListAlignmentV2.matchedRenderedIndices(previousRender.blocks, rendered)
+        val remainingOccurrences = previousRender.blocks.mapNotNull { it.id }.groupingBy { it }.eachCount().toMutableMap()
+        matchedIndices.forEach { index -> rendered[index].id?.let { id -> remainingOccurrences[id] = remainingOccurrences.getValue(id) - 1 } }
+
+        return rendered.mapIndexed { index, block ->
+            val id = block.id
+            if (id == null || index in matchedIndices) return@mapIndexed block
+            val remaining = remainingOccurrences[id] ?: 0
+            if (remaining > 0) {
+                remainingOccurrences[id] = remaining - 1
+                block
+            } else {
+                block.withDecision(Block.DecisionRequest.newInRenderedPending)
+            }
+        }
+    }
+
+    private fun Block.withDecision(decision: Block.DecisionRequest?): Block =
+        when (this) {
+            is Block.Title2 -> copy(decision = decision)
+            is Block.Title3 -> copy(decision = decision)
+            is Block.Title4 -> copy(decision = decision)
+            is Block.Paragraph -> copy(decision = decision)
+            is Block.ItemList -> copy(decision = decision)
+            is Block.NumberedList -> copy(decision = decision)
+            is Table -> copy(decision = decision)
         }
 
     private fun Block.TextBlock.withContent(content: List<Text>, deletedContent: List<Int>): Block.TextBlock =
