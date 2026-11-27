@@ -43,11 +43,13 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.month
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.text
+import java.time.Period
 
 object InntektOgAldersovergangNesteAr {
 
@@ -59,8 +61,8 @@ object InntektOgAldersovergangNesteAr {
 
                 paragraph {
                     text(
-                        bokmal { +"Du fyller 67 år den " + datoFyller67.format() + ". Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + ", er bunnfradraget justert ut fra antall måneder du får uføretrygd i " + vedtakVirkFom.year.format() + ". Dette har kun betydning for deg dersom du skal ha inntekt ved siden av uføretrygden i " + vedtakVirkFom.year.format() + ". Du kan ha en inntekt på " + bunnfradrag.format() + " før " + datoForNormertPensjonsalder.format() + " før vi reduserer uføretrygden din. Dette beløpet er bunnfradraget ditt." },
-                        nynorsk { +"Du fyller 67 år den " + datoFyller67.format() + ". Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er botnfrådraget justert ut frå talet på månader du får uføretrygd i " + vedtakVirkFom.year.format() + ". Dette har berre betydning for deg dersom du skal ha inntekt ved sida av uføretrygda i " + vedtakVirkFom.year.format() + ". Du kan ha ei inntekt på " + bunnfradrag.format() + " før " + datoForNormertPensjonsalder.format() + " før vi reduserer uføretrygda di. Dette beløpet er botnfrådraget ditt." },
+                        bokmal { +"Du fyller 67 år den " + datoFyller67.format() + ". Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + ", er bunnfradraget og inntektstaket justert ut fra antall måneder du får uføretrygd i " + vedtakVirkFom.year.format() + ". Dette har kun betydning for deg dersom du skal ha inntekt ved siden av uføretrygden i " + vedtakVirkFom.year.format() + ". Du kan ha en inntekt på " + bunnfradrag.format() + " før " + datoForNormertPensjonsalder.format() + " før vi reduserer uføretrygden din. Dette beløpet er bunnfradraget ditt. Inntekten vi bruker i beregningen for " + vedtakVirkFom.year.format() + " er den faktiske inntekten du har i " + vedtakVirkFom.year.format() + " til og med " + datoForNormertPensjonsalder.plus(Period.ofMonths(-1)).month.format() + ". " },
+                        nynorsk { +"Du fyller 67 år den " + datoFyller67.format() + ". Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er botnfrådraget og inntektstaket justert ut frå talet på månader du får uføretrygd i " + vedtakVirkFom.year.format() + ". Dette har berre betydning for deg dersom du skal ha inntekt ved sida av uføretrygda i " + vedtakVirkFom.year.format() + ". Du kan ha ei inntekt på " + bunnfradrag.format() + " før " + datoForNormertPensjonsalder.format() + " før vi reduserer uføretrygda di. Dette beløpet er botnfrådraget ditt. Inntekta vi brukar i berekninga for " + vedtakVirkFom.year.format() + " er den faktiske inntekta du har i " + vedtakVirkFom.year.format() + " til og med " + datoForNormertPensjonsalder.plus(Period.ofMonths(-1)).month.format() + ". " },
                     )
                 }
                 title1 {

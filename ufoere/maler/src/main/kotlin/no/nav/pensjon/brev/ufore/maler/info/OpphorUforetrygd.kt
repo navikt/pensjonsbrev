@@ -6,7 +6,9 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -75,6 +77,12 @@ object OpphorUforetrygd : RedigerbarTemplate<OpphorUforetrygdDto> {
                     text(
                         bokmal { +"Du oppfyller ikke lenger vilkårene for uføretrygd, og vi opphører derfor uføretrygden din." },
                         nynorsk { +"Du oppfyller ikkje lenger vilkåra for uføretrygd, og vi opphøyrer derfor uføretrygda di." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Fordi uføretrygden din opphører, er bunnfradraget og inntektstaket justert ut fra antall måneder du får uføretrygd. Inntekten vi bruker i beregningen for " + fritekst("opphørsår") + " er den faktiske inntekten du har i " + fritekst("opphørsår") + " til og med " + fritekst("måneden før opphør") + ". " },
+                        nynorsk { +"Fordi uføretrygda di opphøyrer, er botnfrådraget og inntektstaket justert ut frå talet på månader du får uføretrygd. Inntekten vi bruker i berekninga for " + fritekst("opphørsår") + " er den faktiske inntekten du har i " + fritekst("opphørsår") + " til og med " + fritekst("måneden før opphør") + ". " },
                     )
                 }
                 paragraph {
