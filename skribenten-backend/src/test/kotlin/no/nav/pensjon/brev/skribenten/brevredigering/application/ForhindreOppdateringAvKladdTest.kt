@@ -222,4 +222,37 @@ class ForhindreOppdateringAvKladdTest : BrevredigeringHandlerTestBase() {
 
         assertThat(brevbakerService.renderRedigerbartVedleggKall).isEmpty()
     }
+
+    @Test
+    suspend fun `pdf gir beskjed om endret brev naar brevmalen er uendret`() {
+        val opprettet = opprettBrev().resultOrFail()
+        brevbakerService.renderMarkupResultat = { nyttRendretBrev }
+
+        assertThat(hentEllerOpprettPdf(opprettet).resultOrFail().rendretBrevErEndret).isTrue()
+    }
+
+    @Test
+    suspend fun `pdf gir ikke beskjed om endret brev naar brevmalen er endret`() {
+        val opprettet = opprettBrev().resultOrFail()
+        brevbakerService.renderMarkupStableHashCode = StableHashCode(456)
+        brevbakerService.renderMarkupResultat = { nyttRendretBrev }
+
+        assertThat(hentEllerOpprettPdf(opprettet).resultOrFail().rendretBrevErEndret).isFalse()
+    }
+
+    @Test
+    suspend fun `pdf gir beskjed om endret vedlegg naar vedleggsmalen er uendret`() {
+        val brev = brevMedVedleggOgNyeMaler().first
+
+        assertThat(hentEllerOpprettPdf(brev).resultOrFail().rendretBrevErEndret).isTrue()
+    }
+
+    @Test
+    suspend fun `pdf gir ikke beskjed om endret vedlegg naar vedleggsmalen er endret`() {
+        val brev = opprettBrev().resultOrFail()
+        lagreVedlegg(brev.info.id, endretVedlegg, malVedlegg("endret", 2))
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(endretVedlegg to malVedlegg("endret ny tekst", 22))
+
+        assertThat(hentEllerOpprettPdf(brev).resultOrFail().rendretBrevErEndret).isFalse()
+    }
 }
