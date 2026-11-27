@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.brevoppskrift.integrasjoner
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
+private const val SLACK_WEBHOOK_HOST = "hooks.slack.com"
+
 @JvmInline
 value class PrJobId(val value: UUID) {
     override fun toString(): String = value.toString()
@@ -33,9 +35,9 @@ value class VertexModelId(val value: String)
 value class SlackWebhookUrl(val value: String) {
     init {
         val uri = runCatching { java.net.URI(value) }.getOrNull()
-        require(uri != null && uri.scheme == "https" && uri.host == "hooks.slack.com" && uri.port == -1 && uri.userInfo == null &&
+        require(uri != null && uri.scheme == "https" && uri.host == SLACK_WEBHOOK_HOST && uri.port == -1 && uri.userInfo == null &&
             uri.query == null && uri.fragment == null && uri.path.startsWith("/services/") && uri.path.length > "/services/".length
-        ) { "Slack requires an HTTPS hooks.slack.com services URL" }
+        ) { "Slack requires an HTTPS $SLACK_WEBHOOK_HOST services URL" }
     }
 
     override fun toString(): String = "[redacted]"

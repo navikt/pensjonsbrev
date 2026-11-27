@@ -68,7 +68,11 @@ data class VertexConfig(
 ) {
     init {
         require(listOf(projectId, location, model).all { it == null } ||
-            listOf(projectId?.value, location?.value, model?.value).all { it != null && it !in setOf(".", "..") && Regex("[A-Za-z0-9_.-]+").matches(it) }
+            listOf(projectId?.value, location?.value, model?.value).all { it != null && it !in setOf(".", "..") && PATH_SEGMENT_PATTERN.matches(it) }
         ) { "Vertex requires valid projectId, location and model" }
+    }
+
+    private companion object {
+        val PATH_SEGMENT_PATTERN = Regex("[A-Za-z0-9_.-]+")
     }
 }

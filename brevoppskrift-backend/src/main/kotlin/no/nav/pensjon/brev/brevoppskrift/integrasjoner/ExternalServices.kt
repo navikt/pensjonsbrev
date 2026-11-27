@@ -45,26 +45,27 @@ class SlackNotifications(engine: HttpClientEngine, metrics: MeterRegistry, priva
     override fun close() { client.close() }
 }
 
-class VertexAi(engine: HttpClientEngine, metrics: MeterRegistry, private val config: VertexConfig) : AiService, Closeable {
+class VertexAi(engine: HttpClientEngine, metrics: MeterRegistry, config: VertexConfig) : AiService, Closeable {
     init { require(config.projectId != null && config.location != null && config.model != null) }
+    private val generateContentUrl = "$VERTEX_API_URL/v1/projects/${requireNotNull(config.projectId).value}/locations/${requireNotNull(config.location).value}/publishers/google/models/${requireNotNull(config.model).value}:generateContent"
     private val client = lagHttpClient(engine, metrics, ExternalService.VERTEX)
 
     override suspend fun suggest(request: AiRequest, nynorsk: Boolean): AiResult {
         validateAiRequest(request)
         try {
-            val token = client.prepareGet("http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token") {
+            val token = client.prepareGet(METADATA_TOKEN_URL) {
                 metricsOperation(ClientOperation.TOKEN)
                 header("Metadata-Flavor", "Google")
             }.execute { response ->
                 response.json("VERTEX_UNAVAILABLE", 16 * 1024).path("access_token").takeIf { it.isTextual }?.asText()
-                    ?.takeIf { Regex("[A-Za-z0-9._~+/-]+=*").matches(it) } ?: throw IntegrationFailure("VERTEX_UNAVAILABLE")
+                    ?.takeIf { ACCESS_TOKEN_PATTERN.matches(it) } ?: throw IntegrationFailure("VERTEX_UNAVAILABLE")
             }
             val instruction = if (nynorsk) "Oversett til nynorsk, med same faglege innhald." else "Forbedre klarspråket på ${request.language}. Ikke endre faglig innhold."
             val payload = mapOf(
                 "systemInstruction" to mapOf("parts" to listOf(mapOf("text" to "$instruction Bevar alle {nummer}-plassholdere og <b>/<i>-markeringer. Returner bare forslagets tekst."))),
                 "contents" to listOf(mapOf("role" to "user", "parts" to listOf(mapOf("text" to "${request.instruction}\n${request.text}")))),
             )
-            val response = client.preparePost("https://aiplatform.eu.rep.googleapis.com/v1/projects/${requireNotNull(config.projectId).value}/locations/${requireNotNull(config.location).value}/publishers/google/models/${requireNotNull(config.model).value}:generateContent") {
+            val response = client.preparePost(generateContentUrl) {
                 metricsOperation(ClientOperation.GENERATE)
                 bearerAuth(token)
                 contentType(ContentType.Application.Json)
@@ -73,7 +74,7 @@ class VertexAi(engine: HttpClientEngine, metrics: MeterRegistry, private val con
             val suggested = response.path("candidates").path(0).path("content").path("parts").path(0).path("text")
                 .takeIf { it.isTextual }?.asText() ?: throw IntegrationFailure("INVALID_AI_RESPONSE")
             if (suggested.isBlank() || suggested.length > 200_000 || markers(request.text) != markers(suggested) || !balanced(suggested) ||
-                Regex("</?[^>]+>").findAll(suggested.take(suggested.lastIndexOf('>') + 1)).any { it.value !in setOf("<b>", "</b>", "<i>", "</i>") }
+                TAG_PATTERN.findAll(suggested.take(suggested.lastIndexOf('>') + 1)).any { it.value !in ALLOWED_TAGS }
             ) throw IntegrationFailure("INVALID_AI_RESPONSE")
             return AiResult(suggested)
         } catch (_: IOException) {
@@ -81,11 +82,11 @@ class VertexAi(engine: HttpClientEngine, metrics: MeterRegistry, private val con
         }
     }
 
-    private fun markers(text: String) = Regex("\\{\\d+}|</?[bi]>").findAll(text).map { it.value }.groupingBy { it }.eachCount()
+    private fun markers(text: String) = MARKER_PATTERN.findAll(text).map { it.value }.groupingBy { it }.eachCount()
 
     private fun balanced(text: String): Boolean {
         val stack = ArrayDeque<String>()
-        for (match in Regex("</?([bi])>").findAll(text)) {
+        for (match in FORMATTING_TAG_PATTERN.findAll(text)) {
             if (!match.value.startsWith("</")) stack.addLast(match.groupValues[1])
             else if (stack.removeLastOrNull() != match.groupValues[1]) return false
         }
@@ -93,6 +94,16 @@ class VertexAi(engine: HttpClientEngine, metrics: MeterRegistry, private val con
     }
 
     override fun close() { client.close() }
+
+    private companion object {
+        const val METADATA_TOKEN_URL = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token"
+        const val VERTEX_API_URL = "https://aiplatform.eu.rep.googleapis.com"
+        val ACCESS_TOKEN_PATTERN = Regex("[A-Za-z0-9._~+/-]+=*")
+        val MARKER_PATTERN = Regex("\\{\\d+}|</?[bi]>")
+        val TAG_PATTERN = Regex("</?[^>]+>")
+        val FORMATTING_TAG_PATTERN = Regex("</?([bi])>")
+        val ALLOWED_TAGS = setOf("<b>", "</b>", "<i>", "</i>")
+    }
 }
 
 internal fun validateAiRequest(request: AiRequest) {

@@ -29,11 +29,13 @@ class ExternalServicesTest {
             for (text in listOf("Du får {0} <b>beløp</b>", "Du får beløp", "<b>{0}</i>", "{0} <b>beløp</b><script>x</script>")) {
                 MockEngine { call ->
                     val body = if (call.url.host == "metadata.google.internal") {
+                        assertThat(call.url.toString()).isEqualTo("http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token")
                         assertThat(call.headers["Metadata-Flavor"]).isEqualTo("Google")
                         assertThat(call.headers[HttpHeaders.Authorization]).isNull()
                         """{"access_token":"synthetic-token"}"""
                     } else {
                         assertThat(call.url.host).isEqualTo("aiplatform.eu.rep.googleapis.com")
+                        assertThat(call.url.toString()).isEqualTo("https://aiplatform.eu.rep.googleapis.com/v1/projects/synthetic-project/locations/europe-west4/publishers/google/models/synthetic-model:generateContent")
                         assertThat(call.headers[HttpHeaders.Authorization]).isEqualTo("Bearer synthetic-token")
                         assertThat((call.body as TextContent).text).contains("nynorsk")
                         aiResponse(text)
