@@ -56,6 +56,7 @@ class HttpClientFactoryTest {
                     assertThat(metrics.scrape()).doesNotContain("synthetic-private-url", "services/", "hooks.slack.com")
                 } finally {
                     client.close()
+                    withTimeout(5.seconds) { client.coroutineContext.job.join() }
                 }
                 assertThat(client.coroutineContext[Job]?.isActive).isFalse()
                 assertThat(engine.coroutineContext[Job]?.isActive).isTrue()
