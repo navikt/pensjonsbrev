@@ -3,6 +3,8 @@ import { type Patch } from "immer";
 import { type SaksbehandlerValg } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
+import { type Focus } from "./model/state";
+
 export type PatchKind = "TEXT_UPDATE";
 
 export type LetterSnapshot = {
@@ -42,6 +44,8 @@ export interface DocumentSnapshotHistoryEntry {
   type: "DOCUMENT_SNAPSHOT";
   before: LetterSnapshot;
   after: LetterSnapshot;
+  beforeFocus: Focus;
+  afterFocus: Focus;
   kind?: PatchKind;
   patchPath?: string;
   timestamp: number;
@@ -50,11 +54,17 @@ export interface DocumentSnapshotHistoryEntry {
 export type HistoryEntry = PatchHistoryEntry | SaksbehandlerValgEndretHistoryEntry | DocumentSnapshotHistoryEntry;
 
 /** Snapshot edits while a template merge is pending: positional patches cannot cross that structural change. */
-export function snapshotPendingEdit(before: LetterSnapshot, after: LetterSnapshot, entry: PatchHistoryEntry) {
+export function snapshotPendingEdit(
+  before: LetterSnapshot & { focus: Focus },
+  after: LetterSnapshot & { focus: Focus },
+  entry: PatchHistoryEntry,
+) {
   return {
     type: "DOCUMENT_SNAPSHOT" as const,
     before: createLetterSnapshot(before),
     after: createLetterSnapshot(after),
+    beforeFocus: structuredClone(before.focus),
+    afterFocus: structuredClone(after.focus),
     kind: entry.kind,
     patchPath: entry.patches[0]?.path.toString(),
     timestamp: entry.timestamp ?? Date.now(),
@@ -124,7 +134,14 @@ function updateHistory(history: History, newHistoryEntry: HistoryEntry): History
     newHistoryEntry.timestamp - lastHistoryEntry.timestamp < MERGE_TIME_THRESHOLD_MS
   ) {
     return {
-      entries: [...history.entries.slice(0, -1), { ...newHistoryEntry, before: lastHistoryEntry.before }],
+      entries: [
+        ...history.entries.slice(0, -1),
+        {
+          ...newHistoryEntry,
+          before: lastHistoryEntry.before,
+          beforeFocus: lastHistoryEntry.beforeFocus,
+        },
+      ],
       entryPointer: history.entries.length - 1,
     };
   }

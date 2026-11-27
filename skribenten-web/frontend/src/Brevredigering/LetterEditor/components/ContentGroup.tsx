@@ -676,6 +676,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         });
       }
 
+      applyAction(updateFocus, setEditorState, { ...literalIndex, cursorPosition: offset });
       applyAction(Actions.paste, setEditorState, literalIndex, offset, event.clipboardData);
     } else {
       const root = event.currentTarget.closest<HTMLElement>("[data-editor-root]");

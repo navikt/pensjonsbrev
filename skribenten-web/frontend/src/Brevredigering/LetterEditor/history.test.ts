@@ -5,7 +5,9 @@ import {
   createLetterSnapshot,
   createSaksbehandlerValgEndretHistoryEntry,
   type History,
+  snapshotPendingEdit,
 } from "~/Brevredigering/LetterEditor/history";
+import { type Focus } from "~/Brevredigering/LetterEditor/model/state";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
 const brev = (text: string) => ({ text }) as unknown as EditedLetter;
@@ -14,6 +16,10 @@ const makeSnapshot = (label: string) => ({
   redigertBrev: brev(label),
   redigertBrevHash: `hash-${label}`,
   saksbehandlerValg: { ytelse: label },
+});
+const makeFocusedSnapshot = (label: string, cursorPosition: number) => ({
+  ...makeSnapshot(label),
+  focus: { blockIndex: 0, contentIndex: 0, cursorPosition } satisfies Focus,
 });
 
 describe("history", () => {
@@ -87,6 +93,28 @@ describe("history", () => {
     expect(history.entries).toHaveLength(1);
     expect(history.entryPointer).toBe(0);
     expect(history.entries[0].type).toBe("PATCH");
+  });
+
+  test("merged document snapshots preserve the focus before the first edit and after the last edit", () => {
+    const makeEntry = (before: number, after: number, timestamp: number) =>
+      snapshotPendingEdit(makeFocusedSnapshot("before", before), makeFocusedSnapshot("after", after), {
+        type: "PATCH",
+        patches: [{ op: "replace", path: ["blocks", 0, "content", 0, "editedText"], value: "text" }],
+        inversePatches: [{ op: "replace", path: ["blocks", 0, "content", 0, "editedText"], value: "" }],
+        kind: "TEXT_UPDATE",
+        timestamp,
+      });
+
+    let history: History = { entries: [], entryPointer: -1 };
+    history = addHistoryEntry(history, makeEntry(4, 5, 1000));
+    history = addHistoryEntry(history, makeEntry(5, 6, 1500));
+
+    expect(history.entries).toHaveLength(1);
+    expect(history.entries[0]).toMatchObject({
+      type: "DOCUMENT_SNAPSHOT",
+      beforeFocus: { blockIndex: 0, contentIndex: 0, cursorPosition: 4 },
+      afterFocus: { blockIndex: 0, contentIndex: 0, cursorPosition: 6 },
+    });
   });
 
   test("TEKSTVALG entry does not merge with adjacent PATCH entry", () => {
