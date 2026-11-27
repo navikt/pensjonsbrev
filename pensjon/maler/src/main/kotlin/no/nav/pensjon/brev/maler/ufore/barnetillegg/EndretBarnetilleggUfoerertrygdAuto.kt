@@ -94,20 +94,21 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                 text(bokmal { + "Utbetalingen av uføretrygden i løpet av et kalenderår er en del av inntekten som brukes i behovsprøvingen av barnetillegget. Fra 1. januar " + pe.ut_virkningfomar().format() + " er den årlige uføretrygden lik månedsbeløpet du får i januar multiplisert med 12 måneder. Dette beløpet er større enn den årlige uføretrygden som inngikk i behovsprøvingen i fjor. Fribeløpet er uendret fra 1. januar " + pe.ut_virkningfomar().format() + "." })
             }
 
-            showIf( btsbInnvilget and not(btfbInnvilget)) {
-                includePhrase(
-                    Barnetillegg.InntektensBetydningForBarnetillegg(
-                        harSaerkullstillegg = btsbInnvilget,
-                        harFellesbarnstillegg = btfbInnvilget,
-                        nettoSaerkullstillegg = btsbNetto,
-                        nettoFellesbarnstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto(),
-                        visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and
-                            pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"),
-                        fellesbarnOmtale = pe.ut_barnet_barna_felles(),
-                        epsBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
-                        epsNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(),
-                    )
+            includePhrase(
+                Barnetillegg.InntektensBetydningForBarnetillegg(
+                    harSaerkullstillegg = btsbInnvilget,
+                    harFellesbarnstillegg = btfbInnvilget,
+                    nettoSaerkullstillegg = btsbNetto,
+                    nettoFellesbarnstillegg = btfbNetto,
+                    visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and
+                        pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"),
+                    fellesbarnOmtale = pe.ut_barnet_barna_felles(),
+                    epsBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
+                    epsNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(),
                 )
+            )
+
+            showIf( btsbInnvilget and not(btfbInnvilget)) {
                 paragraph {
                     showIf(btsbNetto.greaterThan(0) and btsbJusteringsbelopperAr.equalTo(0)) {
                         text(bokmal { + "Inntekten din på " + btsbInntektbruktiavkorning.format() + " er " + ifElse(btsbInntektbruktiavkorning.greaterThan(btsbFribelop), "høyere".expr(), "lavere".expr()) + " enn fribeløpet ditt på " + btsbFribelop.format() + ". Barnetillegget ditt er derfor " })
@@ -130,9 +131,6 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                     }
                 }
             }.orShow {
-                paragraph {
-                    text(bokmal { + "Du får barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. For fellesbarn, bruker vi begge foreldrenes inntekt (inkludert uføretrygd) når vi beregner størrelsen på barnetillegget." })
-                }
                 paragraph {
                     text(bokmal { + "Inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " og inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + ". " })
 
