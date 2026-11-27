@@ -130,16 +130,50 @@ test.describe("attestant redigering", () => {
     );
 
     await page.goto("/saksnummer/123456/attester/1/redigering");
-    await page.clock.install();
     const signatureSavePromise = page.waitForResponse(
       (r) => r.url().includes("/redigertBrev?frigiReservasjon=false") && r.request().method() === "PUT",
     );
     await page.getByRole("textbox", { name: "Underskrift" }).fill("Den nye attestanten");
-    await page.clock.fastForward(AUTOSAVE_TIMER);
-    await signatureSavePromise;
+    const response = await signatureSavePromise;
 
+    expect(response.status()).toBe(200);
+    expect(response.request().postDataJSON().signatur.attesterendeSaksbehandlerNavn).toBe("Den nye attestanten");
     await expect(page.getByText("Den nye attestanten")).toBeVisible();
   });
+
+  for (const { navn, status, json } of [
+    { navn: "vedleggene lastes", status: 200, json: [{ vedleggId: VEDLEGG_ID, tittel: VEDLEGG_TITTEL }] },
+    { navn: "henting av vedlegg feiler", status: 500, json: "Feil" },
+  ]) {
+    test(`beholder fokus på underskriften når ${navn}`, async ({ page }) => {
+      const slippVedleggsliste = Promise.withResolvers<void>();
+      await page.route(VEDLEGGLISTE_URL, async (route) => {
+        await slippVedleggsliste.promise;
+        await route.fulfill({ status, json });
+      });
+
+      const underskrift = page.getByRole("textbox", { name: "Underskrift" });
+      try {
+        await page.goto("/saksnummer/123456/attester/1/redigering");
+        await expect(page.getByRole("tablist")).toHaveCount(0);
+        await expect(page.getByRole("tabpanel")).toHaveCount(0);
+        await underskrift.fill("Den nye");
+        await expect(underskrift).toBeFocused();
+      } finally {
+        slippVedleggsliste.resolve();
+      }
+
+      const brevmalTab = page.getByRole("tab", { name: "Brevmal" });
+      const brevmalPanel = page.getByRole("tabpanel", { name: "Brevmal" });
+      await expect(brevmalTab).toBeVisible();
+      await expect(brevmalPanel).toBeVisible();
+      await expect(brevmalTab).toHaveAttribute("aria-controls", (await brevmalPanel.getAttribute("id")) ?? "");
+      await expect(underskrift).toBeFocused();
+      await page.keyboard.type(" attestanten");
+      await expect(underskrift).toHaveValue("Den nye attestanten");
+      await expect(page.getByText("Den nye attestanten")).toBeVisible();
+    });
+  }
 
   test("lagrer redigert vedlegg før brevet attesteres", async ({ page }) => {
     await setupVedlegg(page);
