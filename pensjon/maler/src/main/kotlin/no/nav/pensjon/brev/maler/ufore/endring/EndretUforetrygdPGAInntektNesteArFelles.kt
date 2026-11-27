@@ -283,16 +283,8 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                     }
                     paragraph {
                         text(
-                            bokmal {
-                                +"Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + data.virkningFom.year.minus(
-                                    1
-                                ).format() + "."
-                            },
-                            nynorsk {
-                                +"Vi oppjusterer inntekta di for neste år, fordi du ikkje har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + data.virkningFom.year.minus(
-                                    1
-                                ).format() + "."
-                            }
+                            bokmal { +"Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + data.virkningFom.year.minus(1).format() + "." },
+                            nynorsk { +"Vi oppjusterer inntekta di for neste år, fordi du ikkje har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + data.virkningFom.year.minus(1).format() + "." }
                         )
                     }
                 }
@@ -305,21 +297,24 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 }
                 paragraph {
                     text(
-                        bokmal {
-                            +"Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + data.virkningFom.year.minus(
-                                1
-                            ).format() + "."
-                        },
-                        nynorsk {
-                            +"Vi oppjusterer inntekta di for neste år, fordi du ikkje har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + data.virkningFom.year.minus(
-                                1
-                            ).format() + "."
-                        }
+                        bokmal { +"Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + data.virkningFom.year.minus(1).format() + "." },
+                        nynorsk { +"Vi oppjusterer inntekta di for neste år, fordi du ikkje har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + data.virkningFom.year.minus(1).format() + "." }
                     )
                 }
             }
 
-            showIf(not(okningUforegradVedArskjoring)) {
+            showIf(okningUforegradVedArskjoring) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Da uføregraden din ble økt i " + data.virkningFom.year.minus(1).format() + ", fikk vi opplyst hvilken inntekt du skulle ha fremover (IEU). Denne inntekten blir regulert hvert år etter justeringer i grunnbeløpet. Det er derfor ekstra viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. Forventer du en annen inntekt i " + data.virkningFom.year.format() + ", må du gå inn i inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
+                        },
+                        nynorsk {
+                            +"Då uføregraden din blei auka i " + data.virkningFom.year.minus(1).format() + ", fekk vi opplyst kva inntekt du skulle ha framover (IEU). Denne inntekta blir regulert kvart år etter justeringar i grunnbeløpet. Det er derfor ekstra viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda, er korrekt. Forventar du ei anna inntekt i " + data.virkningFom.year.format() + ", må du gå inn i inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år."
+                        }
+                    )
+                }
+            }.orShow {
                 paragraph {
                     text(
                         bokmal {
@@ -329,24 +324,6 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                         nynorsk {
                             +"Fekk du innvilga uføretrygd etter januar " + data.virkningFom.year.minus(1)
                                 .format() + ", er inntekta justert opp slik at ho gjeld for heile " + data.virkningFom.year.format() + ". "
-                        }
-                    )
-                }
-            }
-            showIf(okningUforegradVedArskjoring) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Da uføregraden din ble økt i " + data.virkningFom.year.minus(1).format() + ", ble det også fastsatt en ny inntekt etter uførhet (IEU). Denne inntekten ble lagt til grunn da vi behandlet søknaden din. " +
-                                    "Ved årsskiftet fremskriver vi den fastsatt IEU. Det betyr at vi oppdaterer beløpet i tråd med gjeldende regler for det nye året. Det er derfor ekstra " +
-                                    "viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. Får du lavere inntekt i " + data.virkningFom.year.format() +
-                                    ", må du gå inn i Inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
-                        },
-                        nynorsk {
-                            +"Då uføregraden din blei auka i " + data.virkningFom.year.minus(1).format() + ", blei det også fastsett ei ny inntekt etter uførleik (IEU). Denne inntekta blei lagd til grunn då vi behandla søknaden din. " +
-                                    "Ved årsskiftet framskriv vi den fastsette IEU-en. Det betyr at vi oppdaterer beløpet i tråd med gjeldande reglar for det nye året. Det er derfor ekstra " +
-                                    "viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda, er korrekt. Får du lågare inntekt i " + data.virkningFom.year.format() +
-                                    ", må du gå inn i Inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år."
                         }
                     )
                 }
