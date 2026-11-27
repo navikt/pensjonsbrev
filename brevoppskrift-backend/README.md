@@ -10,8 +10,9 @@ før tilkoblingspoolen returneres. Ktor-applikasjonen bruker det samme
 lagringslaget og pakker katalog, generator og forhåndsvisning.
 Backend har container- og dev-oppsett, men deploy krever en separat
 operatørhandling. BFF har Entra-identitet og Wonderwall uten automatisk
-innlogging. Workshopproxy og verkstedruter er ikke koblet inn; gammel
-mallesing og Word-eksport er fortsatt anonyme.
+innlogging. BFF kobler inn autentisert workshopproxy på `/api`, men
+verkstedrutene i frontend er ikke åpnet. Gammel mallesing og Word-eksport
+er fortsatt anonyme.
 
 Bygg og test:
 
@@ -35,6 +36,45 @@ i backend. Readiness krever fungerende database. KI og varsling er valgfrie;
 capabilities oppgir om de er konfigurert. KI-rutene returnerer 503 uten tjeneste.
 PR-ruter finnes, men innsending gir 503 uten konfigurert PR-tjeneste.
 GitHub, KI og Slack kan aktiveres uavhengig.
+
+### BFF-proxy
+
+Wonderwall håndterer innlogging, mens BFF bruker `@navikt/oasis` til å
+validere brukerens Entra-token mot JWKS og utveksle det til backendens
+scope med OBO gjennom Texas. `/api` gir 401 uten gyldig brukertoken med
+Nav-brukerkontekst, uten login-redirect eller
+HTML. Backend beholder ansvaret for leser-/editorrettigheter.
+Cookies og interne token-/CSRF-headere videresendes ikke til backend.
+Alle API-svar har `Cache-Control: no-store`.
+
+Skrivekall krever eksakt godkjent `Origin` og `Content-Type: application/json`;
+`Sec-Fetch-Site: cross-site` avvises også. Manglende, `null` og ukjent origin
+gir 403; skjematyper og manglende JSON-innholdstype gir 415.
+Kontrollen kjøres før OBO og videresending. Begge dev-ingressene er godkjent,
+uten CSRF-token, egen CSRF-cookie eller tokenendepunkt. API-et åpner ikke for
+cross-origin-tilgang med CORS. `/brevbaker`, statiske filer og gamle malsider forblir
+anonyme; legacy-proxyen fjerner cookies og Authorization.
+
+BFF krever `BREVOPPSKRIFT_BACKEND_URL`, `BREVOPPSKRIFT_BACKEND_SCOPE`,
+`PUBLIC_ORIGINS`, `AZURE_OPENID_CONFIG_ISSUER`, `AZURE_OPENID_CONFIG_JWKS_URI`,
+`AZURE_APP_CLIENT_ID` og alle tre Texas-endepunktene `NAIS_TOKEN_ENDPOINT`,
+`NAIS_TOKEN_INTROSPECTION_ENDPOINT` og `NAIS_TOKEN_EXCHANGE_ENDPOINT`
+ved oppstart. `PUBLIC_ORIGINS` er en kommaseparert, ikke-tom liste med
+godkjente origins. Nais injiserer auth-konfigurasjonen; Compose laster
+BFF-ens dev-miljøfil og setter Texas-endepunktene eksplisitt.
+Oasis håndterer signatur, issuer, audience, utløp, JWKS- og OBO-cache;
+transportpolicyen følger biblioteket og Texas-konfigurasjonen.
+BFF bruker ikke klienthemmeligheten selv. OBO- og backendtilkoblingsfeil
+gir en trygg 503.
+
+Morgan logger tidspunkt, metode, fast ruteetikett (`/api` eller `/brevbaker`),
+status og responstid, også ved auth-/CSRF-avvisning. Helseendepunkter,
+rå URL-er, query-parametere, headere og request-body logges ikke.
+Legacy-proxyen logger transportfeilkoder separat.
+
+```shell
+npm test --prefix brevoppskrift-web/bff
+```
 
 `application.conf` leser Entra- og databasekonfigurasjon fra miljøet.
 Klientlisten kommer fra `AZURE_APP_PRE_AUTHORIZED_APPS`, og
@@ -252,13 +292,15 @@ npm run dev --prefix brevoppskrift-web/frontend
 Åpne `http://localhost:8088/vite-on`. Wonderwall videresender anonym
 mallesing til BFF; BFF videresender `/brevbaker` til lokal Brevbaker.
 Backend kan kontrolleres direkte på `http://localhost:8087/isReady`;
-`/api/v1/meg` skal gi 401 uten token. Texas og backend er klare for
-senere workshopproxy, men denne BFF-versjonen bruker dem ikke.
+`/api/v1/meg` skal gi 401 uten token både direkte og gjennom BFF.
+Workshopproxyen bruker lokal Texas og backend, men frontendens
+verkstedruter er ennå ikke åpnet.
 Ingen KI-, Slack- eller GitHub-konfigurasjon lastes av Compose-oppsettet.
 
 Azure-filer og midlertidige fetch-filer er ignorert av Git. Backendens
 Docker-kontekst inneholder bare installerte biblioteker; BFF-konteksten
-inkluderer ikke `.env`. Nye lokale credentials skal aldri bakes inn i image.
+inneholder bare runtime-pakken, dependencies og offentlig frontend, ikke
+`.env`, kildekode eller tester. Nye lokale credentials skal aldri bakes inn i image.
 
 ```shell
 docker compose -p brevoppskrift -f docker-compose.yml -f docker-compose.brevoppskrift.yml down

@@ -22,6 +22,7 @@ jobs:
     with:
       workingDir: skribenten-web
       runTests: true
+      runBffTests: false
 
   "klarTilMerge":
     name: "Klar til merge"

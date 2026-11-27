@@ -11,6 +11,10 @@ on:
         description: "Run tests"
         required: true
         type: boolean
+      runBffTests:
+        description: "Run BFF tests"
+        required: true
+        type: boolean
 
 jobs:
   verify-bff:
@@ -48,6 +52,11 @@ jobs:
       - name: Build bff
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm run build
+
+      - name: Run BFF tests
+        if: ${{ inputs.runBffTests }}
+        working-directory: ${{ inputs.workingDir }}/bff
+        run: npm test
 
   verify-frontend:
     name: Verify frontend tests, lint and typescript errors

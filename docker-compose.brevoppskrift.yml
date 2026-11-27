@@ -9,6 +9,8 @@ services:
         condition: service_started
       brevoppskrift-texas:
         condition: service_started
+    env_file:
+      - ./brevoppskrift-web/bff/.env
     environment:
       NODE_ENV: "development"
       EXPRESS_PORT: "8088"
@@ -16,7 +18,7 @@ services:
       BREVBAKER_API_URL: "http://pensjon-brevbaker:8080"
       BREVOPPSKRIFT_BACKEND_URL: "http://brevoppskrift-backend:8080"
       BREVOPPSKRIFT_BACKEND_SCOPE: "api://dev-gcp.pensjonsbrev.brevoppskrift-backend/.default"
-      PUBLIC_ORIGIN: "http://localhost:8088"
+      PUBLIC_ORIGINS: "http://localhost:8088"
       NAIS_TOKEN_ENDPOINT: "http://brevoppskrift-texas:3000/api/v1/token"
       NAIS_TOKEN_EXCHANGE_ENDPOINT: "http://brevoppskrift-texas:3000/api/v1/token/exchange"
       NAIS_TOKEN_INTROSPECTION_ENDPOINT: "http://brevoppskrift-texas:3000/api/v1/introspect"
