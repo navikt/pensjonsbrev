@@ -17,8 +17,8 @@ env:
     value: "http://brevoppskrift-backend"
   - name: BREVOPPSKRIFT_BACKEND_SCOPE
     value: "api://dev-gcp.pensjonsbrev.brevoppskrift-backend/.default"
-  - name: PUBLIC_ORIGIN
-    value: "https://pensjon-brevoppskrift.intern.dev.nav.no"
+  - name: PUBLIC_ORIGINS
+    value: "https://pensjon-brevoppskrift.intern.dev.nav.no,https://pensjon-brevoppskrift.ansatt.dev.nav.no"
 
 outboundApps:
   - application: pensjon-brevbaker
