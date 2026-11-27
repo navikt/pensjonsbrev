@@ -224,6 +224,7 @@ export const LetterEditor = ({
                     {isMissingInRendered(block) && showMissingInRendered && (
                       <HStack className="missing-in-rendered-actions" gap="space-4" justify="end">
                         <Button
+                          disabled={freeze}
                           icon={<CheckmarkIcon aria-hidden />}
                           onClick={() => {
                             sporMissingInRenderedHandling("blokk beholdt", blockIndex);
@@ -236,6 +237,7 @@ export const LetterEditor = ({
                           Behold
                         </Button>
                         <Button
+                          disabled={freeze}
                           icon={<XMarkIcon aria-hidden />}
                           onClick={() => {
                             sporMissingInRenderedHandling("blokk slettet", blockIndex);

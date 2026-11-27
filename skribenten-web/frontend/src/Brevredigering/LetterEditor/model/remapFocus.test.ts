@@ -44,7 +44,9 @@ describe("remapFocus", () => {
       [row(cell(literal({ id: 41, text: "Celle" })))],
     );
     const from = editedLetter({ blocks: [paragraph({ id: 11, content: [liste, tabell] })] });
-    const to = editedLetter({ blocks: [flettetInn, paragraph({ id: 11, content: [tabell, liste] })] });
+    const to = editedLetter({
+      blocks: [flettetInn, paragraph({ id: 11, content: [literal({ id: 12, text: "Innledning" }), liste, tabell] })],
+    });
 
     expect(
       remapFocus({ blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0, cursorPosition: 1 }, from, to),
@@ -55,14 +57,28 @@ describe("remapFocus", () => {
         from,
         to,
       ),
-    ).toEqual({ blockIndex: 1, contentIndex: 0, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 2 });
+    ).toEqual({ blockIndex: 1, contentIndex: 2, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 2 });
     expect(
       remapFocus(
         { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 3 },
         from,
         to,
       ),
-    ).toEqual({ blockIndex: 1, contentIndex: 0, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 3 });
+    ).toEqual({ blockIndex: 1, contentIndex: 2, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 3 });
+  });
+
+  test("følger riktig forekomst når malen setter inn et element med samme id foran", () => {
+    const og = literal({ id: 1, text: " og " });
+    const from = editedLetter({ blocks: [paragraph({ id: 10, content: [literal({ id: 2, text: "Beløp" }), og] })] });
+    const to = editedLetter({
+      blocks: [paragraph({ id: 10, content: [og, literal({ id: 2, text: "Beløp" }), og] })],
+    });
+
+    expect(remapFocus({ blockIndex: 0, contentIndex: 1, cursorPosition: 2 }, from, to)).toEqual({
+      blockIndex: 0,
+      contentIndex: 2,
+      cursorPosition: 2,
+    });
   });
 
   test("beholder fokus i tittelen", () => {

@@ -7,19 +7,18 @@ import { isItemList, isTableCellIndex, isTextContent } from "./utils";
 type Identified = { id?: number | null };
 
 /**
- * Finds the element in `to` that corresponds to `from[index]`. Like the backend template merge, elements
- * with an id are matched by id, and new elements (without id) by their order among the other new elements.
+ * Finds the element in `to` that corresponds to `from[index]`, aligning the lists in order like the backend
+ * template merge (`UpdateEditedLetter.mergeAligned`): each element of `from` matches the first element with the
+ * same id (or, for new elements, without id) after the previous match. Unmatched elements were dropped by the merge.
  */
 function correspondingIndex(from: readonly Identified[], to: readonly Identified[], index: number): number | undefined {
-  const element = from[index];
-  if (element === undefined) return undefined;
-  const id = element.id ?? null;
-  const occurrence = from.slice(0, index).filter((other) => (other.id ?? null) === id).length;
-  let seen = 0;
-  for (let toIndex = 0; toIndex < to.length; toIndex++) {
-    if ((to[toIndex].id ?? null) !== id) continue;
-    if (seen === occurrence) return toIndex;
-    seen++;
+  if (from[index] === undefined) return undefined;
+  let next = 0;
+  for (let fromIndex = 0; fromIndex <= index; fromIndex++) {
+    const id = from[fromIndex].id ?? null;
+    const match = to.findIndex((element, toIndex) => toIndex >= next && (element.id ?? null) === id);
+    if (fromIndex === index) return match === -1 ? undefined : match;
+    if (match !== -1) next = match + 1;
   }
   return undefined;
 }
