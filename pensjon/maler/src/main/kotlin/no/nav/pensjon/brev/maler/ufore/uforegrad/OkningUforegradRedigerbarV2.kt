@@ -46,7 +46,6 @@ import no.nav.pensjon.brev.maler.legacy.BarnetilleggFormatter
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated_Ny
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
@@ -1046,7 +1045,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                     showIf(redGrunnlag.barnetilleggRegelverkType.equalTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and redGrunnlag.andelYtelseAvOIFU.greaterThan(95.0)) {
                         includePhrase(
-                            TBU3802_Generated_Ny(
+                            Barnetillegg.BarnetilleggOvergangsregler2016_Ny(
                                 virkningstidpunktAr = beregning.virkFom.year,
                                 andelYtelseAvOifu = redGrunnlag.andelYtelseAvOIFU,
                                 gradertOppjustertIfu = redGrunnlag.gradertOppjustertIFU,

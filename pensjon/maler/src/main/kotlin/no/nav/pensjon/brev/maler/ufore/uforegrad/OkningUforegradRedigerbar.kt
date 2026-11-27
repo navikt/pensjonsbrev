@@ -1163,7 +1163,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             }
 
             showIf((reduksjonsgrunnlagBarentilleggRegelverkstype.equalTo("overgangsregler_2016") and reduksjonsgrunnlagAndelYtelseAvOifu.greaterThan(95.0))) {
-                includePhrase(TBU3802_Generated(pe))
+                includePhrase(Barnetillegg.BarnetilleggOvergangsregler2016(pe))
             }
 
             //IF (   NOT   (     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > 0     AND     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT = 0   ) ) THEN   INCLUDE ENDIF
