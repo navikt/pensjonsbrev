@@ -189,7 +189,7 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 text(bokmal { +"Vilkårene for å behandle klagen er dermed ikke oppfylt og klagen avvises, jf. forvaltningsloven § 33 andre ledd." })
             }
 
-            showIf(not(manglendeUnderskrift) or not(manglendeFullmakt)) {
+            showIf(not(manglendeUnderskrift or manglendeFullmakt)) {
                 title1 { text(bokmal { +"Informasjon om klageadgang " }) }
                 paragraph {
                     text(bokmal {
