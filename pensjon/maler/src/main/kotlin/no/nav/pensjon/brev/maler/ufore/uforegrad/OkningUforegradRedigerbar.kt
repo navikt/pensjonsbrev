@@ -1166,31 +1166,19 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             //IF (   NOT   (     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > 0     AND     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT = 0   ) ) THEN   INCLUDE ENDIF
             showIf((not(reduksjonsgrunnlagSumbruttoforreduksjonbt.greaterThan(0) and reduksjonsgrunnlagSumbruttoetterreduksjonbt.equalTo(0)))) {
 
-                //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)   ) THEN      INCLUDE ENDIF
-                showIf(((not(btFellesInnvilget) and btSerkullInnvilget))) {
-                    includePhrase(
-                        Barnetillegg.InntektensBetydningForSaerkullstillegg(
-                            visFribeloepsforklaring = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0),
-                            visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and
-                                pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"),
-                            epsBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
-                            epsNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(),
-                        )
+                includePhrase(
+                    Barnetillegg.InntektensBetydningForBarnetillegg(
+                        harSaerkullstillegg = btSerkullInnvilget,
+                        harFellesbarnstillegg = btFellesInnvilget,
+                        nettoSaerkullstillegg = btSerkullNetto,
+                        nettoFellesbarnstillegg = btFellesNetto,
+                        visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and
+                            pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"),
+                        fellesbarnOmtale = pe.ut_barnet_barna_felles(),
+                        epsBokmal = epsBorMed,
+                        epsNynorsk = epsBorMedNnEntall,
                     )
-                }
-
-                showIf(btFellesInnvilget) {
-                    includePhrase(
-                        Barnetillegg.InntektensBetydningForFellesbarnstillegg(
-                            visFribeloepsforklaring = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0),
-                            harBeggeTyperBarnetillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and
-                                pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget(),
-                            fellesbarnOmtale = pe.ut_barnet_barna_felles(),
-                            epsBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
-                            epsNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(),
-                        )
-                    )
-                }
+                )
 
                 showIf((btInnvilget)) {
                     paragraph {

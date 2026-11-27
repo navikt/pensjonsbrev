@@ -96,10 +96,14 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
 
             showIf( btsbInnvilget and not(btfbInnvilget)) {
                 includePhrase(
-                    Barnetillegg.InntektensBetydningForSaerkullstillegg(
-                        visFribeloepsforklaring = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0),
+                    Barnetillegg.InntektensBetydningForBarnetillegg(
+                        harSaerkullstillegg = btsbInnvilget,
+                        harFellesbarnstillegg = btfbInnvilget,
+                        nettoSaerkullstillegg = btsbNetto,
+                        nettoFellesbarnstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto(),
                         visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and
                             pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"),
+                        fellesbarnOmtale = pe.ut_barnet_barna_felles(),
                         epsBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
                         epsNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(),
                     )

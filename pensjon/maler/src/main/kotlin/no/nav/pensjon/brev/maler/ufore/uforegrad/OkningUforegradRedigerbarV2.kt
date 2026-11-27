@@ -1061,33 +1061,19 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 showIf(not(reduksjonsgrunnlag.barnetilleggRedusertTil0())) {
-                    ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
-                        showIf(sb.innvilget and not(barnetillegg.fellesbarnInnvilget())) {
-                            includePhrase(
-                                Barnetillegg.InntektensBetydningForSaerkullstillegg(
-                                    visFribeloepsforklaring = sb.netto.notEqualTo(0),
-                                    visAtEpsInntektIkkePaavirkerTillegget = grunnlag.anvendtSivilstand.notEqualTo(Grunnlag.AnvendtSivilstandCode.ENSLIG) and
-                                        grunnlag.anvendtSivilstand.notEqualTo(Grunnlag.AnvendtSivilstandCode.ENSLIG_SEPARERT),
-                                    epsBokmal = grunnlag.epsBorMedBmEntall(),
-                                    epsNynorsk = grunnlag.epsBorMedNnEntall(),
-                                )
-                            )
-                        }
-                    }
-
-                    ifNotNull(barnetillegg.btFellesbarn) { fb ->
-                        showIf(fb.innvilget) {
-                            includePhrase(
-                                Barnetillegg.InntektensBetydningForFellesbarnstillegg(
-                                    visFribeloepsforklaring = fb.netto.notEqualTo(0),
-                                    harBeggeTyperBarnetillegg = barnetillegg.serkullsbarnInnvilget() and fb.innvilget,
-                                    fellesbarnOmtale = ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet"),
-                                    epsBokmal = grunnlag.epsBorMedBmEntall(),
-                                    epsNynorsk = grunnlag.epsBorMedNnEntall(),
-                                )
-                            )
-                        }
-                    }
+                    includePhrase(
+                        Barnetillegg.InntektensBetydningForBarnetillegg(
+                            harSaerkullstillegg = barnetillegg.serkullsbarnInnvilget(),
+                            harFellesbarnstillegg = barnetillegg.fellesbarnInnvilget(),
+                            nettoSaerkullstillegg = barnetillegg.btSerkullsbarn.safe { netto }.ifNull(Kroner(0)),
+                            nettoFellesbarnstillegg = barnetillegg.btFellesbarn.safe { netto }.ifNull(Kroner(0)),
+                            visAtEpsInntektIkkePaavirkerTillegget = grunnlag.anvendtSivilstand.notEqualTo(Grunnlag.AnvendtSivilstandCode.ENSLIG) and
+                                grunnlag.anvendtSivilstand.notEqualTo(Grunnlag.AnvendtSivilstandCode.ENSLIG_SEPARERT),
+                            fellesbarnOmtale = ifElse(barnetillegg.btFellesbarn.safe { antallBarn.greaterThan(1) }.ifNull(false), "barna", "barnet"),
+                            epsBokmal = grunnlag.epsBorMedBmEntall(),
+                            epsNynorsk = grunnlag.epsBorMedNnEntall(),
+                        )
+                    )
 
                     showIf(barnetillegg.erInnvilget()) {
                         paragraph {

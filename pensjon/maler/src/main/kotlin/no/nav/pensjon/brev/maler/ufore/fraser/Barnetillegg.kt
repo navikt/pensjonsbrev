@@ -35,58 +35,54 @@ import java.time.LocalDate
 
 object Barnetillegg {
 
-    data class InntektensBetydningForSaerkullstillegg(
-        val visFribeloepsforklaring: Expression<Boolean>,
+    data class InntektensBetydningForBarnetillegg(
+        val harSaerkullstillegg: Expression<Boolean>,
+        val harFellesbarnstillegg: Expression<Boolean>,
+        val nettoSaerkullstillegg: Expression<Kroner>,
+        val nettoFellesbarnstillegg: Expression<Kroner>,
         val visAtEpsInntektIkkePaavirkerTillegget: Expression<Boolean>,
-        val epsBokmal: Expression<String>,
-        val epsNynorsk: Expression<String>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            paragraph {
-                text(
-                    bokmal { +"Inntekten din har betydning for hva du får i barnetillegg. Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. " },
-                    nynorsk { +"Inntekta di har noko å seie for kva du får i barnetillegg. Er inntekta di over grensa for å få utbetalt fullt barnetillegg, blir tillegget redusert. " },
-                )
-                showIf(visFribeloepsforklaring) {
-                    text(
-                        bokmal { +"Denne grensen kaller vi for fribeløp. " },
-                        nynorsk { +"Denne grensa kallar vi for fribeløp. " },
-                    )
-                }
-                showIf(visAtEpsInntektIkkePaavirkerTillegget) {
-                    text(
-                        bokmal { +"Inntekten til din " + epsBokmal + " har ikke betydning for størrelsen på barnetillegget." },
-                        nynorsk { +"Inntekta til " + epsNynorsk + " din har ikkje noko å seie for storleiken på barnetillegget. " },
-                    )
-                }
-            }
-        }
-    }
-
-    data class InntektensBetydningForFellesbarnstillegg(
-        val visFribeloepsforklaring: Expression<Boolean>,
-        val harBeggeTyperBarnetillegg: Expression<Boolean>,
         val fellesbarnOmtale: Expression<String>,
         val epsBokmal: Expression<String>,
         val epsNynorsk: Expression<String>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            paragraph {
-                text(
-                    bokmal { +"Inntekten til deg og din " + epsBokmal + " har betydning for hva du får i barnetillegg. Er inntektene over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. " },
-                    nynorsk { +"Inntekta til deg og " + epsNynorsk + " din har noko å seie for kva du får i barnetillegg. Er den samla inntekta over grensa for å få utbetalt fullt barnetillegg, blir tillegget ditt redusert. " },
-                )
-                showIf(visFribeloepsforklaring) {
+            val nettoBarnetillegg = ifElse(harFellesbarnstillegg, nettoFellesbarnstillegg, nettoSaerkullstillegg)
+
+            showIf(harSaerkullstillegg or harFellesbarnstillegg) {
+                paragraph {
                     text(
-                        bokmal { +"Denne grensen kaller vi for fribeløp. " },
-                        nynorsk { +"Denne grensa kallar vi for fribeløp. " },
+                        bokmal {
+                            +"Inntekten " + ifElse(harFellesbarnstillegg, "til deg og din ".expr() + epsBokmal, "din".expr()) +
+                                " har betydning for hva du får i barnetillegg. Er " +
+                                ifElse(harFellesbarnstillegg, "inntektene", "inntekten din") +
+                                " over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. "
+                        },
+                        nynorsk {
+                            +"Inntekta " + ifElse(harFellesbarnstillegg, "til deg og ".expr() + epsNynorsk + " din", "di".expr()) +
+                                " har noko å seie for kva du får i barnetillegg. Er " +
+                                ifElse(harFellesbarnstillegg, "den samla inntekta", "inntekta di") +
+                                " over grensa for å få utbetalt fullt barnetillegg, blir tillegget" +
+                                ifElse(harFellesbarnstillegg, " ditt", "") + " redusert. "
+                        },
                     )
-                }
-                showIf(harBeggeTyperBarnetillegg) {
-                    text(
-                        bokmal { +"Inntekten til din " + epsBokmal + " har kun betydning for størrelsen på barnetillegget til " + fellesbarnOmtale + " som bor sammen med begge sine foreldre." },
-                        nynorsk { +"Inntekta til " + epsNynorsk + " din har berre betydning for storleiken på barnetillegget til " + fellesbarnOmtale + " som bur saman med begge foreldra sine. " },
-                    )
+                    showIf(nettoBarnetillegg.notEqualTo(0)) {
+                        text(
+                            bokmal { +"Denne grensen kaller vi for fribeløp. " },
+                            nynorsk { +"Denne grensa kallar vi for fribeløp. " },
+                        )
+                    }
+                    showIf(not(harFellesbarnstillegg) and visAtEpsInntektIkkePaavirkerTillegget) {
+                        text(
+                            bokmal { +"Inntekten til din " + epsBokmal + " har ikke betydning for størrelsen på barnetillegget." },
+                            nynorsk { +"Inntekta til " + epsNynorsk + " din har ikkje noko å seie for storleiken på barnetillegget. " },
+                        )
+                    }
+                    showIf(harFellesbarnstillegg and harSaerkullstillegg) {
+                        text(
+                            bokmal { +"Inntekten til din " + epsBokmal + " har kun betydning for størrelsen på barnetillegget til " + fellesbarnOmtale + " som bor sammen med begge sine foreldre." },
+                            nynorsk { +"Inntekta til " + epsNynorsk + " din har berre betydning for storleiken på barnetillegget til " + fellesbarnOmtale + " som bur saman med begge foreldra sine. " },
+                        )
+                    }
                 }
             }
         }
@@ -791,5 +787,4 @@ private fun Expression<Int>.prosentBT(): Expression<Int> {
         )
     )
 }
-
 
