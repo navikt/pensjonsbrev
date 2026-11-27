@@ -97,7 +97,7 @@ export const LetterEditor = ({
       if (freeze || current.history.entryPointer < 0) return current;
       const entry = current.history.entries[current.history.entryPointer];
       const previous =
-        entry.type === "SAKSBEHANDLERVALG_ENDRET"
+        entry.type !== "PATCH"
           ? {
               ...current,
               redigertBrev: structuredClone(entry.before.redigertBrev),
@@ -122,7 +122,7 @@ export const LetterEditor = ({
       const nextPointer = current.history.entryPointer + 1;
       const entry = current.history.entries[nextPointer];
       const next =
-        entry.type === "SAKSBEHANDLERVALG_ENDRET"
+        entry.type !== "PATCH"
           ? {
               ...current,
               redigertBrev: structuredClone(entry.after.redigertBrev),

@@ -7,7 +7,7 @@ import { useOppdaterBrevMutation } from "~/Brevredigering/hooks/useOppdaterBrevM
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
-import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
+import { AUTOSAVE_TIMER, SAKSBEHANDLERVALG_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
@@ -104,6 +104,7 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
     const response = Promise.withResolvers<BrevResponse>();
     const lagretMedNyeValg = { ...lagretBrev, saksbehandlerValg: nyeValg };
     oppdaterBrevMock.mockReturnValueOnce(response.promise);
+    oppdaterBrevMock.mockImplementationOnce(({ request }) => Promise.resolve({ ...lagretMedNyeValg, ...request }));
     oppdaterBrevtekstMock.mockImplementation(({ redigertBrev }: { redigertBrev: EditedLetter }) =>
       Promise.resolve({ ...lagretMedNyeValg, redigertBrev }),
     );
@@ -124,13 +125,14 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
     expect(harness().editorState.saveStatus).toBe("DIRTY");
 
     await vent(AUTOSAVE_TIMER);
-    expect(oppdaterBrevMock).toHaveBeenCalledTimes(1);
-    expect(oppdaterBrevtekstMock).toHaveBeenCalledExactlyOnceWith(
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(2);
+    expect(oppdaterBrevMock).toHaveBeenLastCalledWith(
       expect.objectContaining({
-        redigertBrev: expect.objectContaining({ deletedBlocks: [101] }),
+        request: expect.objectContaining({ redigertBrev: expect.objectContaining({ deletedBlocks: [101] }) }),
         frigiReservasjon: false,
       }),
     );
+    expect(oppdaterBrevtekstMock).not.toHaveBeenCalled();
     expect(harness().editorState.saksbehandlerValg).toEqual(nyeValg);
     expect(harness().redigertBrev.deletedBlocks).toEqual([101]);
     expect(harness().editorState.saveStatus).toBe("SAVED");
@@ -446,5 +448,133 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
     expect(harness().editorState.saveStatus).toBe("SAVED");
     await vent(AUTOSAVE_TIMER);
     expect(oppdaterBrevtekstMock).toHaveBeenCalledOnce();
+  });
+
+  test("samler raske valg, utsetter fristen og registrerer hvert valg i historikken", async () => {
+    oppdaterBrevMock.mockImplementation(({ request }) => Promise.resolve({ ...lagretBrev, ...request }));
+    const harness = renderAutosave();
+    const first = { ...lagretBrev.saksbehandlerValg, visTekst: true };
+    const last = { ...first, ytelse: "Uføretrygd" };
+    act(() => harness().updateSaksbehandlerValg(first));
+    expect(harness().editorState.saksbehandlerValg).toEqual(first);
+    await vent(SAKSBEHANDLERVALG_TIMER - 1);
+    act(() => harness().updateSaksbehandlerValg(last));
+    await vent(SAKSBEHANDLERVALG_TIMER - 1);
+    expect(oppdaterBrevMock).not.toHaveBeenCalled();
+    await vent(1);
+    expect(oppdaterBrevMock).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        request: expect.objectContaining({ saksbehandlerValg: last }),
+        frigiReservasjon: false,
+      }),
+    );
+    expect(harness().editorState.history.entries).toMatchObject([
+      {
+        type: "SAKSBEHANDLERVALG_ENDRET",
+        before: { saksbehandlerValg: lagretBrev.saksbehandlerValg },
+        after: { saksbehandlerValg: first },
+      },
+      { type: "SAKSBEHANDLERVALG_ENDRET", before: { saksbehandlerValg: first }, after: { saksbehandlerValg: last } },
+    ]);
+  });
+
+  test("nyere valg venter på aktiv lagring uten å miste utløpt debounce", async () => {
+    const first = Promise.withResolvers<BrevResponse>();
+    oppdaterBrevMock.mockReturnValueOnce(first.promise);
+    oppdaterBrevMock.mockImplementationOnce(({ request }) => Promise.resolve({ ...lagretBrev, ...request }));
+    const harness = renderAutosave();
+    act(() => harness().updateSaksbehandlerValg(nyeValg));
+    await vent(SAKSBEHANDLERVALG_TIMER);
+    expect(harness().savingValg).toBe(true);
+    const latest = { ytelse: "Uføretrygd" };
+    act(() => harness().updateSaksbehandlerValg(latest));
+    await vent(SAKSBEHANDLERVALG_TIMER);
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(1);
+    await act(async () => first.resolve({ ...lagretBrev, saksbehandlerValg: nyeValg }));
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(2);
+    expect(harness().editorState.saksbehandlerValg).toEqual(latest);
+    expect(harness().editorState.saveStatus).toBe("SAVED");
+    expect(harness().savingValg).toBe(false);
+  });
+
+  test("nye valg forlenger også fristen mens et eldre kall pågår", async () => {
+    const first = Promise.withResolvers<BrevResponse>();
+    oppdaterBrevMock.mockReturnValueOnce(first.promise);
+    oppdaterBrevMock.mockImplementationOnce(({ request }) => Promise.resolve({ ...lagretBrev, ...request }));
+    const harness = renderAutosave();
+    act(() => harness().updateSaksbehandlerValg(nyeValg));
+    await vent(SAKSBEHANDLERVALG_TIMER);
+    act(() => harness().updateSaksbehandlerValg({ ytelse: "Uføretrygd" }));
+    await vent(SAKSBEHANDLERVALG_TIMER);
+    act(() => harness().updateSaksbehandlerValg(lagretBrev.saksbehandlerValg));
+    await act(async () => first.resolve({ ...lagretBrev, saksbehandlerValg: nyeValg }));
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(1);
+    expect(harness().editorState.saksbehandlerValg).toEqual(lagretBrev.saksbehandlerValg);
+    await vent(SAKSBEHANDLERVALG_TIMER);
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(2);
+    expect(oppdaterBrevMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        request: expect.objectContaining({ saksbehandlerValg: lagretBrev.saksbehandlerValg }),
+      }),
+    );
+  });
+
+  test("tekstendringer utsetter ikke valgfristen og forkastet fletting gjentas", async () => {
+    const first = Promise.withResolvers<BrevResponse>();
+    oppdaterBrevMock.mockReturnValueOnce(first.promise);
+    oppdaterBrevMock.mockImplementationOnce(({ request }) => Promise.resolve({ ...lagretBrev, ...request }));
+    const harness = renderAutosave();
+    act(() => harness().updateSaksbehandlerValg(nyeValg));
+    await vent(SAKSBEHANDLERVALG_TIMER - 1);
+    endreBrev(harness, 100);
+    await vent(1);
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(1);
+    endreBrev(harness, 101);
+    await act(async () => first.resolve({ ...lagretBrev, saksbehandlerValg: nyeValg }));
+    expect(harness().editorState.saveStatus).toBe("DIRTY");
+    await vent(AUTOSAVE_TIMER);
+    expect(oppdaterBrevtekstMock).not.toHaveBeenCalled();
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(2);
+    expect(oppdaterBrevMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        request: expect.objectContaining({
+          saksbehandlerValg: nyeValg,
+          redigertBrev: expect.objectContaining({ deletedBlocks: [100, 101] }),
+        }),
+      }),
+    );
+    endreBrev(harness, 102);
+    await vent(AUTOSAVE_TIMER);
+    expect(oppdaterBrevtekstMock).toHaveBeenCalledOnce();
+  });
+
+  test("gjentatte feltsubmits starter ikke nye forsøk etter feil, men eksplisitt lagring gjør det", async () => {
+    const harness = renderAutosave();
+    act(() => harness().updateSaksbehandlerValg(nyeValg));
+    await vent(SAKSBEHANDLERVALG_TIMER);
+    expect(harness().saveFailed).toBe(true);
+    act(() => harness().updateSaksbehandlerValg({ ...nyeValg }));
+    await vent(AUTOSAVE_TIMER * 2);
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(1);
+    expect(harness().editorState.saksbehandlerValg).toEqual(nyeValg);
+    oppdaterBrevMock.mockImplementation(({ request }) => Promise.resolve({ ...lagretBrev, ...request }));
+    await act(() => harness().savePendingChanges());
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(2);
+    expect(harness().saveFailed).toBe(false);
+  });
+
+  test("eksplisitt lagring og tilbakestilling avklarer ventende valg uten ekstra kall", async () => {
+    oppdaterBrevMock.mockImplementation(({ request }) => Promise.resolve({ ...lagretBrev, ...request }));
+    tilbakestillBrevMock.mockResolvedValue(lagretBrev);
+    const harness = renderAutosave();
+    act(() => harness().updateSaksbehandlerValg(nyeValg));
+    await act(() => harness().savePendingChanges());
+    await vent(SAKSBEHANDLERVALG_TIMER);
+    expect(oppdaterBrevMock).toHaveBeenCalledOnce();
+    act(() => harness().updateSaksbehandlerValg({ ytelse: "Uføretrygd" }));
+    await act(() => harness().resetLetter());
+    await vent(AUTOSAVE_TIMER);
+    expect(oppdaterBrevMock).toHaveBeenCalledOnce();
+    expect(harness().editorState.saksbehandlerValg).toEqual(lagretBrev.saksbehandlerValg);
   });
 });

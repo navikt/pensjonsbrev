@@ -9,10 +9,12 @@ export const UnderskriftTextField = ({
   of,
   error: externalError,
   controlled = false,
+  readOnly = false,
 }: {
   of: "Saksbehandler" | "Attestant";
   error?: string;
   controlled?: boolean;
+  readOnly?: boolean;
 }) => {
   const { redigertBrev, setEditorState } = useManagedLetterEditorContext();
 
@@ -41,6 +43,7 @@ export const UnderskriftTextField = ({
       label="Underskrift"
       onChange={update}
       onFocus={onFocus}
+      readOnly={readOnly}
       size="small"
       value={value ?? ""}
     />

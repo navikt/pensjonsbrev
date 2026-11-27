@@ -42,14 +42,13 @@ export function useOppdaterBrevMutation(saksId: string) {
             request: { redigertBrev: state.redigertBrev, saksbehandlerValg: values.saksbehandlerValg },
           });
         },
-        values.recordHistory
-          ? {
-              createHistoryEntry: (_state, response) =>
-                historySnapshot
-                  ? createSaksbehandlerValgEndretHistoryEntry(historySnapshot, createLetterSnapshot(response))
-                  : null,
-            }
-          : undefined,
+        {
+          merge: true,
+          createHistoryEntry: (_state, response) =>
+            historySnapshot
+              ? createSaksbehandlerValgEndretHistoryEntry(historySnapshot, createLetterSnapshot(response))
+              : null,
+        },
       );
     },
   });

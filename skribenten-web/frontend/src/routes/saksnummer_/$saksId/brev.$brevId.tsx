@@ -2,13 +2,17 @@ import { Alert, Box, Button, Heading, HStack, Label, VStack } from "@navikt/ds-r
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { FormProvider } from "react-hook-form";
 import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon } from "~/api/brev-queries";
 import { useGuardedFormSubmit } from "~/Brevredigering/hooks/useGuardedFormSubmit";
 import { useOppdaterBrevMutation } from "~/Brevredigering/hooks/useOppdaterBrevMutation";
+import {
+  type SaksbehandlerValgFormData,
+  useSaksbehandlerValgForm,
+} from "~/Brevredigering/hooks/useSaksbehandlerValgForm";
 import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
@@ -35,7 +39,7 @@ import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOn
 import { useUserInfo } from "~/hooks/useUserInfo";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import { baseSearchSchema } from "~/routes/saksnummer_/$saksId/route";
-import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } from "~/types/brev";
+import { type BrevResponse, type ReservasjonResponse } from "~/types/brev";
 import { genericErrorMessage, getErrorMessage } from "~/utils/errorUtils";
 import { trackEvent } from "~/utils/innblikk";
 import { queryFold } from "~/utils/tanstackUtils";
@@ -231,11 +235,6 @@ function RedigerBrevPage() {
   });
 }
 
-interface RedigerBrevSidemenyFormData {
-  signatur: string;
-  saksbehandlerValg: SaksbehandlerValg;
-}
-
 function RedigerBrev({
   brev,
   doReload,
@@ -264,7 +263,8 @@ function RedigerBrev({
     navigateToDocument,
   });
 
-  const { editorState, redigertBrev, setEditorState, registerSaveErrorReset } = useManagedLetterEditorContext();
+  const { editorState, redigertBrev, setEditorState, savingValg, resetting, registerSaveErrorReset } =
+    useManagedLetterEditorContext();
 
   const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
     lagretRedigertBrev: brev.redigertBrev,
@@ -300,18 +300,15 @@ function RedigerBrev({
   });
 
   const { oppdaterBrevMutation } = useOppdaterBrevMutation(saksId);
+  const [finalizing, setFinalizing] = useState(false);
+  const finalizingRef = useRef(false);
 
-  const defaultValuesModelEditor = useMemo(
-    () => ({
-      saksbehandlerValg: {
-        ...editorState.saksbehandlerValg,
-      },
-    }),
-    [editorState.saksbehandlerValg],
-  );
-
-  const form = useForm<RedigerBrevSidemenyFormData>({
-    defaultValues: defaultValuesModelEditor,
+  const { form, onValgChange, cancelPendingChange } = useSaksbehandlerValgForm({
+    isLocked: () => finalizingRef.current,
+    onBeforeChange: (valg) => {
+      beforeTekstvalgChange(valg, redigertBrev);
+      oppdaterBrevMutation.reset();
+    },
   });
 
   const { getWarning } = useBrevEditorWarnings({
@@ -322,24 +319,30 @@ function RedigerBrev({
     propertyUsage: brev.propertyUsage ?? undefined,
   });
 
-  const onTekstValgAndOverstyringChange = () => {
-    form.trigger().then((isValid) => {
-      if (isValid) {
-        const updatedValg = form.getValues().saksbehandlerValg;
-        beforeTekstvalgChange(updatedValg, redigertBrev);
-        oppdaterBrevMutation.reset();
-        oppdaterBrevMutation.mutate({
-          saksbehandlerValg: updatedValg,
-          recordHistory: true,
-        });
-      }
-    });
+  const stopFinalizing = () => {
+    finalizingRef.current = false;
+    setFinalizing(false);
   };
 
-  const onSubmit = async (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
+  const onSubmit = async (values: SaksbehandlerValgFormData, navigateDone?: () => void) => {
+    if (finalizingRef.current) return;
+    cancelPendingChange();
+    finalizingRef.current = true;
+    setFinalizing(true);
+
     // An attachment is saved through its own endpoint, so it must be persisted while the reservation is
     // still held. The final submit releases the reservation, so a failed attachment save must stop it.
-    if (activeVedlegg !== undefined && !(await documentCoordinator.savePendingDocuments())) return;
+    if (activeVedlegg !== undefined) {
+      try {
+        if (!(await documentCoordinator.savePendingDocuments())) {
+          stopFinalizing();
+          return;
+        }
+      } catch (error) {
+        stopFinalizing();
+        throw error;
+      }
+    }
 
     oppdaterBrevMutation.reset();
     oppdaterBrevMutation.mutate(
@@ -349,6 +352,7 @@ function RedigerBrev({
       },
       {
         onSuccess: () => {
+          stopFinalizing();
           const varighetSekunder = Math.round((Date.now() - editorStartTime.current) / 1000);
           trackEvent("tid brukt i editor", {
             brevId: brev.info.id,
@@ -359,6 +363,7 @@ function RedigerBrev({
           });
           navigateDone?.();
         },
+        onError: stopFinalizing,
       },
     );
   };
@@ -394,11 +399,7 @@ function RedigerBrev({
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });
 
-  useEffect(() => {
-    form.reset(defaultValuesModelEditor);
-  }, [defaultValuesModelEditor, form]);
-
-  const freeze = oppdaterBrevMutation.isPending;
+  const freeze = finalizing || oppdaterBrevMutation.isPending || savingValg;
   const error = oppdaterBrevMutation.isError;
   const hasUnsavedValg = form.formState.isDirty;
 
@@ -407,8 +408,6 @@ function RedigerBrev({
     registerSaveErrorReset(hasUnsavedValg ? null : oppdaterBrevMutation.reset);
     return () => registerSaveErrorReset(null);
   }, [hasUnsavedValg, oppdaterBrevMutation.reset, registerSaveErrorReset]);
-
-  // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 
   return (
     <FormProvider {...form}>
@@ -459,9 +458,13 @@ function RedigerBrev({
                         <BrevmalAlternativer
                           brevkode={brev.info.brevkode}
                           propertyUsage={brev.propertyUsage ?? undefined}
-                          submitOnChange={onTekstValgAndOverstyringChange}
+                          readOnly={finalizing || oppdaterBrevMutation.isPending || resetting}
+                          submitOnChange={onValgChange}
                         />
-                        <UnderskriftTextField of="Saksbehandler" />
+                        <UnderskriftTextField
+                          of="Saksbehandler"
+                          readOnly={finalizing || oppdaterBrevMutation.isPending || resetting}
+                        />
                       </VStack>
                     }
                     saksId={saksId}
@@ -470,7 +473,7 @@ function RedigerBrev({
                 right={
                   <BrevOgVedleggEditor
                     brev={brev}
-                    freeze={freeze}
+                    freeze={oppdaterBrevMutation.isPending || savingValg}
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
                         <ManagedLetterEditor canReset error={error} freeze={freeze} showDebug={showDebug} />
