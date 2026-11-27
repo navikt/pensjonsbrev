@@ -41,7 +41,7 @@ class OpenApiSpecTest {
         assertThat(spec["openapi"].asText()).startsWith("3.")
         val paths = spec["paths"]
         assertThat(paths.fieldNames().asSequence().toList()).isNotEmpty().allMatch { it.startsWith("/api/v1/") }
-        assertThat(paths.has("/api/v1/utkast/{id}/pr")).isFalse()
+        assertThat(paths.has("/api/v1/utkast/{id}/pr")).isTrue()
         val requests = listOf(
             Triple("/api/v1/generer", "post", "GenerateRequest"),
             Triple("/api/v1/forhandsvisning", "post", "PreviewRequest"),
@@ -53,6 +53,7 @@ class OpenApiSpecTest {
             Triple("/api/v1/utkast/{id}/status", "post", "StatusRequest"),
             Triple("/api/v1/utkast/{id}/grunnlinje", "post", "RevisionRequest"),
             Triple("/api/v1/utkast/{id}/arkiver", "post", "ArchiveRequest"),
+            Triple("/api/v1/utkast/{id}/pr", "post", "RevisionRequest"),
         )
         for (request in requests) {
             val body = paths[request.first][request.second]["requestBody"]
@@ -60,7 +61,7 @@ class OpenApiSpecTest {
             assertThat(body.at("/content/application~1json/schema/\$ref").asText()).isEqualTo("#/components/schemas/${request.third}")
         }
         val operations = paths.flatMap { it.toList() }
-        assertThat(operations).hasSize(17)
+        assertThat(operations).hasSize(19)
         for (operation in operations) {
             assertThat(operation["security"].toString()).isEqualTo("""[{"entra":[]}]""")
             assertThat(operation.at("/responses/401/content/application~1problem+json/schema/\$ref").asText()).isEqualTo("#/components/schemas/Problem")
@@ -73,6 +74,8 @@ class OpenApiSpecTest {
         assertThat(location.at("/schema/type").asText()).isEqualTo("string")
         assertThat(location.has("content")).isFalse()
         assertThat(paths["/api/v1/utkast/{id}/arkiver"]["post"].at("/responses/204").has("content")).isFalse()
+        assertThat(paths["/api/v1/utkast/{id}/pr"]["post"].at("/responses/202/content/application~1json/schema/\$ref").asText()).isEqualTo("#/components/schemas/PrJob")
+        assertThat(paths["/api/v1/utkast/{id}/pr"]["get"].at("/responses/200/content/application~1json/schema/\$ref").asText()).isEqualTo("#/components/schemas/PrJob")
         assertThat(spec.at("/components/schemas/Draft/properties/formatVersion/type").asText()).isEqualTo("integer")
         fun checkReferences(node: com.fasterxml.jackson.databind.JsonNode) {
             if (node.isObject) {
@@ -83,7 +86,7 @@ class OpenApiSpecTest {
             node.forEach(::checkReferences)
         }
         checkReferences(spec)
-        assertThat(json).doesNotContain("SourceCatalogueSnapshot", "HikariDataSource", "AzureConfig", "SourceEditBinding")
+        assertThat(json).doesNotContain("SourceCatalogueSnapshot", "HikariDataSource", "AzureConfig", "SourceEditBinding", "PrTicket", "PrLeaseToken")
     }
 
     companion object {

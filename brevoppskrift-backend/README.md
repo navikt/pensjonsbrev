@@ -30,13 +30,32 @@ størrelsesgrense på 5 MiB, eller 200 KiB for KI-forslag.
 Helseendepunktene `/isAlive` og `/isReady`, samt `/metrics`, er offentlige
 i backend. Readiness krever fungerende database. KI og varsling er ikke
 konfigurert; capabilities oppgir dette, og KI-rutene returnerer 503.
-PR-ruter og nettverksadaptere er ikke innført.
+PR-ruter finnes, men innsending gir 503 uten konfigurert PR-tjeneste.
+Ingen nettverksadaptere er innført.
 
 `application.conf` leser Entra- og databasekonfigurasjon fra miljøet.
 Klientlisten kommer fra `AZURE_APP_PRE_AUTHORIZED_APPS`, og
 `EDITOR_GROUP_ID` bestemmer skrivetilgang. `installDist` lager
 applikasjonen under `build/install/brevoppskrift-backend`.
 Git og Kotlin-kompilatoren trengs ikke i runtime.
+
+## PR-jobber
+
+`POST /api/v1/utkast/{id}/pr` krever editorrettighet, gjeldende revisjon
+og et READY-utkast som består genereringskontrollen. Jobben lagrer et
+uforanderlig revisjonssnapshot i PostgreSQL og returnerer 202. Gjentatt
+innsending av samme revisjon returnerer samme jobb.
+
+`GET /api/v1/utkast/{id}/pr` gir siste jobbstatus og eventuell PR-lenke
+eller feilkode. Interne leases og dokumentinnhold returneres ikke.
+
+Workeren starter med applikasjonen og krever en PR-tjeneste. Den bruker
+tre-minutters leases, 150 sekunders operasjonsgrense og maksimalt tre
+forsøk. Midlertidige feil prøves igjen etter 30 sekunder. Ved avslutning
+avbrytes pågående transport; en ny worker kan overta etter lease-utløp.
+
+Produksjon har foreløpig ingen PR-tjeneste, og `pullRequests` er false.
+Testene bruker fake transport mot en isolert PostgreSQL-database.
 
 ## Generert API-kontrakt
 

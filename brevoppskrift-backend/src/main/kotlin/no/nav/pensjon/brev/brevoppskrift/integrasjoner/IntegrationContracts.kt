@@ -14,3 +14,7 @@ interface AiService {
 interface NotificationService {
     suspend fun send(notification: Notification)
 }
+
+interface PrService {
+    suspend fun create(ticket: PrTicket): PrUrl
+}

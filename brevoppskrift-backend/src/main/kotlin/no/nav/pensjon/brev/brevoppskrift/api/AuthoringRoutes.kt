@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.brevoppskrift.MAX_DRAFT_BYTES
 import no.nav.pensjon.brev.brevoppskrift.Capabilities
 import no.nav.pensjon.brev.brevoppskrift.auth.DraftUser
 import no.nav.pensjon.brev.brevoppskrift.auth.editorRoutes
+import no.nav.pensjon.brev.brevoppskrift.application.PrJobHandler
 import no.nav.pensjon.brev.brevoppskrift.integrasjoner.*
 import no.nav.pensjon.brev.brevoppskrift.model.*
 
@@ -24,6 +25,7 @@ fun Route.authoringRoutes(catalogue: SourceCatalogue) {
     val preview: DraftPreview by application.dependencies
     val ai: AiSuggestions by application.dependencies
     val notifications: DraftNotifications by application.dependencies
+    val prs: PrJobHandler by application.dependencies
     route("/api/v1") {
         install(RequestBodyLimit) {
             bodyLimit { call ->
@@ -35,7 +37,7 @@ fun Route.authoringRoutes(catalogue: SourceCatalogue) {
         }
         get("/meg") { call.respond(requireNotNull(call.principal<DraftUser>())) }
         get("/integrasjoner") {
-            call.respond(Capabilities(formatVersion = DRAFT_FORMAT_VERSION, persistence = true, generation = true, ai = ai.enabled, slack = notifications.enabled))
+            call.respond(Capabilities(formatVersion = DRAFT_FORMAT_VERSION, persistence = true, generation = true, ai = ai.enabled, slack = notifications.enabled, pullRequests = prs.enabled))
         }
         get("/katalog") { call.respond(catalogue.list()) }
         get("/katalog/{sourceId}") {

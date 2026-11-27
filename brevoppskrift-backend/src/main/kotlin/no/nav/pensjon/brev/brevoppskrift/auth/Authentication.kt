@@ -9,13 +9,21 @@ import io.ktor.http.HttpStatusCode
 
 const val ENTRA_AUTH = "entra"
 
+interface AzureSettings {
+    val issuer: String
+    val audience: EntraAudience
+    val jwksUri: String
+    val preAuthApps: List<AzureConfig.PreAuthorizedApp>
+    val editorGroupId: EntraGroupId
+}
+
 data class DraftUser(
     val navIdent: NavIdent,
     val name: AuthorName,
     val canEdit: Boolean,
 )
 
-fun AuthenticationConfig.draftAuthentication(config: AzureConfig, jwks: JwkProvider) {
+fun AuthenticationConfig.draftAuthentication(config: AzureSettings, jwks: JwkProvider) {
     jwt(ENTRA_AUTH) {
         verifier(jwks, config.issuer) {
             withAudience(config.audience.value)

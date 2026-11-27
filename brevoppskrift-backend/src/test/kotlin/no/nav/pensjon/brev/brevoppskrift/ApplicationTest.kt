@@ -4,6 +4,11 @@ import com.auth0.jwk.Jwk
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
+import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.application.Application
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -35,6 +40,7 @@ import no.nav.pensjon.brev.brevoppskrift.model.DraftLanguage
 import no.nav.pensjon.brev.brevoppskrift.auth.EntraAudience
 import no.nav.pensjon.brev.brevoppskrift.auth.EntraClientId
 import no.nav.pensjon.brev.brevoppskrift.auth.EntraGroupId
+import no.nav.pensjon.brev.brevoppskrift.auth.AuthorName
 import no.nav.pensjon.brev.brevoppskrift.integrasjoner.*
 import no.nav.pensjon.brev.brevoppskrift.lagring.*
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -49,10 +55,120 @@ import java.security.interfaces.RSAPublicKey
 import java.time.Instant
 import java.util.Base64
 import java.util.Date
+import java.util.concurrent.atomic.AtomicInteger
 
 @Isolated
 @Execution(ExecutionMode.SAME_THREAD)
 class ApplicationTest {
+    @Test
+    fun `PR routes process one current READY snapshot and do not expose internal tickets`() = testApplication {
+        val entered = CompletableDeferred<PrTicket>()
+        val release = CompletableDeferred<Unit>()
+        val requests = AtomicInteger()
+        val service = object : PrService {
+            override suspend fun create(ticket: PrTicket): PrUrl {
+                requests.incrementAndGet()
+                entered.complete(ticket)
+                release.await()
+                return PrUrl("https://github.com/navikt/pensjonsbrev/pull/1")
+            }
+        }
+        application { testModule(azure, jwks, postgres.database(), productionAuthoring = true, prService = service) }
+        val capabilities = client.get("/api/v1/integrasjoner") { bearerAuth(token()) }
+        assertThat(draftObjectMapper.readTree(capabilities.bodyAsText())["pullRequests"].asBoolean()).isTrue()
+        val draft = exampleDraft().let { it.copy(metadata = it.metadata.copy(brevkode = "SYNTHETIC")) }
+        val created = client.post("/api/v1/utkast") {
+            bearerAuth(token(groups = listOf("editors")))
+            contentType(ContentType.Application.Json)
+            setBody(draftObjectMapper.writeValueAsString(CreateDraftRequest(draft = draft)))
+        }
+        assertThat(created.status).isEqualTo(HttpStatusCode.Created)
+        val saved = draftObjectMapper.readValue(created.bodyAsText(), DraftRecord::class.java)
+        val path = "/api/v1/utkast/${saved.id}/pr"
+        suspend fun submit(revision: Long) = client.post(path) {
+            bearerAuth(token(groups = listOf("editors")))
+            contentType(ContentType.Application.Json)
+            setBody(draftObjectMapper.writeValueAsString(RevisionRequest(DraftRevision(revision))))
+        }
+        assertThat(client.post(path) { bearerAuth(token()); contentType(ContentType.Application.Json); setBody("invalid") }.status).isEqualTo(HttpStatusCode.Forbidden)
+        assertThat(client.post(path) { contentType(ContentType.Application.Json); setBody("invalid") }.status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(submit(0).status).isEqualTo(HttpStatusCode.BadRequest)
+        val work = submit(saved.revision.value)
+        assertThat(work.status).isEqualTo(HttpStatusCode.Conflict)
+        assertThat(draftObjectMapper.readTree(work.bodyAsText())["code"].asText()).isEqualTo("DRAFT_NOT_READY")
+        val missing = client.get(path) { bearerAuth(token()) }
+        assertThat(missing.status).isEqualTo(HttpStatusCode.NotFound)
+        assertThat(draftObjectMapper.readTree(missing.bodyAsText())["code"].asText()).isEqualTo("PR_NOT_FOUND")
+        val status = client.post("/api/v1/utkast/${saved.id}/status") {
+            bearerAuth(token(groups = listOf("editors")))
+            contentType(ContentType.Application.Json)
+            setBody(draftObjectMapper.writeValueAsString(StatusRequest(saved.revision, DraftStatus.READY)))
+        }
+        assertThat(status.status).isEqualTo(HttpStatusCode.OK)
+        val ready = draftObjectMapper.readValue(status.bodyAsText(), DraftRecord::class.java)
+        assertThat(submit(saved.revision.value).status).isEqualTo(HttpStatusCode.Conflict)
+        val submitted = submit(ready.revision.value)
+        assertThat(submitted.status).isEqualTo(HttpStatusCode.Accepted)
+        val queued = draftObjectMapper.readTree(submitted.bodyAsText())
+        val duplicate = submit(ready.revision.value)
+        assertThat(duplicate.status).isEqualTo(HttpStatusCode.Accepted)
+        assertThat(draftObjectMapper.readTree(duplicate.bodyAsText())["id"]).isEqualTo(queued["id"])
+        val ticket = withTimeout(5000) { entered.await() }
+        assertThat(ticket.draft).isEqualTo(ready.draft)
+        assertThat(ticket.revision).isEqualTo(ready.revision)
+        val running = client.get(path) { bearerAuth(token()) }
+        assertThat(running.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(draftObjectMapper.readTree(running.bodyAsText())["status"].asText()).isEqualTo("RUNNING")
+        assertThat(running.bodyAsText()).doesNotContain("lease", "draft", "attempts")
+        val edit = client.put("/api/v1/utkast/${saved.id}") {
+            bearerAuth(token(groups = listOf("editors")))
+            contentType(ContentType.Application.Json)
+            setBody(draftObjectMapper.writeValueAsString(UpdateDraftRequest(ready.revision, ready.draft.copy(title = ready.draft.title.mapValues { "${it.value} [edited]" }))))
+        }
+        assertThat(edit.status).isEqualTo(HttpStatusCode.OK)
+        val latest = draftObjectMapper.readValue(edit.bodyAsText(), DraftRecord::class.java)
+        release.complete(Unit)
+        withTimeout(10_000) {
+            while (draftObjectMapper.readTree(client.get(path) { bearerAuth(token()) }.bodyAsText())["status"].asText() != "SUCCEEDED") delay(10)
+        }
+        val completed = draftObjectMapper.readTree(client.get(path) { bearerAuth(token()) }.bodyAsText())
+        assertThat(completed["id"]).isEqualTo(queued["id"])
+        assertThat(completed["prUrl"].asText()).isEqualTo("https://github.com/navikt/pensjonsbrev/pull/1")
+        assertThat(requests.get()).isEqualTo(1)
+        val archived = client.post("/api/v1/utkast/${saved.id}/arkiver") {
+            bearerAuth(token(groups = listOf("editors")))
+            contentType(ContentType.Application.Json)
+            setBody(draftObjectMapper.writeValueAsString(ArchiveRequest(latest.revision, ArchiveReason.DONE)))
+        }
+        assertThat(archived.status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.get(path) { bearerAuth(token()) }.status).isEqualTo(HttpStatusCode.Gone)
+        assertThat(submit(latest.revision.value + 1).status).isEqualTo(HttpStatusCode.Gone)
+    }
+
+    @Test
+    fun `PR submission validates generation before creating a persistent job`() = testApplication {
+        val service = object : PrService {
+            override suspend fun create(ticket: PrTicket): PrUrl = error("Invalid drafts must not reach transport")
+        }
+        lateinit var app: Application
+        application {
+            app = this
+            testModule(azure, jwks, postgres.database(), productionAuthoring = true, prService = service)
+        }
+        startApplication()
+        val repository = app.dependencies.resolve<DraftRepository>()
+        val saved = repository.create(exampleDraft(), null, AuthorName("Synthetic author"))
+        val ready = repository.status(saved.id, saved.revision, DraftStatus.READY, AuthorName("Synthetic author"))
+        val response = client.post("/api/v1/utkast/${ready.id}/pr") {
+            bearerAuth(token(groups = listOf("editors")))
+            contentType(ContentType.Application.Json)
+            setBody(draftObjectMapper.writeValueAsString(RevisionRequest(ready.revision)))
+        }
+        assertThat(response.status).isEqualTo(HttpStatusCode.UnprocessableEntity)
+        assertThat(draftObjectMapper.readTree(response.bodyAsText())["errors"]).anyMatch { it["path"].asText() == "metadata.brevkode" }
+        assertThat(app.dependencies.resolve<PrJobRepository>().latest(ready.id)).isNull()
+    }
+
     private val azure = AzureConfig("https://issuer.invalid", EntraAudience("backend"), "https://issuer.invalid/jwks", listOf(AzureConfig.PreAuthorizedApp("dev-gcp:pensjonsbrev:brevoppskrift-web", EntraClientId("bff"))), EntraGroupId("editors"))
 
     private fun io.ktor.server.application.Application.brevoppskriftModule(azure: AzureConfig, jwks: JwkProvider) {
@@ -266,7 +382,7 @@ class ApplicationTest {
         fun `all mutation routes reject readers`() = testApplication {
             application { brevoppskriftModule(azure, jwks) }
             val id = "00000000-0000-0000-0000-000000000001"
-            listOf("/utkast", "/utkast/$id/status", "/utkast/$id/grunnlinje", "/utkast/$id/arkiver", "/ki/nynorsk", "/ki/klarsprak").forEach { path ->
+            listOf("/utkast", "/utkast/$id/status", "/utkast/$id/grunnlinje", "/utkast/$id/arkiver", "/utkast/$id/pr", "/ki/nynorsk", "/ki/klarsprak").forEach { path ->
                 assertThat(client.post("/api/v1$path") { bearerAuth(token()); contentType(ContentType.Application.Json); setBody("invalid") }.status).isEqualTo(HttpStatusCode.Forbidden)
             }
             assertThat(client.put("/api/v1/utkast/$id") { bearerAuth(token()); contentType(ContentType.Application.Json); setBody("invalid") }.status).isEqualTo(HttpStatusCode.Forbidden)
@@ -462,11 +578,13 @@ class ApplicationTest {
         assertThat(scrape).doesNotContain(id, "secret-input", "address=", "/isAlive", "/isReady", "/metrics")
         val capabilities = client.get("/api/v1/integrasjoner") { bearerAuth(token()) }
         assertThat(draftObjectMapper.readTree(capabilities.bodyAsText())["pullRequests"].asBoolean()).isFalse()
-        assertThat(client.post("/api/v1/utkast/$id/pr") {
+        val unavailable = client.post("/api/v1/utkast/$id/pr") {
             bearerAuth(token(groups = listOf("editors")))
             contentType(ContentType.Application.Json)
             setBody("""{"revision":1}""")
-        }.status).isEqualTo(HttpStatusCode.NotFound)
+        }
+        assertThat(unavailable.status).isEqualTo(HttpStatusCode.ServiceUnavailable)
+        assertThat(draftObjectMapper.readTree(unavailable.bodyAsText())["code"].asText()).isEqualTo("UNAVAILABLE")
     }
 
     @Test
