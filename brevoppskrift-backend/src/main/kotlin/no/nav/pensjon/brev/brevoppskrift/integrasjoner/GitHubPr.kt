@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.brevoppskrift.integrasjoner
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import com.fasterxml.jackson.databind.JsonNode
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.network.sockets.ConnectTimeoutException
@@ -25,32 +23,24 @@ import no.nav.pensjon.brev.brevoppskrift.services.ClientOperation
 import no.nav.pensjon.brev.brevoppskrift.services.ExternalService
 import no.nav.pensjon.brev.brevoppskrift.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.brevoppskrift.services.metricsOperation
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo
-import org.bouncycastle.openssl.PEMKeyPair
-import org.bouncycastle.openssl.PEMParser
 import java.io.Closeable
 import java.io.IOException
-import java.io.StringReader
 import java.nio.channels.UnresolvedAddressException
-import java.security.KeyFactory
 import java.security.MessageDigest
-import java.security.interfaces.RSAPrivateKey
-import java.security.spec.PKCS8EncodedKeySpec
 import java.time.Clock
-import java.time.Instant
 import java.util.Base64
-import java.util.Date
 
 class GitHubPr(
     engine: HttpClientEngine,
     metrics: MeterRegistry,
-    private val config: GitHubConfig,
+    config: GitHubConfig,
     private val generator: DraftGenerator,
     private val catalogue: SourceCatalogue,
-    private val clock: Clock = Clock.systemUTC(),
+    clock: Clock = Clock.systemUTC(),
 ) : PrService, Closeable {
-    init { require(config.enabled) { "GitHub authentication is required" } }
-    private val key = privateKey(requireNotNull(config.privateKey))
+    private val authentication = GitHubAppAuth(config, clock) { path, body, assertion ->
+        api(path, HttpMethod.Post, body, assertion)
+    }
     private val client = lagHttpClient(engine, metrics, ExternalService.GITHUB)
     private val prefix = "/repos/navikt/pensjonsbrev"
 
@@ -73,7 +63,7 @@ class GitHubPr(
         }
         if (files.isEmpty()) throw IntegrationFailure("GENERATION_FAILED")
 
-        val token = accessToken()
+        val token = authentication.accessToken()
         val branch = "brevoppskrift/${ticket.draftId.value}/r${ticket.revision.value}"
         existingPull(branch, token)?.let { return pullUrl(it) }
         val base = ticket.draft.source?.commit ?: sha(api("$prefix/git/ref/heads/main", token = token).path("object"))
@@ -135,17 +125,6 @@ class GitHubPr(
                     !seen.add(it.path("filename").asText()) || it.path("status").asText() !in setOf("added", "modified")
             }) throw IntegrationFailure("BRANCH_CHANGED")
         return true
-    }
-
-    private suspend fun accessToken(): String {
-        val now = Instant.now(clock)
-        val assertion = JWT.create().withIssuer(requireNotNull(config.appId).value).withIssuedAt(Date.from(now.minusSeconds(60)))
-            .withExpiresAt(Date.from(now.plusSeconds(540))).sign(Algorithm.RSA256(null, key))
-        return api(
-            "/app/installations/${requireNotNull(config.installationId).value}/access_tokens", HttpMethod.Post,
-            mapOf("repositories" to listOf("pensjonsbrev"), "permissions" to mapOf("contents" to "write", "pull_requests" to "write")), assertion,
-        ).path("token").takeIf { it.isTextual }?.asText()?.takeIf { it.length <= 8192 && bearerToken.matches(it) }
-            ?: throw IntegrationFailure("GITHUB_AUTH_FAILED")
     }
 
     private fun pullUrl(pull: JsonNode): PrUrl =
@@ -280,23 +259,5 @@ class GitHubPr(
 
     companion object {
         private val gitId = Regex("(?:[a-f0-9]{40}|[a-f0-9]{64})")
-        private val bearerToken = Regex("[A-Za-z0-9._~+/-]+=*")
-
-        private fun privateKey(pem: String): RSAPrivateKey = try {
-            val info = PEMParser(StringReader(pem)).use { parser ->
-                val parsed = parser.readObject()
-                require(parser.readObject() == null)
-                when (parsed) {
-                    is PEMKeyPair -> parsed.privateKeyInfo
-                    is PrivateKeyInfo -> parsed
-                    else -> throw IllegalArgumentException()
-                }
-            }
-            val key = KeyFactory.getInstance("RSA").generatePrivate(PKCS8EncodedKeySpec(info.encoded)) as RSAPrivateKey
-            require(key.modulus.bitLength() >= 2048)
-            key
-        } catch (_: Exception) {
-            throw IllegalArgumentException("GitHub private key must be an unencrypted RSA PEM key of at least 2048 bits")
-        }
     }
 }

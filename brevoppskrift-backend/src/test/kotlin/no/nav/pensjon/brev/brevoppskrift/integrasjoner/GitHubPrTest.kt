@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.brevoppskrift.integrasjoner
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -19,13 +17,11 @@ import no.nav.pensjon.brev.brevoppskrift.kotlin.KotlinDraftGenerator
 import no.nav.pensjon.brev.brevoppskrift.model.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.nio.channels.UnresolvedAddressException
 import java.security.KeyPairGenerator
-import java.security.interfaces.RSAPublicKey
 import java.util.Base64
 import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
@@ -39,35 +35,23 @@ class GitHubPrTest {
     fun closeMetrics() { metrics.close() }
 
     @Test
-    fun `App supports PKCS1 and PKCS8 keys with restricted installation permissions and draft PRs`(): Unit = runBlocking {
-        val pair = KeyPairGenerator.getInstance("RSA").apply { initialize(2048) }.generateKeyPair()
-        val pkcs8 = pair.private.encoded
-        val pkcs1 = PrivateKeyInfo.getInstance(pkcs8).parsePrivateKey().toASN1Primitive().encoded
-        for (pem in listOf(pem("PRIVATE KEY", pkcs8), pem("RSA PRIVATE KEY", pkcs1))) {
-            val api = FakeGitHub()
-            api.engine().use { engine ->
-                adapter(engine, GitHubConfig(GitHubAppId("1"), GitHubInstallationId("2"), pem)).use { service ->
-                    val submitted = ticket()
-                    assertThat(service.create(submitted).value).isEqualTo(prUrl)
-                    val auth = api.requests.single { it.url.encodedPath.endsWith("/access_tokens") }
-                    val jwt = JWT.require(Algorithm.RSA256(pair.public as RSAPublicKey, null)).withIssuer("1").build()
-                        .verify(auth.headers[HttpHeaders.Authorization]!!.removePrefix("Bearer "))
-                    assertThat(jwt.expiresAt.time - jwt.issuedAt.time).isEqualTo(600_000)
-                    assertThat(payload(auth)["repositories"].map { it.asText() }).containsExactly("pensjonsbrev")
-                    assertThat(payload(auth)["permissions"].fieldNames().asSequence().toList()).containsExactlyInAnyOrder("contents", "pull_requests")
-                    assertThat(payload(auth)["permissions"]["contents"].asText()).isEqualTo("write")
-                    val commit = api.requests.single { it.url.encodedPath.endsWith("/git/commits") }
-                    assertThat(payload(commit)["parents"].map { it.asText() }).containsExactly(main)
-                    val tree = payload(api.requests.single { it.url.encodedPath.endsWith("/git/trees") })
-                    assertThat(tree["base_tree"].asText()).isEqualTo(baseTree)
-                    assertThat(tree["tree"].single()["mode"].asText()).isEqualTo("100644")
-                    val pull = api.requests.single { it.method == HttpMethod.Post && it.url.encodedPath.endsWith("/pulls") }
-                    assertThat(payload(pull)["draft"].asBoolean()).isTrue()
-                    assertThat(payload(pull)["base"].asText()).isEqualTo("main")
-                    assertThat(payload(pull)["head"].asText()).isEqualTo("brevoppskrift/${submitted.draftId.value}/r${submitted.revision.value}")
-                    assertThat(payload(pull)["body"].asText()).contains(main, "Ingen automatisk merge")
-                    assertThat(api.requests).noneMatch { it.url.encodedPath.endsWith("/merge") }
-                }
+    fun `App creates draft PRs with the generated tree and stable revision branch`(): Unit = runBlocking {
+        val api = FakeGitHub()
+        api.engine().use { engine ->
+            adapter(engine).use { service ->
+                val submitted = ticket()
+                assertThat(service.create(submitted).value).isEqualTo(prUrl)
+                val commit = api.requests.single { it.url.encodedPath.endsWith("/git/commits") }
+                assertThat(payload(commit)["parents"].map { it.asText() }).containsExactly(main)
+                val tree = payload(api.requests.single { it.url.encodedPath.endsWith("/git/trees") })
+                assertThat(tree["base_tree"].asText()).isEqualTo(baseTree)
+                assertThat(tree["tree"].single()["mode"].asText()).isEqualTo("100644")
+                val pull = api.requests.single { it.method == HttpMethod.Post && it.url.encodedPath.endsWith("/pulls") }
+                assertThat(payload(pull)["draft"].asBoolean()).isTrue()
+                assertThat(payload(pull)["base"].asText()).isEqualTo("main")
+                assertThat(payload(pull)["head"].asText()).isEqualTo("brevoppskrift/${submitted.draftId.value}/r${submitted.revision.value}")
+                assertThat(payload(pull)["body"].asText()).contains(main, "Ingen automatisk merge")
+                assertThat(api.requests).noneMatch { it.url.encodedPath.endsWith("/merge") }
             }
         }
     }
@@ -367,17 +351,7 @@ class GitHubPrTest {
     )
 
     @Test
-    fun `installation tokens and remote commit identities must be valid before writes`(): Unit = runBlocking {
-        val privateKey = pem("PRIVATE KEY", KeyPairGenerator.getInstance("RSA").apply { initialize(2048) }.generateKeyPair().private.encoded)
-        val config = GitHubConfig(GitHubAppId("1"), GitHubInstallationId("2"), privateKey)
-        for (body in listOf("""{"token":""}""", """{"token":42}""", """{"token":"unsafe\nheader"}""",
-            draftObjectMapper.writeValueAsString(mapOf("token" to "x".repeat(8193))))) {
-            var calls = 0
-            MockEngine { calls++; respond(body) }.use { engine ->
-                adapter(engine, config).use { assertThat(failure { it.create(ticket()) }).isEqualTo("GITHUB_AUTH_FAILED") }
-            }
-            assertThat(calls).isEqualTo(1)
-        }
+    fun `remote commit identities must be valid before writes`(): Unit = runBlocking {
         for (body in listOf("""{"object":{}}""", """{"object":{"sha":"${"a".repeat(41)}"}}""")) {
             val api = FakeGitHub().apply { mainReference = body }
             api.engine().use { engine -> adapter(engine).use { assertThat(failure { it.create(ticket()) }).isEqualTo("GITHUB_UNAVAILABLE") } }
