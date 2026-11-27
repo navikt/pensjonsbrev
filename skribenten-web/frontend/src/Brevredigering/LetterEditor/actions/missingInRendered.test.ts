@@ -42,7 +42,6 @@ describe("LetterEditorActions.keepMissingInRenderedBlock", () => {
 
     expect(result.redigertBrev.blocks).toHaveLength(1);
     expect(result.redigertBrev.blocks[0].id).toBeNull();
-    expect(result.redigertBrev.blocks[0].missingFromTemplate).toBe(false);
     expect(result.redigertBrev.blocks[0].decision).toEqual({ type: "MISSING_FROM_RENDERED", status: "ACCEPTED" });
     expect(result.redigertBrev.blocks[0].content).toEqual(flagged.content);
     expect(result.saveStatus).toBe("DIRTY");

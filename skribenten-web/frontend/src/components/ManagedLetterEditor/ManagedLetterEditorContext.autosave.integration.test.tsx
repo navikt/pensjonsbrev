@@ -136,93 +136,50 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
     expect(harness().editorState.saveStatus).toBe("SAVED");
   });
 
-  test("beholder angrehistorikken når backend sender det utdaterte missingFromTemplate-feltet", async () => {
+  test("lagrer beslutningen etter Behold, autolagring og Angre", async () => {
+    const block = withMissingInRendered(paragraph([literal({ text: "behold meg" })]));
+    const brev = {
+      ...lagretBrev,
+      redigertBrev: {
+        ...lagretBrev.redigertBrev,
+        blocks: [block],
+      },
+    };
     oppdaterBrevtekstMock.mockImplementation(({ redigertBrev }: { redigertBrev: EditedLetter }) =>
-      Promise.resolve({
-        ...structuredClone(lagretBrev),
-        redigertBrev: {
-          ...redigertBrev,
-          blocks: redigertBrev.blocks.map((block) => ({ ...block, missingFromTemplate: false })),
-        },
-      }),
+      Promise.resolve({ ...brev, redigertBrev }),
     );
-    const harness = renderAutosave();
-    act(() => applyAction(Actions.split, harness().setEditorState, { blockIndex: 0, contentIndex: 0 }, 0));
-    expect(harness().editorState.history.entries).toHaveLength(1);
+    const harness = renderAutosave(brev);
+    act(() => applyAction(Actions.keepMissingInRenderedBlock, harness().setEditorState, 0));
 
     await vent(AUTOSAVE_TIMER);
 
     expect(oppdaterBrevtekstMock).toHaveBeenCalledOnce();
     expect(harness().editorState.saveStatus).toBe("SAVED");
+    expect(harness().redigertBrev.blocks[0].decision?.status).toBe("ACCEPTED");
     expect(harness().editorState.history.entries).toHaveLength(1);
+
+    act(() =>
+      harness().setEditorState((state) => {
+        const entry = state.history.entries[state.history.entryPointer];
+        if (entry.type !== "PATCH") throw new Error("Forventet angrebare patcher");
+        return {
+          ...applyPatches(state, entry.inversePatches),
+          saveStatus: "DIRTY",
+          history: { ...state.history, entryPointer: state.history.entryPointer - 1 },
+        };
+      }),
+    );
+
+    expect(harness().redigertBrev.blocks[0].id).toBe(block.id);
+    expect(harness().redigertBrev.blocks[0].decision?.status).toBe("PENDING");
+
+    await vent(AUTOSAVE_TIMER);
+
+    expect(oppdaterBrevtekstMock).toHaveBeenCalledTimes(2);
+    expect(harness().editorState.saveStatus).toBe("SAVED");
+    expect(harness().redigertBrev.blocks[0].decision?.status).toBe("PENDING");
+    expect(harness().redigertBrev.blocks[0].content).toEqual(block.content);
   });
-
-  test.each([true, undefined])(
-    "lagrer PENDING etter Behold, autolagring og Angre med missingFromTemplate=%s",
-    async (missingFromTemplate) => {
-      const block = withMissingInRendered(paragraph([literal({ text: "behold meg" })]));
-      const brev = {
-        ...lagretBrev,
-        redigertBrev: {
-          ...lagretBrev.redigertBrev,
-          blocks: [{ ...block, ...(missingFromTemplate === undefined ? {} : { missingFromTemplate }) }],
-        },
-      };
-      oppdaterBrevtekstMock.mockImplementation(({ redigertBrev }: { redigertBrev: EditedLetter }) =>
-        Promise.resolve({
-          ...brev,
-          redigertBrev: {
-            ...redigertBrev,
-            blocks: redigertBrev.blocks.map((block) => {
-              const decision =
-                block.missingFromTemplate === false && block.decision?.type === "MISSING_FROM_RENDERED"
-                  ? { ...block.decision, status: "ACCEPTED" as const }
-                  : block.decision;
-              return {
-                ...block,
-                decision,
-                missingFromTemplate: decision?.status === "PENDING",
-              };
-            }),
-          },
-        }),
-      );
-      const harness = renderAutosave(brev);
-      act(() => applyAction(Actions.keepMissingInRenderedBlock, harness().setEditorState, 0));
-
-      await vent(AUTOSAVE_TIMER);
-
-      expect(oppdaterBrevtekstMock).toHaveBeenCalledOnce();
-      expect(harness().editorState.saveStatus).toBe("SAVED");
-      expect(harness().redigertBrev.blocks[0].decision?.status).toBe("ACCEPTED");
-      expect(harness().redigertBrev.blocks[0].missingFromTemplate).toBe(false);
-      expect(harness().editorState.history.entries).toHaveLength(1);
-
-      act(() =>
-        harness().setEditorState((state) => {
-          const entry = state.history.entries[state.history.entryPointer];
-          if (entry.type !== "PATCH") throw new Error("Forventet angrebare patcher");
-          return {
-            ...applyPatches(state, entry.inversePatches),
-            saveStatus: "DIRTY",
-            history: { ...state.history, entryPointer: state.history.entryPointer - 1 },
-          };
-        }),
-      );
-
-      expect(harness().redigertBrev.blocks[0].id).toBe(block.id);
-      expect(harness().redigertBrev.blocks[0].decision?.status).toBe("PENDING");
-      expect(harness().redigertBrev.blocks[0].missingFromTemplate).toBe(missingFromTemplate);
-
-      await vent(AUTOSAVE_TIMER);
-
-      expect(oppdaterBrevtekstMock).toHaveBeenCalledTimes(2);
-      expect(harness().editorState.saveStatus).toBe("SAVED");
-      expect(harness().redigertBrev.blocks[0].decision?.status).toBe("PENDING");
-      expect(harness().redigertBrev.blocks[0].missingFromTemplate).toBe(true);
-      expect(harness().redigertBrev.blocks[0].content).toEqual(block.content);
-    },
-  );
 
   for (const ytelse of ["Uføretrygd", "alderspensjon"]) {
     test(`bevarer nyere lokale valg av ${ytelse} mens tekstvalglagringen pågår`, async () => {

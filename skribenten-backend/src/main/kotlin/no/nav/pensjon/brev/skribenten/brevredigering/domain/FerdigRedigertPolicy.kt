@@ -35,7 +35,12 @@ class FerdigRedigertPolicy {
     }
 
     private fun VersjonertBrev.alleDuplikateAvsnittErHaandtert(): Boolean = when (this) {
-        is VersjonertBrev.V1 -> brev.blocks.none { it.missingFromTemplate == true }
+        is VersjonertBrev.V1 -> brev.blocks.none { block ->
+            block.decision?.let { decision ->
+                decision.type == Edit.Block.DecisionRequest.Type.MISSING_FROM_RENDERED &&
+                        decision.status == Edit.Block.DecisionRequest.Decision.PENDING
+            } == true
+        }
         is VersjonertBrev.V2 -> brev.blocks.none { it.isPendingMissingFromTemplate() }
     }
 }
