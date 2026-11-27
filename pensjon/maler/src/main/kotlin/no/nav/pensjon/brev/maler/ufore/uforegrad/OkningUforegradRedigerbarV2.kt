@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektB
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Institusjonsopphold.JustertPeriodeCode
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Grunnlag
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Kravhode.Arsak
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Reduksjonsgrunnlag.BarnetilleggRegelverkTypeCode
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarResultat
@@ -44,9 +45,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.BarnetilleggFlereBarnFormatter
 import no.nav.pensjon.brev.maler.legacy.BarnetilleggFormatter
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated_Ny
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated_Ny
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
@@ -1046,7 +1044,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                     showIf(redGrunnlag.barnetilleggRegelverkType.equalTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and redGrunnlag.andelYtelseAvOIFU.greaterThan(95.0)) {
                         includePhrase(
-                            TBU3802_Generated_Ny(
+                            Barnetillegg.BarnetilleggOvergangsregler2016_Ny(
                                 virkningstidpunktAr = beregning.virkFom.year,
                                 andelYtelseAvOifu = redGrunnlag.andelYtelseAvOIFU,
                                 gradertOppjustertIfu = redGrunnlag.gradertOppjustertIFU,
@@ -1063,31 +1061,19 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 showIf(not(reduksjonsgrunnlag.barnetilleggRedusertTil0())) {
-                    ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
-                        showIf(sb.innvilget and not(barnetillegg.fellesbarnInnvilget())) {
-                            includePhrase(
-                                TBU2338_Generated_Ny(
-                                    btsbNetto = sb.netto,
-                                    beregningSivilstandAnvendt = grunnlag.anvendtSivilstand,
-                                    epsBorMed = grunnlag.epsBrukerBorMed,
-                                )
-                            )
-                        }
-                    }
-
-                    ifNotNull(barnetillegg.btFellesbarn) { fb ->
-                        showIf(fb.innvilget) {
-                            includePhrase(
-                                TBU2339_Generated_Ny(
-                                    btfbNetto = fb.netto,
-                                    btsbInnvilget = barnetillegg.serkullsbarnInnvilget(),
-                                    btfbInnvilget = fb.innvilget,
-                                    btMedFlereBarn = fb.antallBarn.greaterThan(1),
-                                    epsBorMed = grunnlag.epsBrukerBorMed,
-                                )
-                            )
-                        }
-                    }
+                    includePhrase(
+                        Barnetillegg.InntektensBetydningForBarnetillegg(
+                            harSaerkullstillegg = barnetillegg.serkullsbarnInnvilget(),
+                            harFellesbarnstillegg = barnetillegg.fellesbarnInnvilget(),
+                            nettoSaerkullstillegg = barnetillegg.btSerkullsbarn.safe { netto }.ifNull(Kroner(0)),
+                            nettoFellesbarnstillegg = barnetillegg.btFellesbarn.safe { netto }.ifNull(Kroner(0)),
+                            visAtEpsInntektIkkePaavirkerTillegget = grunnlag.anvendtSivilstand.notEqualTo(Grunnlag.AnvendtSivilstandCode.ENSLIG) and
+                                grunnlag.anvendtSivilstand.notEqualTo(Grunnlag.AnvendtSivilstandCode.ENSLIG_SEPARERT),
+                            fellesbarnOmtale = ifElse(barnetillegg.btFellesbarn.safe { antallBarn.greaterThan(1) }.ifNull(false), "barna", "barnet"),
+                            epsBokmal = grunnlag.epsBorMedBmEntall(),
+                            epsNynorsk = grunnlag.epsBorMedNnEntall(),
+                        )
+                    )
 
                     showIf(barnetillegg.erInnvilget()) {
                         paragraph {

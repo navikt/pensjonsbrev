@@ -16,9 +16,9 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.ufore.fraser.Barnetillegg
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
@@ -887,7 +887,19 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                     //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)   ) THEN      INCLUDE ENDIF
                     showIf(not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
-                        includePhrase(TBU2338_Generated(pe))
+                        includePhrase(
+                            Barnetillegg.InntektensBetydningForBarnetillegg(
+                                harSaerkullstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget(),
+                                harFellesbarnstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget(),
+                                nettoSaerkullstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto(),
+                                nettoFellesbarnstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto(),
+                                visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                                    .isNotAnyOf("enslig", "enslig separert"),
+                                fellesbarnOmtale = pe.ut_barnet_barna_felles(),
+                                epsBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
+                                epsNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(),
+                            )
+                        )
                     }
 
                     //[TBU2365_konverteringsbrev]
@@ -947,6 +959,3 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }
 }
-
-
-

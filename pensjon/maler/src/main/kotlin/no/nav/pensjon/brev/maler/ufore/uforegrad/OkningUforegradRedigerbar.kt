@@ -12,9 +12,6 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.uforeVedtak
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -1163,20 +1160,25 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             }
 
             showIf((reduksjonsgrunnlagBarentilleggRegelverkstype.equalTo("overgangsregler_2016") and reduksjonsgrunnlagAndelYtelseAvOifu.greaterThan(95.0))) {
-                includePhrase(TBU3802_Generated(pe))
+                includePhrase(Barnetillegg.BarnetilleggOvergangsregler2016(pe))
             }
 
             //IF (   NOT   (     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > 0     AND     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT = 0   ) ) THEN   INCLUDE ENDIF
             showIf((not(reduksjonsgrunnlagSumbruttoforreduksjonbt.greaterThan(0) and reduksjonsgrunnlagSumbruttoetterreduksjonbt.equalTo(0)))) {
 
-                //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)   ) THEN      INCLUDE ENDIF
-                showIf(((not(btFellesInnvilget) and btSerkullInnvilget))) {
-                    includePhrase(TBU2338_Generated(pe))
-                }
-
-                showIf(btFellesInnvilget) {
-                    includePhrase(TBU2339_Generated(pe))
-                }
+                includePhrase(
+                    Barnetillegg.InntektensBetydningForBarnetillegg(
+                        harSaerkullstillegg = btSerkullInnvilget,
+                        harFellesbarnstillegg = btFellesInnvilget,
+                        nettoSaerkullstillegg = btSerkullNetto,
+                        nettoFellesbarnstillegg = btFellesNetto,
+                        visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                            .isNotAnyOf("enslig", "enslig separert"),
+                        fellesbarnOmtale = pe.ut_barnet_barna_felles(),
+                        epsBokmal = epsBorMed,
+                        epsNynorsk = epsBorMedNnEntall,
+                    )
+                )
 
                 showIf((btInnvilget)) {
                     paragraph {

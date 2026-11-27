@@ -12,8 +12,6 @@ import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -587,13 +585,19 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
 
             showIf((not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0)))) {
 
-                showIf(((not(barnetilleggFellesInnvilget) and barnetilleggSerkullInnvilget))) {
-                    includePhrase(TBU2338_Generated(pe))
-                }
-
-                showIf(barnetilleggFellesInnvilget) {
-                    includePhrase(TBU2339_Generated(pe))
-                }
+                includePhrase(
+                    Barnetillegg.InntektensBetydningForBarnetillegg(
+                        harSaerkullstillegg = barnetilleggSerkullInnvilget,
+                        harFellesbarnstillegg = barnetilleggFellesInnvilget,
+                        nettoSaerkullstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto(),
+                        nettoFellesbarnstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto(),
+                        visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                            .isNotAnyOf("enslig", "enslig separert"),
+                        fellesbarnOmtale = pe.ut_barnet_barna_felles(),
+                        epsBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
+                        epsNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(),
+                    )
+                )
 
                 showIf((barnetilleggSerkullInnvilget or barnetilleggFellesInnvilget)) {
                     paragraph {
