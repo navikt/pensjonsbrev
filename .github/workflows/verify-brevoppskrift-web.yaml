@@ -19,6 +19,7 @@ jobs:
     with:
       workingDir: brevoppskrift-web
       runTests: false
+      runBffTests: true
 
   "klarTilMerge":
     name: "Klar til merge"
