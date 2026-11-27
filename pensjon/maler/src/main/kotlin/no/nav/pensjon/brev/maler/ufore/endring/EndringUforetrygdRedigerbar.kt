@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.uforeVedtak
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2280_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
@@ -1395,7 +1394,32 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
-                includePhrase(TBU2280_Generated(pe))
+                val harBarnetillegg =
+                    pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or
+                            pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
+
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Vi vil foreta et etteroppgjør hvis du har fått utbetalt for mye eller for lite uføretrygd " +
+                                    ifElse(harBarnetillegg, "og barnetillegg ", "") +
+                                    "i løpet av året. Dette gjør vi når likningen fra Skatteetaten er klar. Har du fått utbetalt for lite i uføretrygd" +
+                                    ifElse(harBarnetillegg, " og barnetillegg", "") +
+                                    ", vil vi utbetale dette beløpet til deg. Hvis du har fått utbetalt for mye i uføretrygd" +
+                                    ifElse(harBarnetillegg, " og barnetillegg", "") +
+                                    ", må du betale dette tilbake."
+                        },
+                        nynorsk {
+                            +"Vi gjer eit etteroppgjer dersom du har fått utbetalt for mykje eller for lite uføretrygd " +
+                                    ifElse(harBarnetillegg, "og barnetillegg ", "") +
+                                    "i løpet av året. Dette gjer vi når likninga frå Skatteetaten er klar. Har du fått utbetalt for lite i uføretrygd" +
+                                    ifElse(harBarnetillegg, " og barnetillegg", "") +
+                                    ", vil vi betale deg dette beløpet. Dersom du har fått utbetalt for mykje i uføretrygd" +
+                                    ifElse(harBarnetillegg, " og barnetillegg", "") +
+                                    ", må du betale dette tilbake."
+                        },
+                    )
+                }
             }
 
             showIf((barnetilleggInnvilget and pe.vedtaksdata_kravhode_sokerbt())) {
