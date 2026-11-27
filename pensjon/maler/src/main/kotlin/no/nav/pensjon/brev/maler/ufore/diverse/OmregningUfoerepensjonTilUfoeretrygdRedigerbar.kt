@@ -893,8 +893,8 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
                                 harFellesbarnstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget(),
                                 nettoSaerkullstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto(),
                                 nettoFellesbarnstillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto(),
-                                visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and
-                                    pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"),
+                                visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                                    .isNotAnyOf("enslig", "enslig separert"),
                                 fellesbarnOmtale = pe.ut_barnet_barna_felles(),
                                 epsBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
                                 epsNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(),

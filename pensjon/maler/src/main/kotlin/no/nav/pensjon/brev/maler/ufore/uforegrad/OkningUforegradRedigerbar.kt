@@ -1172,8 +1172,8 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                         harFellesbarnstillegg = btFellesInnvilget,
                         nettoSaerkullstillegg = btSerkullNetto,
                         nettoFellesbarnstillegg = btFellesNetto,
-                        visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and
-                            pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"),
+                        visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                            .isNotAnyOf("enslig", "enslig separert"),
                         fellesbarnOmtale = pe.ut_barnet_barna_felles(),
                         epsBokmal = epsBorMed,
                         epsNynorsk = epsBorMedNnEntall,

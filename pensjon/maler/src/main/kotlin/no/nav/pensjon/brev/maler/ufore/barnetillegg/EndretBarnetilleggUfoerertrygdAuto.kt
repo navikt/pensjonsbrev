@@ -100,8 +100,8 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                     harFellesbarnstillegg = btfbInnvilget,
                     nettoSaerkullstillegg = btsbNetto,
                     nettoFellesbarnstillegg = btfbNetto,
-                    visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and
-                        pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"),
+                    visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                        .isNotAnyOf("enslig", "enslig separert"),
                     fellesbarnOmtale = pe.ut_barnet_barna_felles(),
                     epsBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
                     epsNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(),
