@@ -240,7 +240,7 @@ secrets; ikke logg eller commit innholdet.
 ```shell
 ./brevoppskrift-backend/fetch-secrets.sh
 ./brevoppskrift-web/bff/fetch-secrets.sh
-./pensjon/brevbaker/fetch-secrets.sh
+(cd pensjon/brevbaker && ./fetch-secrets.sh)
 ./gradlew :brevoppskrift-backend:build :pensjon:brevbaker:build :brevbaker:pdf-bygger:build
 npm ci --prefix brevoppskrift-web/bff
 npm ci --prefix brevoppskrift-web/frontend
