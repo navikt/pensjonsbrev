@@ -3226,12 +3226,6 @@ export interface paths {
                         "application/json": components["schemas"]["ApiBrevInfo"];
                     };
                 };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
             };
         };
         put?: never;
@@ -4727,7 +4721,7 @@ export interface components {
          * EditBlockDecisionRequestType
          * @enum {string}
          */
-        EditBlockDecisionRequestType: "MISSING_FROM_RENDERED";
+        EditBlockDecisionRequestType: "MISSING_FROM_RENDERED" | "NEW_IN_RENDERED";
         /** EditBlockDecisionRequest */
         EditBlockDecisionRequest: {
             status: components["schemas"]["EditBlockDecisionRequestDecision"];
@@ -5006,6 +5000,21 @@ export interface components {
             leggVedFoersteside: boolean;
         };
         /**
+         * EditV2BlockDecisionRequestDecision
+         * @enum {string}
+         */
+        EditV2BlockDecisionRequestDecision: "ACCEPTED" | "PENDING";
+        /**
+         * EditV2BlockDecisionRequestType
+         * @enum {string}
+         */
+        EditV2BlockDecisionRequestType: "MISSING_FROM_RENDERED" | "NEW_IN_RENDERED";
+        /** EditV2BlockDecisionRequest */
+        EditV2BlockDecisionRequest: {
+            status: components["schemas"]["EditV2BlockDecisionRequestDecision"];
+            type: components["schemas"]["EditV2BlockDecisionRequestType"];
+        };
+        /**
          * EditV2EditBehaviour
          * @enum {string}
          */
@@ -5076,10 +5085,10 @@ export interface components {
         EditV2BlockType: "TITLE2" | "TITLE3" | "TITLE4" | "PARAGRAPH" | "ITEM_LIST" | "NUMBERED_LIST" | "TABLE";
         /** EditV2BlockItemList */
         EditV2BlockItemList: {
+            decision?: components["schemas"]["EditV2BlockDecisionRequest"] | null;
             deletedItems: number[];
             id?: number | null;
             items: components["schemas"]["EditV2Item"][];
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditV2BlockType"] | null;
             parentId?: number | null;
             /**
@@ -5090,10 +5099,10 @@ export interface components {
         };
         /** EditV2BlockNumberedList */
         EditV2BlockNumberedList: {
+            decision?: components["schemas"]["EditV2BlockDecisionRequest"] | null;
             deletedItems: number[];
             id?: number | null;
             items: components["schemas"]["EditV2Item"][];
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditV2BlockType"] | null;
             parentId?: number | null;
             /**
@@ -5139,10 +5148,10 @@ export interface components {
         };
         /** EditV2BlockTable */
         EditV2BlockTable: {
+            decision?: components["schemas"]["EditV2BlockDecisionRequest"] | null;
             deletedRows: number[];
             header: components["schemas"]["EditV2BlockTableHeader"];
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditV2BlockType"] | null;
             parentId?: number | null;
             rows: components["schemas"]["EditV2BlockTableRow"][];
@@ -5155,9 +5164,9 @@ export interface components {
         /** EditV2BlockParagraph */
         EditV2BlockParagraph: {
             content: components["schemas"]["EditV2Text"][];
+            decision?: components["schemas"]["EditV2BlockDecisionRequest"] | null;
             deletedContent: number[];
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditV2BlockType"] | null;
             parentId?: number | null;
             /**
@@ -5169,9 +5178,9 @@ export interface components {
         /** EditV2BlockTitle2 */
         EditV2BlockTitle2: {
             content: components["schemas"]["EditV2Text"][];
+            decision?: components["schemas"]["EditV2BlockDecisionRequest"] | null;
             deletedContent: number[];
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditV2BlockType"] | null;
             parentId?: number | null;
             /**
@@ -5183,9 +5192,9 @@ export interface components {
         /** EditV2BlockTitle3 */
         EditV2BlockTitle3: {
             content: components["schemas"]["EditV2Text"][];
+            decision?: components["schemas"]["EditV2BlockDecisionRequest"] | null;
             deletedContent: number[];
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditV2BlockType"] | null;
             parentId?: number | null;
             /**
@@ -5197,9 +5206,9 @@ export interface components {
         /** EditV2BlockTitle4 */
         EditV2BlockTitle4: {
             content: components["schemas"]["EditV2Text"][];
+            decision?: components["schemas"]["EditV2BlockDecisionRequest"] | null;
             deletedContent: number[];
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditV2BlockType"] | null;
             parentId?: number | null;
             /**
@@ -5714,6 +5723,9 @@ export type P1RedigerbarDtoUtfyllendeInstitusjon = components['schemas']['P1Redi
 export type P1RedigerbarDto = components['schemas']['P1RedigerbarDto'];
 export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
 export type ApiOppdaterFoerstesideRequest = components['schemas']['ApiOppdaterFoerstesideRequest'];
+export type EditV2BlockDecisionRequestDecision = components['schemas']['EditV2BlockDecisionRequestDecision'];
+export type EditV2BlockDecisionRequestType = components['schemas']['EditV2BlockDecisionRequestType'];
+export type EditV2BlockDecisionRequest = components['schemas']['EditV2BlockDecisionRequest'];
 export type EditV2EditBehaviour = components['schemas']['EditV2EditBehaviour'];
 export type EditV2FontType = components['schemas']['EditV2FontType'];
 export type EditV2TextType = components['schemas']['EditV2TextType'];

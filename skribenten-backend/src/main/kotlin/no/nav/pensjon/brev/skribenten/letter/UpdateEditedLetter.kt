@@ -3,6 +3,7 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brev.skribenten.letter.Edit.Block.DecisionRequest
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 
@@ -15,11 +16,12 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
  * if Sak-data has changed in pesys. Or elements (blocks/content) present in previous renders may no longer be
  * present.
  */
-fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
+fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup, previousRender: Edit.Letter? = null): Edit.Letter =
     renderedLetter.toEdit().let { rendered ->
         UpdateEditedLetter(VariableValuesUpdater(rendered)).mergeLetter(
             this,
-            rendered
+            rendered,
+            previousRender,
         )
     }
 
@@ -50,8 +52,8 @@ private fun mergeSignatur(edited: LetterMarkup.Signatur, rendered: LetterMarkup.
 
 class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
 
-    fun mergeLetter(edited: Edit.Letter, rendered: Edit.Letter): Edit.Letter =
-        mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock).let { merged ->
+    fun mergeLetter(edited: Edit.Letter, rendered: Edit.Letter, previousRender: Edit.Letter?): Edit.Letter =
+        mergeList(null, edited.blocks, withNewInRendered(rendered.blocks, previousRender), edited.deletedBlocks, ::mergeBlock).let { merged ->
             edited.copy(
                 title = mergeTitle(edited.title, rendered.title),
                 sakspart = rendered.sakspart,
@@ -126,7 +128,7 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                     // The currentEdited element is present in the fresh render.
 
                     // We add any new elements from the fresh render that precedes currentEdited in the fresh render.
-                    repeat((0 until renderedIndex).count()) { add(remainingRendered.removeFirst()) }
+                    repeat(renderedIndex) { add(remainingRendered.removeFirst()) }
 
                     // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one.
                     if (currentEdited.isEdited()) {
@@ -138,7 +140,7 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
                     add(
-                        withTemplateStatus(
+                        withDecision(
                             variableValues.withUpdatedVariables(currentEdited),
                             Edit.Block.DecisionRequest(
                                 type = Edit.Block.DecisionRequest.Type.MISSING_FROM_RENDERED,
@@ -165,24 +167,29 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
         when (edited) {
             is Edit.Block.Paragraph ->
                 mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent).let { merged ->
-                    edited.copy(content = merged.items, deletedContent = merged.deleted)
+                    edited.copy(content = merged.items, deletedContent = merged.deleted, decision = mergeDecision(edited, rendered))
                 }
 
             is Edit.Block.Title1 ->
                 mergeList(edited, edited.content, rendered.textContent(), edited.deletedContent, ::mergeTextContent).let { merged ->
-                    edited.copy(content = merged.items, deletedContent = merged.deleted)
+                    edited.copy(content = merged.items, deletedContent = merged.deleted, decision = mergeDecision(edited, rendered))
                 }
 
             is Edit.Block.Title2 ->
                 mergeList(edited, edited.content, rendered.textContent(), edited.deletedContent, ::mergeTextContent).let { merged ->
-                    edited.copy(content = merged.items, deletedContent = merged.deleted)
+                    edited.copy(content = merged.items, deletedContent = merged.deleted, decision = mergeDecision(edited, rendered))
                 }
 
             is Edit.Block.Title3 ->
                 mergeList(edited, edited.content, rendered.textContent(), edited.deletedContent, ::mergeTextContent).let { merged ->
-                    edited.copy(content = merged.items, deletedContent = merged.deleted)
+                    edited.copy(content = merged.items, deletedContent = merged.deleted, decision = mergeDecision(edited, rendered))
                 }
         }
+
+    // A block missing from the template keeps its decision request until Saksbehandler decides to keep or remove it.
+    private fun mergeDecision(edited: Edit.Block, rendered: Edit.Block): Edit.Block.DecisionRequest? =
+        edited.decision.takeIf { it?.type == DecisionRequest.Type.MISSING_FROM_RENDERED && it.status == DecisionRequest.Decision.PENDING }
+            ?: rendered.decision
 
     private fun Edit.Block.textContent(): List<Edit.ParagraphContent.Text> =
         when (this) {
@@ -262,8 +269,35 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
         }
 
 
+    /**
+     * Marks blocks in the fresh render that were not present in [previousRender] with a pending
+     * [DecisionRequest.Type.NEW_IN_RENDERED] decision request.
+     * Ids may occur several times in a render, so each occurrence in [previousRender] only accounts for one block.
+     * Occurrences aligned with [previousRender] (see [ListAlignment.matchedRenderedIndices]) are reserved first, so that
+     * a duplicate inserted before an existing occurrence is the one marked. Remaining occurrences are then consumed
+     * by reordered blocks in render order. Without a [previousRender] no blocks are marked.
+     */
+    private fun withNewInRendered(rendered: List<Edit.Block>, previousRender: Edit.Letter?): List<Edit.Block> {
+        if (previousRender == null) return rendered
+        val matchedIndices = ListAlignment.matchedRenderedIndices(previousRender.blocks, rendered)
+        val remainingOccurrences = previousRender.blocks.mapNotNull { it.id }.groupingBy { it }.eachCount().toMutableMap()
+        matchedIndices.forEach { index -> rendered[index].id?.let { id -> remainingOccurrences[id] = remainingOccurrences.getValue(id) - 1 } }
+
+        return rendered.mapIndexed { index, block ->
+            val id = block.id
+            if (id == null || index in matchedIndices) return@mapIndexed block
+            val remaining = remainingOccurrences[id] ?: 0
+            if (remaining > 0) {
+                remainingOccurrences[id] = remaining - 1
+                block
+            } else {
+                withDecision(block, DecisionRequest(DecisionRequest.Type.NEW_IN_RENDERED, DecisionRequest.Decision.PENDING))
+            }
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
-    private fun <E : Edit.Identifiable> withTemplateStatus(element: E, decisionRequest: Edit.Block.DecisionRequest): E =
+    private fun <E : Edit.Identifiable> withDecision(element: E, decisionRequest: DecisionRequest): E =
         when (element) {
             is Edit.Block.Title1 -> element.copy(decision = decisionRequest) as E
             is Edit.Block.Title2 -> element.copy(decision = decisionRequest) as E

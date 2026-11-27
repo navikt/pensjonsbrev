@@ -1124,4 +1124,166 @@ class UpdateEditedLetterV2Test {
         val result = edited.merge(rendered)
         assertEquals(emptyList<Int>(), (result.blocks.single() as EditV2.Block.Title2).deletedContent)
     }
+
+    private val newInRendered = EditV2.Block.DecisionRequest.newInRenderedPending
+    private val pendingMissingFromRendered = EditV2.Block.DecisionRequest.missingFromRenderedPending
+
+    @Test
+    fun `block not present in previous render is NEW_IN_RENDERED`() {
+        val previous = EditV2.Letter.from(letter(paragraph(1, literal(11, "Første"))))
+        val next = letter(
+            paragraph(1, literal(11, "Første")),
+            paragraph(2, literal(21, "Andre")),
+        )
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2, decision = newInRendered) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(expected, previous.merge(next, previousRender = previous))
+    }
+
+    @Test
+    fun `list and table blocks not present in previous render are NEW_IN_RENDERED`() {
+        val previous = EditV2.Letter.from(letter(paragraph(1, literal(11, "Første"))))
+        val next = letter(
+            paragraph(1, literal(11, "Første")),
+            itemList(2, item(21, literal(211, "Punkt"))),
+            table(3, header(31, columnSpec(311, literal(3111, "Kolonne"))), row(32, cell(321, literal(3211, "Celle")))),
+        )
+
+        val result = previous.merge(next, previousRender = previous)
+
+        assertEquals(listOf(null, newInRendered, newInRendered), result.blocks.map { it.decision })
+    }
+
+    @Test
+    fun `block that was NEW_IN_RENDERED has no decision when also present in previous render`() {
+        val previous = EditV2.Letter.from(letter(paragraph(1, literal(11, "Første"))))
+        val edited = editedLetter {
+            paragraph(id = 1, decision = newInRendered) { literal(id = 11, text = "Første", editedText = "Redigert") }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første", editedText = "Redigert") }
+        }
+
+        assertEquals(expected, edited.merge(letter(paragraph(1, literal(11, "Første"))), previousRender = previous))
+    }
+
+    @Test
+    fun `block present in edited letter but not in previous render is NEW_IN_RENDERED`() {
+        val previous = EditV2.Letter.from(letter(paragraph(1, literal(11, "Første"))))
+        val next = letter(
+            paragraph(1, literal(11, "Første")),
+            paragraph(2, literal(21, "Andre")),
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2) { literal(id = 21, text = "Andre") }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2, decision = newInRendered) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(expected, edited.merge(next, previousRender = previous))
+    }
+
+    @Test
+    fun `additional occurrence of an id from previous render is NEW_IN_RENDERED`() {
+        val previous = EditV2.Letter.from(letter(paragraph(1, literal(11, "Gjentatt"))))
+        val next = letter(
+            paragraph(1, literal(11, "Gjentatt")),
+            paragraph(1, literal(11, "Gjentatt")),
+        )
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Gjentatt") }
+            paragraph(id = 1, decision = newInRendered) { literal(id = 11, text = "Gjentatt") }
+        }
+
+        assertEquals(expected, previous.merge(next, previousRender = previous))
+    }
+
+    @Test
+    fun `duplicate inserted before an existing occurrence is NEW_IN_RENDERED`() {
+        val previous = EditV2.Letter.from(
+            letter(
+                paragraph(1, literal(11, "Første")),
+                paragraph(2, literal(21, "Gjentatt")),
+            )
+        )
+        val next = letter(
+            paragraph(2, literal(21, "Gjentatt")),
+            paragraph(1, literal(11, "Første")),
+            paragraph(2, literal(21, "Gjentatt")),
+        )
+        val expected = editedLetter {
+            paragraph(id = 2, decision = newInRendered) { literal(id = 21, text = "Gjentatt") }
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2) { literal(id = 21, text = "Gjentatt") }
+        }
+
+        assertEquals(expected, previous.merge(next, previousRender = previous))
+    }
+
+    @Test
+    fun `reordered block from previous render is not NEW_IN_RENDERED`() {
+        val previous = EditV2.Letter.from(
+            letter(
+                paragraph(1, literal(11, "Første")),
+                paragraph(2, literal(21, "Andre")),
+            )
+        )
+        val next = letter(
+            paragraph(2, literal(21, "Andre")),
+            paragraph(1, literal(11, "Første")),
+        )
+
+        assertEquals(EditV2.Letter.from(next), previous.merge(next, previousRender = previous))
+    }
+
+    @Test
+    fun `blocks added by saksbehandler and blocks missing from template are not NEW_IN_RENDERED`() {
+        val previous = EditV2.Letter.from(letter(paragraph(1, literal(11, "Første"))))
+        val next = letter(paragraph(2, literal(21, "Andre")))
+        val edited = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første", editedText = "Redigert") }
+            paragraph { literal(text = "Ny tekst") }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1, decision = pendingMissingFromRendered) { literal(id = 11, text = "Første", editedText = "Redigert") }
+            paragraph { literal(text = "Ny tekst") }
+            paragraph(id = 2, decision = newInRendered) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(expected, edited.merge(next, previousRender = previous))
+    }
+
+    @Test
+    fun `edited block missing from template that reappears keeps pending MISSING_FROM_RENDERED`() {
+        val previous = EditV2.Letter.from(letter(paragraph(2, literal(21, "Andre"))))
+        val next = letter(
+            paragraph(1, literal(11, "Første")),
+            paragraph(2, literal(21, "Andre")),
+        )
+        val edited = editedLetter {
+            paragraph(id = 1, decision = pendingMissingFromRendered) { literal(id = 11, text = "Første", editedText = "Redigert") }
+            paragraph(id = 2) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(edited, edited.merge(next, previousRender = previous))
+    }
+
+    @Test
+    fun `no block is NEW_IN_RENDERED without a previous render`() {
+        val next = letter(
+            paragraph(1, literal(11, "Første")),
+            paragraph(2, literal(21, "Andre")),
+        )
+        val edited = editedLetter {
+            paragraph(id = 1, decision = newInRendered) { literal(id = 11, text = "Første") }
+        }
+
+        assertEquals(EditV2.Letter.from(next), edited.merge(next, previousRender = null))
+    }
 }

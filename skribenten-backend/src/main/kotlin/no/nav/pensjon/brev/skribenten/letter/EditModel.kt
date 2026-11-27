@@ -106,7 +106,7 @@ object Edit {
 
         data class DecisionRequest(val type: Type, val status: Decision) {
             enum class Type {
-                MISSING_FROM_RENDERED
+                MISSING_FROM_RENDERED, NEW_IN_RENDERED
             }
 
             enum class Decision {

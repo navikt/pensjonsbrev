@@ -44,7 +44,7 @@ object EditV2 {
         fun withSignaturSaksbehandler(saksbehandlerNavn: String): Letter =
             copy(signatur = signatur.copy(saksbehandlerNavn = saksbehandlerNavn))
 
-        fun merge(rendered: LetterMarkup): Letter = UpdateEditedLetterV2.merge(this, rendered)
+        fun merge(rendered: LetterMarkup, previousRender: Letter? = null): Letter = UpdateEditedLetterV2.merge(this, rendered, previousRender)
 
         fun updateSaksinformasjonOgSignatur(rendered: LetterMarkup): Letter =
             UpdateEditedLetterV2.updateSaksinformasjonOgSignatur(this, rendered)
@@ -132,18 +132,15 @@ object EditV2 {
         abstract val decision: DecisionRequest?
 
         data class DecisionRequest(val type: Type, val status: Decision) {
-            enum class Type { MISSING_FROM_RENDERED }
+            enum class Type { MISSING_FROM_RENDERED, NEW_IN_RENDERED }
 
             enum class Decision { ACCEPTED, PENDING }
 
             companion object {
                 val missingFromRenderedPending = DecisionRequest(Type.MISSING_FROM_RENDERED, Decision.PENDING)
+                val newInRenderedPending = DecisionRequest(Type.NEW_IN_RENDERED, Decision.PENDING)
             }
         }
-
-        @JsonIgnore
-        fun isPendingMissingFromTemplate(): Boolean =
-            decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED && decision?.status == DecisionRequest.Decision.PENDING
 
         @JsonIgnore
         fun isChangedType(): Boolean = type != (originalType ?: type)
