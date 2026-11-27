@@ -252,6 +252,7 @@ test.describe("Kladd", () => {
     );
     await page.goto("/saksnummer/123456/brevvelger?brevId=1");
     await brevListResponsePromise;
+    await expect(page).toHaveURL(/\/brevvelger\/kladd\/1$/);
     await expect(page.getByText("Endre mottaker")).not.toBeVisible();
     await expect(page.getByText("Slett brev")).not.toBeVisible();
     await page.getByText("Fortsett").click();

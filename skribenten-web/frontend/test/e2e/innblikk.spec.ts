@@ -124,10 +124,16 @@ for (const environment of [
       );
 
       await page.goto(`${environment.skribenten}/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815#fragment`);
+      await expect(page).toHaveURL(/\/brevvelger\/mal\/E001\?enhetsId=%224815%22#fragment$/);
       await expect
-        .poll(() => events.find((event) => event.type === "event" && !event.payload.name))
+        .poll(() =>
+          events.find(
+            (event) => event.type === "event" && !event.payload.name && event.payload.url.endsWith("/mal/E001"),
+          ),
+        )
         .toMatchObject({
-          payload: { url: "/saksnummer/:saksId/brevvelger", title: "/saksnummer/:saksId/brevvelger", referrer: "" },
+          type: "event",
+          payload: { url: "/saksnummer/:saksId/brevvelger/mal/E001", title: "/saksnummer/:saksId/brevvelger/mal/E001" },
         });
       await page.getByRole("textbox", { name: "Mottaker" }).fill("Testmottaker");
       await page.getByTestId("order-letter").click();
@@ -138,7 +144,7 @@ for (const environment of [
           payload: {
             id: PENNY_ID,
             website: WEBSITE_ID,
-            url: "/saksnummer/:saksId/brevvelger",
+            url: "/saksnummer/:saksId/brevvelger/mal/E001",
             data: { brevkode: "E001", brevsystem: "exstream", landkode: "NOR" },
           },
         });
@@ -147,17 +153,30 @@ for (const environment of [
       expect(cookies).toHaveLength(1);
       expect(cookies[0].expires).toBe(expires);
 
-      await page.evaluate(() => {
-        history.pushState({}, "", "/saksnummer/123456/brev/987654?brevId=987654#fragment");
-      });
-      await expect
-        .poll(() =>
-          events.find(
-            (event) =>
-              event.type === "event" && !event.payload.name && event.payload.url === "/saksnummer/:saksId/brev/:brevId",
-          ),
-        )
-        .toMatchObject({ payload: { referrer: "/saksnummer/:saksId/brevvelger" } });
+      for (const [path, url, referrer] of [
+        [
+          "/saksnummer/123456/brevvelger/mal/UKJENT_KODE",
+          "/saksnummer/:saksId/brevvelger/mal/:templateId",
+          "/saksnummer/:saksId/brevvelger/mal/E001",
+        ],
+        [
+          "/saksnummer/123456/brevvelger/kladd/987654",
+          "/saksnummer/:saksId/brevvelger/kladd/:kladdId",
+          "/saksnummer/:saksId/brevvelger/mal/:templateId",
+        ],
+        [
+          "/saksnummer/123456/brev/987654/vedlegg/abc?enhetsId=4815#fragment",
+          "/saksnummer/:saksId/brev/:brevId/vedlegg/:vedleggId",
+          "/saksnummer/:saksId/brevvelger/kladd/:kladdId",
+        ],
+      ]) {
+        await page.evaluate((path) => history.pushState({}, "", path), path);
+        await expect
+          .poll(() =>
+            events.find((event) => event.type === "event" && !event.payload.name && event.payload.url === url),
+          )
+          .toMatchObject({ payload: { referrer } });
+      }
     });
 
     test("lager felles cookie før første sidevisning og observerer endringer fra Penny", async ({

@@ -244,7 +244,7 @@ test.describe("Endrer på mottaker", () => {
 
     // Assert we have switched to samhandler
     await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger/);
-    expect(page.url()).toContain("templateId=PE_IY_05_300");
+    expect(page.url()).toContain("/brevvelger/mal/PE_IY_05_300");
     expect(page.url()).toContain("idTSSEkstern=%2280000781720%22");
 
     await page.getByTestId("avsenderenhet-select").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
@@ -303,7 +303,7 @@ test.describe("Endrer på mottaker", () => {
 
     // Assert we have switched to samhandler
     await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger/);
-    expect(page.url()).toContain("templateId=PE_IY_05_300");
+    expect(page.url()).toContain("/brevvelger/mal/PE_IY_05_300");
     expect(page.url()).toContain("idTSSEkstern=%2280000781720%22");
 
     await page.getByTestId("avsenderenhet-select").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
@@ -363,7 +363,7 @@ test.describe("Endrer på mottaker", () => {
 
     // Assert we have switched to samhandler
     await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger/);
-    expect(page.url()).toContain("templateId=PE_IY_05_300");
+    expect(page.url()).toContain("/brevvelger/mal/PE_IY_05_300");
     expect(page.url()).toContain("idTSSEkstern=%2280000781720%22");
 
     await page.getByTestId("avsenderenhet-select").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });

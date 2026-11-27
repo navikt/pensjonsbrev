@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Heading, HStack, Label, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, redirect, useMatch, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -49,6 +49,17 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
     parse: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
   },
   validateSearch: (search) => brevRedigeringSearchSchema.parse(search),
+  beforeLoad: ({ search: { vedlegg }, params, location }) => {
+    if (vedlegg && /\/brev\/[^/]+\/?$/.test(location.pathname)) {
+      throw redirect({
+        to: "/saksnummer/$saksId/brev/$brevId/vedlegg/$vedleggId",
+        params: { ...params, vedleggId: vedlegg },
+        search: { ...location.search, vedlegg: undefined },
+        hash: location.hash,
+        replace: true,
+      });
+    }
+  },
   component: () => <RedigerBrevPage />,
 });
 
@@ -85,6 +96,7 @@ function RedigerBrevPage() {
 
     if (search.vedtaksId !== vedtaksIdAsString) {
       navigate({
+        unsafeRelative: "path",
         search: (prev) => ({
           ...prev,
           vedtaksId: vedtaksIdAsString,
@@ -192,9 +204,9 @@ function RedigerBrevPage() {
               <Button
                 onClick={() =>
                   navigate({
-                    to: "/saksnummer/$saksId/brevvelger",
-                    params: { saksId },
-                    search: { enhetsId, vedtaksId, brevId },
+                    to: "/saksnummer/$saksId/brevvelger/kladd/$kladdId",
+                    params: { saksId, kladdId: brevId },
+                    search: { enhetsId, vedtaksId },
                   })
                 }
                 size="small"
@@ -248,12 +260,25 @@ function RedigerBrev({
   vedtaksId: string | undefined;
 }) {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { enhetsId, vedlegg: activeVedlegg } = Route.useSearch();
+  const { enhetsId } = Route.useSearch();
+  const activeVedlegg = useMatch({
+    from: "/saksnummer_/$saksId/brev/$brevId/vedlegg/$vedleggId",
+    shouldThrow: false,
+    select: (match) => match.params.vedleggId,
+  });
   const editorStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
 
   const navigateToDocument = useCallback(
-    (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
+    (vedleggId: string | undefined) =>
+      vedleggId === undefined
+        ? navigate({ to: Route.fullPath, search: (prev) => ({ ...prev, vedlegg: undefined }), replace: true })
+        : navigate({
+            to: "/saksnummer/$saksId/brev/$brevId/vedlegg/$vedleggId",
+            params: (params) => ({ ...params, vedleggId }),
+            search: (prev) => ({ ...prev, vedlegg: undefined }),
+            replace: true,
+          }),
     [navigate],
   );
   const documentCoordinator = useActiveDocumentCoordinator({
@@ -283,9 +308,9 @@ function RedigerBrev({
     if (!(await documentCoordinator.savePendingDocuments())) return;
 
     await navigate({
-      to: "/saksnummer/$saksId/brevvelger",
-      params: { saksId },
-      search: (search) => ({ ...search, brevId: brev.info.id }),
+      to: "/saksnummer/$saksId/brevvelger/kladd/$kladdId",
+      params: { saksId, kladdId: brev.info.id },
+      search: (search) => ({ ...search, vedlegg: undefined }),
     });
   };
 

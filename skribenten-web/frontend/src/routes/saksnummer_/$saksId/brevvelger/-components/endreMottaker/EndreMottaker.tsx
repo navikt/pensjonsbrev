@@ -18,7 +18,7 @@ const EndreMottaker = (properties: {
   saksId: string;
 }) => {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
-  const navigate = useNavigate({ from: Route.fullPath });
+  const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger/mal/$templateId" });
   const { idTSSEkstern } = Route.useSearch();
 
   const mottaker: Nullable<Mottaker> = idTSSEkstern ? { type: "Samhandler", tssId: idTSSEkstern, navn: null } : null;

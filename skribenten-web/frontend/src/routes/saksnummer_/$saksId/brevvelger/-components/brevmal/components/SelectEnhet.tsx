@@ -5,10 +5,8 @@ import { Controller } from "react-hook-form";
 
 import { getEnheter } from "~/api/skribenten-api-endpoints";
 
-import { Route } from "../../../route";
-
 function SelectEnhet() {
-  const navigate = useNavigate({ from: Route.fullPath });
+  const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger/mal/$templateId" });
   const enheterQuery = useQuery(getEnheter);
   const options = enheterQuery.data ?? [];
 

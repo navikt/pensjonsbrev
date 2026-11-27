@@ -8,6 +8,7 @@ import { enablePatches } from "immer";
 import React from "react";
 import ReactDOM from "react-dom/client";
 
+import { getBrevmetadata } from "~/api/brev-queries";
 import { GlobalError } from "~/components/GlobalError";
 import { initInnblikk } from "~/utils/innblikk";
 
@@ -47,7 +48,17 @@ const router = createRouter({
 
 initInnblikk((pathname) => {
   const [, params, route] = router.getMatchedRoutes(pathname);
-  return params["**"] ? undefined : route?.fullPath;
+  if (params["**"] || !route) return undefined;
+  const { fullPath } = route;
+  const templateId = params.templateId;
+  if (fullPath !== "/saksnummer/$saksId/brevvelger/mal/$templateId" || !/^[\w-]+$/.test(templateId ?? "")) {
+    return fullPath;
+  }
+  return queryClient.ensureQueryData(getBrevmetadata).then(
+    (metadata) =>
+      metadata.some((mal) => mal.id === templateId) ? fullPath.replace("$templateId", () => templateId) : fullPath,
+    () => fullPath,
+  );
 });
 
 // Register things for typesafety

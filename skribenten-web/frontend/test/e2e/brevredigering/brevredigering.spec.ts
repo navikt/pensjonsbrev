@@ -79,7 +79,7 @@ test.describe("Brevredigering", () => {
     await expect(page.getByText("En feil skjedde ved henting av brev")).toBeVisible({ timeout: 15_000 });
     expect(requestCount).toBe(4);
     await page.getByRole("button", { name: "Gå til brevvelger" }).click();
-    await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger\?brevId=1/);
+    await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger\/kladd\/1(?:\?|$)/);
   });
 
   test("Autolagrer etter redigering", async ({ page }) => {

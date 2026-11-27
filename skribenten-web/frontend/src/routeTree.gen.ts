@@ -21,6 +21,10 @@ import { Route as SaksnummerSaksIdBrevBrevIdRouteImport } from './routes/saksnum
 import { Route as SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/forhandsvisning'
 import { Route as SaksnummerSaksIdAttesterBrevIdKvitteringRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/kvittering'
 import { Route as SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/redigering'
+import { Route as SaksnummerSaksIdBrevvelgerKladdKladdIdRouteImport } from './routes/saksnummer_/$saksId/brevvelger/kladd.$kladdId'
+import { Route as SaksnummerSaksIdBrevvelgerMalTemplateIdRouteImport } from './routes/saksnummer_/$saksId/brevvelger/mal.$templateId'
+import { Route as SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRouteImport } from './routes/saksnummer_/$saksId/brev.$brevId.vedlegg.$vedleggId'
+import { Route as SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/redigering.vedlegg.$vedleggId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -89,6 +93,30 @@ const SaksnummerSaksIdAttesterBrevIdRedigeringRoute =
     path: '/attester/$brevId/redigering',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
+const SaksnummerSaksIdBrevvelgerKladdKladdIdRoute =
+  SaksnummerSaksIdBrevvelgerKladdKladdIdRouteImport.update({
+    id: '/kladd/$kladdId',
+    path: '/kladd/$kladdId',
+    getParentRoute: () => SaksnummerSaksIdBrevvelgerRouteRoute,
+  } as any)
+const SaksnummerSaksIdBrevvelgerMalTemplateIdRoute =
+  SaksnummerSaksIdBrevvelgerMalTemplateIdRouteImport.update({
+    id: '/mal/$templateId',
+    path: '/mal/$templateId',
+    getParentRoute: () => SaksnummerSaksIdBrevvelgerRouteRoute,
+  } as any)
+const SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRoute =
+  SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRouteImport.update({
+    id: '/vedlegg/$vedleggId',
+    path: '/vedlegg/$vedleggId',
+    getParentRoute: () => SaksnummerSaksIdBrevBrevIdRoute,
+  } as any)
+const SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRoute =
+  SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRouteImport.update({
+    id: '/vedlegg/$vedleggId',
+    path: '/vedlegg/$vedleggId',
+    getParentRoute: () => SaksnummerSaksIdAttesterBrevIdRedigeringRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -97,12 +125,16 @@ export interface FileRoutesByFullPath {
   '/saksnummer/': typeof SaksnummerIndexRoute
   '/aapne/brev/$brevId': typeof AapneBrevBrevIdRouteRoute
   '/saksnummer/$saksId/brevbehandler': typeof SaksnummerSaksIdBrevbehandlerRouteRoute
-  '/saksnummer/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRoute
+  '/saksnummer/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRouteWithChildren
   '/saksnummer/$saksId/kvittering': typeof SaksnummerSaksIdKvitteringRouteRoute
-  '/saksnummer/$saksId/brev/$brevId': typeof SaksnummerSaksIdBrevBrevIdRoute
+  '/saksnummer/$saksId/brev/$brevId': typeof SaksnummerSaksIdBrevBrevIdRouteWithChildren
   '/saksnummer/$saksId/attester/$brevId/forhandsvisning': typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute
   '/saksnummer/$saksId/attester/$brevId/kvittering': typeof SaksnummerSaksIdAttesterBrevIdKvitteringRoute
-  '/saksnummer/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRoute
+  '/saksnummer/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteWithChildren
+  '/saksnummer/$saksId/brevvelger/kladd/$kladdId': typeof SaksnummerSaksIdBrevvelgerKladdKladdIdRoute
+  '/saksnummer/$saksId/brevvelger/mal/$templateId': typeof SaksnummerSaksIdBrevvelgerMalTemplateIdRoute
+  '/saksnummer/$saksId/brev/$brevId/vedlegg/$vedleggId': typeof SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRoute
+  '/saksnummer/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId': typeof SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -111,12 +143,16 @@ export interface FileRoutesByTo {
   '/saksnummer': typeof SaksnummerIndexRoute
   '/aapne/brev/$brevId': typeof AapneBrevBrevIdRouteRoute
   '/saksnummer/$saksId/brevbehandler': typeof SaksnummerSaksIdBrevbehandlerRouteRoute
-  '/saksnummer/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRoute
+  '/saksnummer/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRouteWithChildren
   '/saksnummer/$saksId/kvittering': typeof SaksnummerSaksIdKvitteringRouteRoute
-  '/saksnummer/$saksId/brev/$brevId': typeof SaksnummerSaksIdBrevBrevIdRoute
+  '/saksnummer/$saksId/brev/$brevId': typeof SaksnummerSaksIdBrevBrevIdRouteWithChildren
   '/saksnummer/$saksId/attester/$brevId/forhandsvisning': typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute
   '/saksnummer/$saksId/attester/$brevId/kvittering': typeof SaksnummerSaksIdAttesterBrevIdKvitteringRoute
-  '/saksnummer/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRoute
+  '/saksnummer/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteWithChildren
+  '/saksnummer/$saksId/brevvelger/kladd/$kladdId': typeof SaksnummerSaksIdBrevvelgerKladdKladdIdRoute
+  '/saksnummer/$saksId/brevvelger/mal/$templateId': typeof SaksnummerSaksIdBrevvelgerMalTemplateIdRoute
+  '/saksnummer/$saksId/brev/$brevId/vedlegg/$vedleggId': typeof SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRoute
+  '/saksnummer/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId': typeof SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -126,12 +162,16 @@ export interface FileRoutesById {
   '/saksnummer/': typeof SaksnummerIndexRoute
   '/aapne/brev/$brevId': typeof AapneBrevBrevIdRouteRoute
   '/saksnummer_/$saksId/brevbehandler': typeof SaksnummerSaksIdBrevbehandlerRouteRoute
-  '/saksnummer_/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRoute
+  '/saksnummer_/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRouteWithChildren
   '/saksnummer_/$saksId/kvittering': typeof SaksnummerSaksIdKvitteringRouteRoute
-  '/saksnummer_/$saksId/brev/$brevId': typeof SaksnummerSaksIdBrevBrevIdRoute
+  '/saksnummer_/$saksId/brev/$brevId': typeof SaksnummerSaksIdBrevBrevIdRouteWithChildren
   '/saksnummer_/$saksId/attester/$brevId/forhandsvisning': typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute
   '/saksnummer_/$saksId/attester/$brevId/kvittering': typeof SaksnummerSaksIdAttesterBrevIdKvitteringRoute
-  '/saksnummer_/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRoute
+  '/saksnummer_/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteWithChildren
+  '/saksnummer_/$saksId/brevvelger/kladd/$kladdId': typeof SaksnummerSaksIdBrevvelgerKladdKladdIdRoute
+  '/saksnummer_/$saksId/brevvelger/mal/$templateId': typeof SaksnummerSaksIdBrevvelgerMalTemplateIdRoute
+  '/saksnummer_/$saksId/brev/$brevId/vedlegg/$vedleggId': typeof SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRoute
+  '/saksnummer_/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId': typeof SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -148,6 +188,10 @@ export interface FileRouteTypes {
     | '/saksnummer/$saksId/attester/$brevId/forhandsvisning'
     | '/saksnummer/$saksId/attester/$brevId/kvittering'
     | '/saksnummer/$saksId/attester/$brevId/redigering'
+    | '/saksnummer/$saksId/brevvelger/kladd/$kladdId'
+    | '/saksnummer/$saksId/brevvelger/mal/$templateId'
+    | '/saksnummer/$saksId/brev/$brevId/vedlegg/$vedleggId'
+    | '/saksnummer/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -162,6 +206,10 @@ export interface FileRouteTypes {
     | '/saksnummer/$saksId/attester/$brevId/forhandsvisning'
     | '/saksnummer/$saksId/attester/$brevId/kvittering'
     | '/saksnummer/$saksId/attester/$brevId/redigering'
+    | '/saksnummer/$saksId/brevvelger/kladd/$kladdId'
+    | '/saksnummer/$saksId/brevvelger/mal/$templateId'
+    | '/saksnummer/$saksId/brev/$brevId/vedlegg/$vedleggId'
+    | '/saksnummer/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId'
   id:
     | '__root__'
     | '/'
@@ -176,6 +224,10 @@ export interface FileRouteTypes {
     | '/saksnummer_/$saksId/attester/$brevId/forhandsvisning'
     | '/saksnummer_/$saksId/attester/$brevId/kvittering'
     | '/saksnummer_/$saksId/attester/$brevId/redigering'
+    | '/saksnummer_/$saksId/brevvelger/kladd/$kladdId'
+    | '/saksnummer_/$saksId/brevvelger/mal/$templateId'
+    | '/saksnummer_/$saksId/brev/$brevId/vedlegg/$vedleggId'
+    | '/saksnummer_/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -272,31 +324,108 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteRoute
     }
+    '/saksnummer_/$saksId/brevvelger/kladd/$kladdId': {
+      id: '/saksnummer_/$saksId/brevvelger/kladd/$kladdId'
+      path: '/kladd/$kladdId'
+      fullPath: '/saksnummer/$saksId/brevvelger/kladd/$kladdId'
+      preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerKladdKladdIdRouteImport
+      parentRoute: typeof SaksnummerSaksIdBrevvelgerRouteRoute
+    }
+    '/saksnummer_/$saksId/brevvelger/mal/$templateId': {
+      id: '/saksnummer_/$saksId/brevvelger/mal/$templateId'
+      path: '/mal/$templateId'
+      fullPath: '/saksnummer/$saksId/brevvelger/mal/$templateId'
+      preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerMalTemplateIdRouteImport
+      parentRoute: typeof SaksnummerSaksIdBrevvelgerRouteRoute
+    }
+    '/saksnummer_/$saksId/brev/$brevId/vedlegg/$vedleggId': {
+      id: '/saksnummer_/$saksId/brev/$brevId/vedlegg/$vedleggId'
+      path: '/vedlegg/$vedleggId'
+      fullPath: '/saksnummer/$saksId/brev/$brevId/vedlegg/$vedleggId'
+      preLoaderRoute: typeof SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRouteImport
+      parentRoute: typeof SaksnummerSaksIdBrevBrevIdRoute
+    }
+    '/saksnummer_/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId': {
+      id: '/saksnummer_/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId'
+      path: '/vedlegg/$vedleggId'
+      fullPath: '/saksnummer/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId'
+      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRouteImport
+      parentRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringRoute
+    }
   }
 }
 
+interface SaksnummerSaksIdBrevvelgerRouteRouteChildren {
+  SaksnummerSaksIdBrevvelgerKladdKladdIdRoute: typeof SaksnummerSaksIdBrevvelgerKladdKladdIdRoute
+  SaksnummerSaksIdBrevvelgerMalTemplateIdRoute: typeof SaksnummerSaksIdBrevvelgerMalTemplateIdRoute
+}
+
+const SaksnummerSaksIdBrevvelgerRouteRouteChildren: SaksnummerSaksIdBrevvelgerRouteRouteChildren =
+  {
+    SaksnummerSaksIdBrevvelgerKladdKladdIdRoute:
+      SaksnummerSaksIdBrevvelgerKladdKladdIdRoute,
+    SaksnummerSaksIdBrevvelgerMalTemplateIdRoute:
+      SaksnummerSaksIdBrevvelgerMalTemplateIdRoute,
+  }
+
+const SaksnummerSaksIdBrevvelgerRouteRouteWithChildren =
+  SaksnummerSaksIdBrevvelgerRouteRoute._addFileChildren(
+    SaksnummerSaksIdBrevvelgerRouteRouteChildren,
+  )
+
+interface SaksnummerSaksIdBrevBrevIdRouteChildren {
+  SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRoute: typeof SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRoute
+}
+
+const SaksnummerSaksIdBrevBrevIdRouteChildren: SaksnummerSaksIdBrevBrevIdRouteChildren =
+  {
+    SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRoute:
+      SaksnummerSaksIdBrevBrevIdVedleggVedleggIdRoute,
+  }
+
+const SaksnummerSaksIdBrevBrevIdRouteWithChildren =
+  SaksnummerSaksIdBrevBrevIdRoute._addFileChildren(
+    SaksnummerSaksIdBrevBrevIdRouteChildren,
+  )
+
+interface SaksnummerSaksIdAttesterBrevIdRedigeringRouteChildren {
+  SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRoute
+}
+
+const SaksnummerSaksIdAttesterBrevIdRedigeringRouteChildren: SaksnummerSaksIdAttesterBrevIdRedigeringRouteChildren =
+  {
+    SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRoute:
+      SaksnummerSaksIdAttesterBrevIdRedigeringVedleggVedleggIdRoute,
+  }
+
+const SaksnummerSaksIdAttesterBrevIdRedigeringRouteWithChildren =
+  SaksnummerSaksIdAttesterBrevIdRedigeringRoute._addFileChildren(
+    SaksnummerSaksIdAttesterBrevIdRedigeringRouteChildren,
+  )
+
 interface SaksnummerSaksIdRouteRouteChildren {
   SaksnummerSaksIdBrevbehandlerRouteRoute: typeof SaksnummerSaksIdBrevbehandlerRouteRoute
-  SaksnummerSaksIdBrevvelgerRouteRoute: typeof SaksnummerSaksIdBrevvelgerRouteRoute
+  SaksnummerSaksIdBrevvelgerRouteRoute: typeof SaksnummerSaksIdBrevvelgerRouteRouteWithChildren
   SaksnummerSaksIdKvitteringRouteRoute: typeof SaksnummerSaksIdKvitteringRouteRoute
-  SaksnummerSaksIdBrevBrevIdRoute: typeof SaksnummerSaksIdBrevBrevIdRoute
+  SaksnummerSaksIdBrevBrevIdRoute: typeof SaksnummerSaksIdBrevBrevIdRouteWithChildren
   SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute: typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute
   SaksnummerSaksIdAttesterBrevIdKvitteringRoute: typeof SaksnummerSaksIdAttesterBrevIdKvitteringRoute
-  SaksnummerSaksIdAttesterBrevIdRedigeringRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringRoute
+  SaksnummerSaksIdAttesterBrevIdRedigeringRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteWithChildren
 }
 
 const SaksnummerSaksIdRouteRouteChildren: SaksnummerSaksIdRouteRouteChildren = {
   SaksnummerSaksIdBrevbehandlerRouteRoute:
     SaksnummerSaksIdBrevbehandlerRouteRoute,
-  SaksnummerSaksIdBrevvelgerRouteRoute: SaksnummerSaksIdBrevvelgerRouteRoute,
+  SaksnummerSaksIdBrevvelgerRouteRoute:
+    SaksnummerSaksIdBrevvelgerRouteRouteWithChildren,
   SaksnummerSaksIdKvitteringRouteRoute: SaksnummerSaksIdKvitteringRouteRoute,
-  SaksnummerSaksIdBrevBrevIdRoute: SaksnummerSaksIdBrevBrevIdRoute,
+  SaksnummerSaksIdBrevBrevIdRoute: SaksnummerSaksIdBrevBrevIdRouteWithChildren,
   SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute:
     SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute,
   SaksnummerSaksIdAttesterBrevIdKvitteringRoute:
     SaksnummerSaksIdAttesterBrevIdKvitteringRoute,
   SaksnummerSaksIdAttesterBrevIdRedigeringRoute:
-    SaksnummerSaksIdAttesterBrevIdRedigeringRoute,
+    SaksnummerSaksIdAttesterBrevIdRedigeringRouteWithChildren,
 }
 
 const SaksnummerSaksIdRouteRouteWithChildren =

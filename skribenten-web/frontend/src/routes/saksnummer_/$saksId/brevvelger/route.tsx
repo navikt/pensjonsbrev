@@ -15,7 +15,7 @@ import {
   VStack,
 } from "@navikt/ds-react";
 import { type UseQueryResult, useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useMatch, useNavigate } from "@tanstack/react-router";
 import Fuse from "fuse.js";
 import { groupBy, partition, sortBy } from "lodash";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -47,6 +47,29 @@ type BrevvelgerSearch = z.infer<typeof brevvelgerSearchSchema>;
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
   validateSearch: (search): BrevvelgerSearch => brevvelgerSearchSchema.parse(search),
+  beforeLoad: ({ search, params: { saksId }, location }) => {
+    if (!/\/brevvelger\/?$/.test(location.pathname)) return;
+    const { brevId, templateId } = search;
+    const remainingSearch = { ...location.search, brevId: undefined, templateId: undefined };
+    if (templateId) {
+      throw redirect({
+        to: "/saksnummer/$saksId/brevvelger/mal/$templateId",
+        params: { saksId, templateId },
+        search: remainingSearch,
+        hash: location.hash,
+        replace: true,
+      });
+    }
+    if (brevId !== undefined) {
+      throw redirect({
+        to: "/saksnummer/$saksId/brevvelger/kladd/$kladdId",
+        params: { saksId, kladdId: brevId },
+        search: remainingSearch,
+        hash: location.hash,
+        replace: true,
+      });
+    }
+  },
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
   loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
     context.queryClient.prefetchQuery(getBrevmetadata);
@@ -113,7 +136,17 @@ const BrevvelgerMainContent = (props: {
   alleSaksbrevQuery: UseQueryResult<BrevInfo[], Error>;
   setOnSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
-  const { brevId, templateId, enhetsId } = Route.useSearch();
+  const { enhetsId } = Route.useSearch();
+  const templateId = useMatch({
+    from: "/saksnummer_/$saksId/brevvelger/mal/$templateId",
+    shouldThrow: false,
+    select: (match) => match.params.templateId,
+  });
+  const brevId = useMatch({
+    from: "/saksnummer_/$saksId/brevvelger/kladd/$kladdId",
+    shouldThrow: false,
+    select: (match) => match.params.kladdId,
+  });
   const { brevmalKoder, brevmetadata } = props;
   const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({});
 
@@ -149,6 +182,7 @@ const BrevvelgerMainContent = (props: {
                 }))
               }
               openAccordions={openAccordions}
+              templateId={templateId}
             />
           </VStack>
         </Box>
@@ -172,15 +206,16 @@ function Brevmaler({
   alleSaksbrev,
   openAccordions,
   handleOpenAccordionChange,
+  templateId,
 }: {
   brevmalKoder: string[];
   brevmetadata: Record<string, LetterMetadata>;
   alleSaksbrev: UseQueryResult<BrevInfo[], Error>;
   openAccordions: Record<string, boolean>;
   handleOpenAccordionChange: (categoryKey: string) => void;
+  templateId: string | undefined;
 }) {
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
-  const { templateId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const favoritter = useQuery(getFavoritter).data ?? [];
@@ -340,10 +375,11 @@ function Brevmaler({
                             }
 
                             navigate({
-                              to: "/saksnummer/$saksId/brevvelger",
+                              to: "/saksnummer/$saksId/brevvelger/mal/$templateId",
+                              params: (params) => ({ ...params, templateId: template.id }),
                               search: (s) => ({
                                 ...s,
-                                templateId: template.id,
+                                templateId: undefined,
                                 brevId: undefined,
                               }),
                             });
@@ -396,10 +432,11 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                 key={brev.id}
                 onClick={() =>
                   navigate({
-                    to: "/saksnummer/$saksId/brevvelger",
+                    to: "/saksnummer/$saksId/brevvelger/kladd/$kladdId",
+                    params: (params) => ({ ...params, kladdId: brev.id }),
                     search: (s) => ({
                       ...s,
-                      brevId: brev.id,
+                      brevId: undefined,
                       templateId: undefined,
                       enhetsId: brev.avsenderEnhet.enhetNr,
                       ...(brev.vedtaksId != null && { vedtaksId: String(brev.vedtaksId) }),

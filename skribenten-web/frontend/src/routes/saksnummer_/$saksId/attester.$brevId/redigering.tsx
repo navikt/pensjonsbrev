@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, Heading, Label, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, redirect, useMatch, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -53,6 +53,17 @@ const attesteringSearchSchema = baseSearchSchema.extend({
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redigering")({
   validateSearch: (search) => attesteringSearchSchema.parse(search),
+  beforeLoad: ({ search: { vedlegg }, params, location }) => {
+    if (vedlegg && /\/redigering\/?$/.test(location.pathname)) {
+      throw redirect({
+        to: "/saksnummer/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId",
+        params: { ...params, vedleggId: vedlegg },
+        search: { ...location.search, vedlegg: undefined },
+        hash: location.hash,
+        replace: true,
+      });
+    }
+  },
   component: () => <VedtakWrapper />,
 });
 
@@ -192,7 +203,11 @@ const VedtakWrapper = () => {
 
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { vedlegg: activeVedlegg } = Route.useSearch();
+  const activeVedlegg = useMatch({
+    from: "/saksnummer_/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId",
+    shouldThrow: false,
+    select: (match) => match.params.vedleggId,
+  });
   const { editorState, redigertBrev, setEditorState, saveLetterOperation, registerSaveErrorReset, savePendingChanges } =
     useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
@@ -202,7 +217,15 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
 
   const navigateToDocument = useCallback(
-    (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
+    (vedleggId: string | undefined) =>
+      vedleggId === undefined
+        ? navigate({ to: Route.fullPath, search: (prev) => ({ ...prev, vedlegg: undefined }), replace: true })
+        : navigate({
+            to: "/saksnummer/$saksId/attester/$brevId/redigering/vedlegg/$vedleggId",
+            params: (params) => ({ ...params, vedleggId }),
+            search: (prev) => ({ ...prev, vedlegg: undefined }),
+            replace: true,
+          }),
     [navigate],
   );
   const documentCoordinator = useActiveDocumentCoordinator({

@@ -308,7 +308,7 @@ test.describe("Redigerbare vedlegg", () => {
 
     await expect(page.getByRole("heading", { name: "Klarte ikke å hente vedlegg" })).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeHidden();
-    await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));
+    await expect(page).toHaveURL(new RegExp(`/vedlegg/${VEDLEGG_ID}(?:\\?|$)`));
     await expect(page.getByRole("tab", { name: "Vedlegg" })).toHaveAttribute("aria-selected", "true");
   });
 
@@ -323,12 +323,18 @@ test.describe("Redigerbare vedlegg", () => {
     ).toHaveAttribute("aria-expanded", "true");
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeHidden();
-    await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));
+    await expect(page).toHaveURL(new RegExp(`/vedlegg/${VEDLEGG_ID}(?:\\?|$)`));
   });
 
-  test("dyplenke til et vedlegg åpner vedlegg-fanen", async ({ page }) => {
-    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+  test("dyplenke åpner vedlegg-fanen og beholder vedlegget når vedtaksId legges til", async ({ page }) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
+      route.fulfill({ json: { ...brevResponse, info: { ...brevResponse.info, vedtaksId: 123 } } }),
+    );
+    await page.goto(`/saksnummer/123456/brev/1/vedlegg/${VEDLEGG_ID}?enhetsId=4815`);
 
+    await expect(page).toHaveURL(new RegExp(`/vedlegg/${VEDLEGG_ID}\\?`));
+    await expect(page).toHaveURL((url) => url.searchParams.get("vedtaksId") === '"123"');
+    expect(page.url()).toContain("enhetsId=");
     await expect(page.getByRole("tab", { name: "Vedlegg" })).toHaveAttribute("aria-selected", "true");
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
   });
@@ -336,7 +342,7 @@ test.describe("Redigerbare vedlegg", () => {
   test("ukjent vedlegg i dyplenke går tilbake til brevet og brevmal-fanen", async ({ page }) => {
     await page.goto("/saksnummer/123456/brev/1?vedlegg=finnes-ikke");
 
-    await expect(page).not.toHaveURL(/vedlegg=/);
+    await expect(page).toHaveURL(/\/brev\/1$/);
     await expect(page.getByRole("tab", { name: "Brevmal" })).toHaveAttribute("aria-selected", "true");
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
@@ -646,7 +652,7 @@ test.describe("Redigerbare vedlegg", () => {
       .catch(() => undefined);
 
     await expect.poll(() => lagringsforsoek, { timeout: 10_000 }).toBe(2);
-    await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));
+    await expect(page).toHaveURL(new RegExp(`/vedlegg/${VEDLEGG_ID}(?:\\?|$)`));
     expect(brevLagret).toBe(false);
   });
 
@@ -685,7 +691,7 @@ test.describe("Redigerbare vedlegg", () => {
     await page.getByRole("button", { name: "Tilbake til brevvelger" }).click();
 
     await expect(page.getByText("Klarte ikke lagre")).toBeVisible();
-    await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));
+    await expect(page).toHaveURL(new RegExp(`/vedlegg/${VEDLEGG_ID}(?:\\?|$)`));
     expect(lagringsforsoek).toBe(1);
   });
 
@@ -751,7 +757,7 @@ test.describe("Redigerbare vedlegg", () => {
       page.getByRole("region", { name: VEDLEGG_TITTEL }).getByRole("button", { name: "Vis mer" }),
     ).toHaveAttribute("aria-expanded", "true");
     await expect(page.getByText(ANNET_VEDLEGG_BROEDTEKST)).toBeHidden();
-    await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));
+    await expect(page).toHaveURL(new RegExp(`/vedlegg/${VEDLEGG_ID}(?:\\?|$)`));
     expect(lagringsforsoek).toBe(1);
   });
 
@@ -850,7 +856,7 @@ test.describe("Redigerbare vedlegg", () => {
     saveResponse.resolve();
 
     await expect(page.getByText("Klarte ikke lagre")).toBeVisible();
-    await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));
+    await expect(page).toHaveURL(new RegExp(`/vedlegg/${VEDLEGG_ID}(?:\\?|$)`));
     expect(brevLagringer).toBe(0);
     expect(lagringsforsoek).toBe(1);
 
@@ -877,7 +883,7 @@ test.describe("Redigerbare vedlegg", () => {
     await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
     await page.getByRole("tab", { name: "Brevmal" }).click();
-    await expect(page).not.toHaveURL(/vedlegg=/);
+    await expect(page).toHaveURL(/\/brev\/1$/);
     serverVedlegg = lagVedlegg(VEDLEGG_TITTEL, freshText, 900);
     await page.getByRole("tab", { name: "Vedlegg" }).click();
     await expect.poll(() => hentinger).toBe(2);
@@ -937,7 +943,7 @@ test.describe("Redigerbare vedlegg", () => {
     await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
     await page.getByRole("tab", { name: "Brevmal" }).click();
-    await expect(page).not.toHaveURL(/vedlegg=/);
+    await expect(page).toHaveURL(/\/brev\/1$/);
     await page.getByRole("tab", { name: "Vedlegg" }).click();
 
     // Verken det gamle eller det nye innholdet er redigerbart mens hentingen for denne
@@ -970,7 +976,7 @@ test.describe("Redigerbare vedlegg", () => {
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
 
     await page.getByRole("tab", { name: "Brevmal" }).click();
-    await expect(page).not.toHaveURL(/vedlegg=/);
+    await expect(page).toHaveURL(/\/brev\/1$/);
     await page.getByRole("tab", { name: "Vedlegg" }).click();
     await expect.poll(() => hentinger).toBe(2);
 
@@ -1033,7 +1039,7 @@ test.describe("Redigerbare vedlegg", () => {
 
     // Brukeren forlater og går tilbake til vedlegget, som utløser et nytt forsøk og lykkes.
     await page.getByRole("tab", { name: "Brevmal" }).click();
-    await expect(page).not.toHaveURL(/vedlegg=/);
+    await expect(page).toHaveURL(/\/brev\/1$/);
     await page.getByRole("tab", { name: "Vedlegg" }).click();
 
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();

@@ -48,11 +48,13 @@ type InnblikkPayload = {
   data?: Record<string, unknown>;
 };
 
-type MatchRoute = (pathname: string) => string | undefined;
+type MatchRoute = (pathname: string) => string | undefined | Promise<string | undefined>;
 
 declare global {
   var sporing: SporingApi | undefined;
-  var sanitizeSkribentenInnblikkPayload: ((type: string, payload: InnblikkPayload) => InnblikkPayload) | undefined;
+  var sanitizeSkribentenInnblikkPayload:
+    | ((type: string, payload: InnblikkPayload) => Promise<InnblikkPayload>)
+    | undefined;
 }
 
 const USER_ID_COOKIE = "pensjon-psak-innblikk-uuid";
@@ -132,7 +134,7 @@ export function getOrCreateUserId(): string | undefined {
   }
 }
 
-function sanitizeUrl(value: string, matchRoute: MatchRoute): string {
+async function sanitizeUrl(value: string, matchRoute: MatchRoute): Promise<string> {
   if (!value) {
     return "";
   }
@@ -144,17 +146,25 @@ function sanitizeUrl(value: string, matchRoute: MatchRoute): string {
   if (url.origin !== origin) {
     return "<ekstern>";
   }
-  return matchRoute(url.pathname)?.replace(/\/\$(\w+)/g, "/:$1") ?? UNKNOWN_ROUTE;
+  return (await matchRoute(url.pathname))?.replace(/\/\$(\w+)/g, "/:$1") ?? UNKNOWN_ROUTE;
 }
 
-export function beforeSend(payload: InnblikkPayload, matchRoute: MatchRoute): InnblikkPayload {
-  const url = sanitizeUrl(payload.url, matchRoute) || UNKNOWN_ROUTE;
+export async function beforeSend(
+  payload: InnblikkPayload,
+  matchRoute: MatchRoute,
+  { id } = { id: getOrCreateUserId() },
+): Promise<InnblikkPayload> {
+  const [trackedUrl, referrer] = await Promise.all([
+    sanitizeUrl(payload.url, matchRoute),
+    sanitizeUrl(payload.referrer, matchRoute),
+  ]);
+  const url = trackedUrl || UNKNOWN_ROUTE;
   return {
     ...payload,
-    id: getOrCreateUserId(),
+    id,
     url,
     title: url,
-    referrer: sanitizeUrl(payload.referrer, matchRoute),
+    referrer,
   };
 }
 
@@ -191,13 +201,14 @@ export function initInnblikk(matchRoute: MatchRoute): void {
     return;
   }
 
-  globalThis.sanitizeSkribentenInnblikkPayload = (type, payload) => {
-    const result = beforeSend(payload, matchRoute);
+  globalThis.sanitizeSkribentenInnblikkPayload = async (type, payload) => {
+    const id = getOrCreateUserId();
+    if (type !== "identify" && id) {
+      identify(id);
+    }
+    const result = await beforeSend(payload, matchRoute, { id });
     if (import.meta.env.DEV && type === "event" && !result.name) {
       console.info("[Innblikk] Sidevisning", { type, payload: result });
-    }
-    if (type !== "identify" && result.id) {
-      identify(result.id);
     }
     return result;
   };

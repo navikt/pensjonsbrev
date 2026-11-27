@@ -100,26 +100,26 @@ describe("felles cookie med Penny", () => {
     expect(setCookie).toHaveBeenCalledOnce();
   });
 
-  it("lar ikke feil ved cookie-tilgang påvirke sporing eller applikasjonen", () => {
+  it("lar ikke feil ved cookie-tilgang påvirke sporing eller applikasjonen", async () => {
     getCookie.mockImplementation(() => {
       throw new DOMException("Blocked", "SecurityError");
     });
-    expect(beforeSend(payload, matchRoute)).toEqual({ ...payload, id: undefined });
+    expect(await beforeSend(payload, matchRoute)).toEqual({ ...payload, id: undefined });
   });
 
-  it("gir sidevisninger og egendefinerte hendelser samme identitet uten å endre innholdet", () => {
+  it("gir sidevisninger og egendefinerte hendelser samme identitet uten å endre innholdet", async () => {
     getCookie.mockReturnValue(id);
     const event = { ...payload, name: "brev opprettet", data: { brevkode: "E001" } };
-    expect(beforeSend(payload, matchRoute)).toEqual({ ...payload, id });
-    expect(beforeSend(event, matchRoute)).toEqual({ ...event, id });
+    expect(await beforeSend(payload, matchRoute)).toEqual({ ...payload, id });
+    expect(await beforeSend(event, matchRoute)).toEqual({ ...event, id });
     expect(payload).not.toHaveProperty("id");
   });
 
-  it("leser cookien på nytt for hver hendelse, også etter endring eller sletting", () => {
+  it("leser cookien på nytt for hver hendelse, også etter endring eller sletting", async () => {
     getCookie.mockReturnValueOnce(id).mockReturnValueOnce("changed").mockReturnValue(undefined);
-    expect(beforeSend(payload, matchRoute).id).toBe(id);
-    expect(beforeSend(payload, matchRoute).id).toBe("changed");
-    expect(beforeSend(payload, matchRoute).id).toBeUndefined();
+    expect((await beforeSend(payload, matchRoute)).id).toBe(id);
+    expect((await beforeSend(payload, matchRoute)).id).toBe("changed");
+    expect((await beforeSend(payload, matchRoute)).id).toBeUndefined();
   });
 });
 
@@ -130,24 +130,24 @@ describe("sanitering av sporingsdata", () => {
     ["/ukjent/identifikator", "<ukjent>"],
     ["https://[", "<ukjent>"],
     ["https://ekstern.example/personvern?skjult=verdi#fragment", "<ekstern>"],
-  ])("sender ikke rå URL-er (%s)", (referrer, expected) => {
+  ])("sender ikke rå URL-er (%s)", async (referrer, expected) => {
     expect(
-      beforeSend({ ...payload, url: "/ukjent/identifikator", title: "Privat tittel", referrer }, matchRoute),
+      await beforeSend({ ...payload, url: "/ukjent/identifikator", title: "Privat tittel", referrer }, matchRoute),
     ).toMatchObject({ url: "<ukjent>", title: "<ukjent>", referrer: expected });
   });
 });
 
 describe("oppstart av Innblikk", () => {
-  it.each([true, false])("logger bare sidevisninger i utviklingsmodus (DEV=%s)", (dev) => {
+  it.each([true, false])("logger bare sidevisninger i utviklingsmodus (DEV=%s)", async (dev) => {
     vi.stubEnv("DEV", dev);
     configure();
     getCookie.mockReturnValue(id);
     initInnblikk(matchRoute);
 
     const callback = globalThis.sanitizeSkribentenInnblikkPayload;
-    const pageview = callback?.("event", { ...payload, url: "/personvern?skjult=verdi#fragment" });
-    callback?.("event", { ...payload, name: "brev opprettet" });
-    callback?.("identify", payload);
+    const pageview = await callback?.("event", { ...payload, url: "/personvern?skjult=verdi#fragment" });
+    await callback?.("event", { ...payload, name: "brev opprettet" });
+    await callback?.("identify", payload);
 
     expect(pageview?.url).toBe("/personvern");
     if (dev) {
@@ -163,7 +163,7 @@ describe("oppstart av Innblikk", () => {
   it.each([
     [true, "sporing-dev.js"],
     [false, "sporing.js"],
-  ])("installerer callback før %s-skriptet kan kjøre, og laster bare én gang (%s)", (dev, scriptName) => {
+  ])("installerer callback før skriptet kan kjøre, og laster bare én gang (DEV=%s, %s)", async (dev, scriptName) => {
     vi.stubEnv("DEV", dev);
     configure();
     getCookie.mockReturnValue(id);
@@ -175,7 +175,7 @@ describe("oppstart av Innblikk", () => {
     });
 
     initInnblikk(matchRoute);
-    expect(callbackResult).toMatchObject({ id });
+    expect(await callbackResult).toMatchObject({ id });
     const script = append.mock.calls[0][0] as HTMLScriptElement;
     expect(script.src).toBe(`https://cdn.nav.no/team-researchops/sporing/${scriptName}`);
     expect(script.dataset).toMatchObject({
@@ -290,7 +290,7 @@ describe("hendelser under lasting av sporingsskriptet", () => {
     expect(identify.mock.invocationCallOrder[0]).toBeLessThan(track.mock.invocationCallOrder[0]);
   });
 
-  it("identifiserer endret cookie før hendelsen og hopper over gjentatt identifikasjon", () => {
+  it("identifiserer endret cookie før hendelsen og hopper over gjentatt identifikasjon", async () => {
     configure();
     getCookie.mockReturnValue(id);
     const identify = vi.fn();
@@ -298,34 +298,34 @@ describe("hendelser under lasting av sporingsskriptet", () => {
     initInnblikk(matchRoute);
 
     const callback = globalThis.sanitizeSkribentenInnblikkPayload;
-    expect(callback?.("event", payload)).toMatchObject({ id });
-    expect(callback?.("event", payload)).toMatchObject({ id });
+    expect(await callback?.("event", payload)).toMatchObject({ id });
+    expect(await callback?.("event", payload)).toMatchObject({ id });
     expect(identify).toHaveBeenCalledOnce();
 
     getCookie.mockReturnValue("changed-id");
-    expect(callback?.("event", payload)).toMatchObject({ id: "changed-id" });
+    expect(await callback?.("event", payload)).toMatchObject({ id: "changed-id" });
     expect(identify.mock.calls).toEqual([[id], ["changed-id"]]);
   });
 
-  it("sender ikke identify med en UUID som ikke kunne lagres", () => {
+  it("sender ikke identify med en UUID som ikke kunne lagres", async () => {
     configure();
     getCookie.mockReturnValue(undefined);
     const identify = vi.fn();
     globalThis.sporing = { identify, track: vi.fn() };
     initInnblikk(matchRoute);
 
-    globalThis.sanitizeSkribentenInnblikkPayload?.("event", payload);
+    await globalThis.sanitizeSkribentenInnblikkPayload?.("event", payload);
     expect(identify).not.toHaveBeenCalled();
   });
 
-  it("identifiserer ikke på nytt fra en identify-hendelse", () => {
+  it("identifiserer ikke på nytt fra en identify-hendelse", async () => {
     configure();
     getCookie.mockReturnValue(id);
     const identify = vi.fn();
     globalThis.sporing = { identify, track: vi.fn() };
     initInnblikk(matchRoute);
 
-    expect(globalThis.sanitizeSkribentenInnblikkPayload?.("identify", payload)).toMatchObject({ id });
+    expect(await globalThis.sanitizeSkribentenInnblikkPayload?.("identify", payload)).toMatchObject({ id });
     expect(identify).not.toHaveBeenCalled();
   });
 });
