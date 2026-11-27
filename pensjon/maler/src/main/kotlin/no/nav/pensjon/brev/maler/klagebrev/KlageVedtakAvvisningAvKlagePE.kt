@@ -12,6 +12,8 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -127,9 +129,8 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 paragraph {
                     text(bokmal {
                         +"Den "
-                        +fritekst("dato") + " sendte vi deg et brev hvor vi opplyste om manglen ved klagen. "
-                        +"Fristen for å rette mangelen ble satt til "
-                        +fritekst("dato") + ". Vi har ikke mottatt tilbakemelding på dette."
+                        +fritekst("dato") + " mottok vi klagen over dette vedtaket. "
+                        +"Klagen er ikke underskrevet av deg."
                     })
                 }
             }
@@ -188,26 +189,28 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 text(bokmal { +"Vilkårene for å behandle klagen er dermed ikke oppfylt og klagen avvises, jf. forvaltningsloven § 33 andre ledd." })
             }
 
-            title1 { text(bokmal { +"Informasjon om klageadgang " }) }
-            paragraph {
-                text(bokmal {
-                    +"Du kan klage på vedtaket. "
-                    +"Fristen for å klage er seks uker fra du mottar dette brevet. Klagen skal sendes til:"
-                })
-            }
-            paragraph {
-                text(bokmal {
-                    +"Nav familie- og pensjonsytelser"
-                })
-                newline()
-                text(bokmal {
-                    +"Postboks 6600 Etterstad, 0607 OSLO"
-                })
-            }
+            showIf(not(manglendeUnderskrift) or not(manglendeFullmakt)) {
+                title1 { text(bokmal { +"Informasjon om klageadgang " }) }
+                paragraph {
+                    text(bokmal {
+                        +"Du kan klage på vedtaket. "
+                        +"Fristen for å klage er seks uker fra du mottar dette brevet. Klagen skal sendes til:"
+                    })
+                }
+                    paragraph {
+                        text(bokmal {
+                            +"Nav familie- og pensjonsytelser"
+                        })
+                        newline()
+                        text(bokmal {
+                            +"Postboks 6600 Etterstad, 0607 OSLO"
+                        })
+                    }
+                }
 
-            includePhrase(Felles.RettTilInnsynRedigerbarebrev)
-            includePhrase(Felles.HarDuSpoersmaal.alder)
+                includePhrase(Felles.RettTilInnsynRedigerbarebrev)
+                includePhrase(Felles.HarDuSpoersmaal.alder)
+            }
         }
     }
-}
 
