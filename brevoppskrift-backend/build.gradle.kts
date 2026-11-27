@@ -48,6 +48,7 @@ tasks {
 dependencies {
     implementation(platform(libs.netty.bom))
     implementation(ktorLibs.server.core)
+    implementation(ktorLibs.client.cio)
     implementation(ktorLibs.server.netty)
     implementation(ktorLibs.server.di)
     implementation(ktorLibs.server.callId)
@@ -80,6 +81,7 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.testcontainers.postgresql)
+    testImplementation(ktorLibs.client.mock)
     testImplementation(ktorLibs.server.testHost) {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }

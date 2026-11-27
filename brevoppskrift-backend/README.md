@@ -28,10 +28,10 @@ Feil returneres som `application/problem+json`, og request-body har en
 størrelsesgrense på 5 MiB, eller 200 KiB for KI-forslag.
 
 Helseendepunktene `/isAlive` og `/isReady`, samt `/metrics`, er offentlige
-i backend. Readiness krever fungerende database. KI og varsling er ikke
-konfigurert; capabilities oppgir dette, og KI-rutene returnerer 503.
+i backend. Readiness krever fungerende database. KI og varsling er valgfrie;
+capabilities oppgir om de er konfigurert. KI-rutene returnerer 503 uten tjeneste.
 PR-ruter finnes, men innsending gir 503 uten konfigurert PR-tjeneste.
-Ingen nettverksadaptere er innført.
+GitHub-adapter er ikke innført.
 
 `application.conf` leser Entra- og databasekonfigurasjon fra miljøet.
 Klientlisten kommer fra `AZURE_APP_PRE_AUTHORIZED_APPS`, og
@@ -56,6 +56,35 @@ avbrytes pågående transport; en ny worker kan overta etter lease-utløp.
 
 Produksjon har foreløpig ingen PR-tjeneste, og `pullRequests` er false.
 Testene bruker fake transport mot en isolert PostgreSQL-database.
+
+## KI og Slack
+
+Vertex aktiveres når `VERTEX_PROJECT_ID`, `VERTEX_LOCATION` og
+`VERTEX_MODEL` er satt. Delvis eller ugyldig konfigurasjon avvises ved
+oppstart. Adapteren henter token fra Google metadata-tjenesten med
+`Metadata-Flavor: Google` og bruker `aiplatform.eu.rep.googleapis.com`.
+Google Workload Identity og nettverkstilgang må være konfigurert i
+kjøremiljøet; ingen credentials hentes ved applikasjonsoppstart.
+
+KI-forslag krever editorrettighet og lagres ikke automatisk. Maksimalt
+to forslag behandles samtidig, med 30 sekunders samlet tidsgrense.
+Teksten kan ha inntil 100 000 tegn og instruksjonen 1 000 tegn.
+Svar må bevare plassholdere og balansert `<b>`/`<i>`-markering; annen
+HTML avvises. Tokenresponser begrenses til 16 KiB og modellresponser
+til 1 MiB før JSON-parsing. Forslag er ikke faglig godkjenning.
+
+Slack aktiveres uavhengig med `SLACK_WEBHOOK_URL`, som må være en
+HTTPS-webhook under `hooks.slack.com/services/`. Webhooken skal komme
+fra secret-konfigurasjon, ikke kildekode. Varsler inneholder hendelsestype,
+antall og eventuell verkstedlenke, ikke utkastnavn eller dokumenttekst.
+Varslingsfeil hindrer ikke lagring av utkast.
+
+HTTP-klientene følger ikke redirects og prøver ikke kall automatisk på nytt.
+Vertex har 20 sekunders request-/socketgrense, Slack 3 sekunder og
+tilkoblinger 5 sekunder. Metrikker bruker faste tjeneste-/operasjonsnavn
+uten URL-er, webhooker, token eller brevtekst. Adapterne deler en
+applikasjonseid engine og lukkes ved avslutning; fake engines i tester
+beholder sitt eksterne eierskap.
 
 ## Generert API-kontrakt
 
