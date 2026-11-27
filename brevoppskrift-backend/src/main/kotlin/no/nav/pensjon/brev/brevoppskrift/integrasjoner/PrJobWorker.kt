@@ -25,20 +25,23 @@ class PrJobWorker(
                 try {
                     val ticket = repository.claim()
                     if (ticket == null) { delay(1.seconds); continue }
-                    try {
-                        val url = withTimeout(150.seconds) { service.create(ticket) }
-                        repository.finish(ticket, url, null)
-                        metrics.counter("brevoppskrift.pr.jobs", "status", "succeeded").increment()
+                    val url = try {
+                        withTimeout(150.seconds) { service.create(ticket) }
                     } catch (failure: IntegrationFailure) {
                         repository.finish(ticket, null, failure.code)
                         metrics.counter("brevoppskrift.pr.jobs", "status", "failed").increment()
+                        continue
                     } catch (_: TimeoutCancellationException) {
                         repository.finish(ticket, null, "GITHUB_TIMEOUT")
+                        continue
                     } catch (cancelled: CancellationException) {
                         throw cancelled
                     } catch (_: Exception) {
                         repository.finish(ticket, null, "PR_FAILED")
+                        continue
                     }
+                    repository.finish(ticket, url, null)
+                    metrics.counter("brevoppskrift.pr.jobs", "status", "succeeded").increment()
                 } catch (cancelled: CancellationException) {
                     throw cancelled
                 } catch (_: Exception) {

@@ -15,7 +15,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 import java.time.Clock
 import java.time.Duration
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.time.Duration.Companion.seconds
 
 class PrJobWorkerTest {
@@ -141,6 +145,69 @@ class PrJobWorkerTest {
     }
 
     @Test
+    fun `failed completion writes leave successful PR creation recoverable`(): Unit = runBlocking {
+        openDatabase(postgres.database()).use { dataSource ->
+            val transactions = Transactional(Database.connect(dataSource))
+            val drafts = DraftRepository(transactions)
+            val now = AtomicReference(Instant.now())
+            val clock = MutableClock(now)
+            val jobs = PrJobRepository(transactions, clock)
+            val saved = drafts.create(exampleDraft(), null, AuthorName("Synthetic author"))
+            val ready = drafts.status(saved.id, saved.revision, DraftStatus.READY, AuthorName("Synthetic author"))
+            jobs.create(ready.id, ready.revision)
+            transactions.transaction {
+                exec("CREATE SEQUENCE completion_attempt")
+                exec("""
+                    CREATE FUNCTION fail_first_completion() RETURNS trigger AS $$
+                    BEGIN
+                        IF nextval('completion_attempt') = 1 THEN
+                            RAISE EXCEPTION 'Synthetic completion failure';
+                        END IF;
+                        RETURN NEW;
+                    END;
+                    $$ LANGUAGE plpgsql
+                """.trimIndent())
+                exec("""
+                    CREATE TRIGGER completion_failure BEFORE UPDATE OF status ON pr_job
+                    FOR EACH ROW WHEN (NEW.status = 'SUCCEEDED')
+                    EXECUTE FUNCTION fail_first_completion()
+                """.trimIndent())
+            }
+            val requests = AtomicInteger()
+            val url = PrUrl("https://github.com/navikt/pensjonsbrev/pull/1")
+            val service = object : PrService {
+                override suspend fun create(ticket: PrTicket): PrUrl {
+                    requests.incrementAndGet()
+                    assertThat(ticket.draft).isEqualTo(ready.draft)
+                    return url
+                }
+            }
+            val metrics = createMetrics()
+            try {
+                PrJobWorker(service, jobs, metrics).use { worker ->
+                    worker.start()
+                    withTimeout(5.seconds) {
+                        while (!transactions.transaction {
+                                exec("SELECT is_called FROM completion_attempt") { it.next(); it.getBoolean(1) } ?: false
+                            }) {
+                                delay(10)
+                            }
+                    }
+                    now.updateAndGet { it.plusSeconds(240) }
+                    withTimeout(10.seconds) {
+                        while (jobs.latest(ready.id)?.status != PrStatus.SUCCEEDED) delay(10)
+                    }
+                    assertThat(jobs.latest(ready.id)?.prUrl).isEqualTo(url)
+                    assertThat(jobs.latest(ready.id)?.error).isNull()
+                    assertThat(requests.get()).isEqualTo(2)
+                }
+            } finally {
+                metrics.close()
+            }
+        }
+    }
+
+    @Test
     fun `unexpected transport errors are stored as safe codes without their details`(): Unit = runBlocking {
         openDatabase(postgres.database()).use { dataSource ->
             val transactions = Transactional(Database.connect(dataSource))
@@ -187,6 +254,12 @@ class PrJobWorkerTest {
             assertThat(runCatching { handler.submit(ready.id, RevisionRequest(ready.revision)) }.exceptionOrNull()).isInstanceOf(RevisionConflict::class.java)
             assertThat(jobs.latest(ready.id)).isNull()
         }
+    }
+
+    private class MutableClock(private val now: AtomicReference<Instant>) : Clock() {
+        override fun getZone(): ZoneId = ZoneOffset.UTC
+        override fun withZone(zone: ZoneId): Clock = Clock.fixed(instant(), zone)
+        override fun instant(): Instant = now.get()
     }
 
     companion object {
