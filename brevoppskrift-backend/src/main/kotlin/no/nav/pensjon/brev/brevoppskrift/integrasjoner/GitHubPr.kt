@@ -31,6 +31,7 @@ import org.bouncycastle.openssl.PEMParser
 import java.io.Closeable
 import java.io.IOException
 import java.io.StringReader
+import java.nio.channels.UnresolvedAddressException
 import java.security.KeyFactory
 import java.security.MessageDigest
 import java.security.interfaces.RSAPrivateKey
@@ -60,26 +61,33 @@ class GitHubPr(
         if (generated.issues.isNotEmpty() || generated.files.isEmpty() || generated.files.map { it.path }.distinct().size != generated.files.size) {
             throw IntegrationFailure("GENERATION_FAILED")
         }
-        if (generated.files.any { !allowed(it.path) }) throw IntegrationFailure("INVALID_OUTPUT_PATH")
         val sources = sourceReferences(ticket.draft)
         val sourceFiles = sourceFiles(sources)
         if (sourceFiles.keys.any { !safePath(it) } || sources.any { !gitId.matches(it.commit.value) }) throw IntegrationFailure("INVALID_SOURCE_PATH")
+        val files = generated.files.filter { file ->
+            when {
+                allowed(file.path) -> true
+                sourceFiles[file.path] == digest(file.content.toByteArray(Charsets.UTF_8)) -> false
+                else -> throw IntegrationFailure("INVALID_OUTPUT_PATH")
+            }
+        }
+        if (files.isEmpty()) throw IntegrationFailure("GENERATION_FAILED")
 
         val token = accessToken()
         val branch = "brevoppskrift/${ticket.draftId.value}/r${ticket.revision.value}"
         existingPull(branch, token)?.let { return pullUrl(it) }
         val base = ticket.draft.source?.commit ?: sha(api("$prefix/git/ref/heads/main", token = token).path("object"))
         checkSourceFiles(sources, base, token)
-        for (file in generated.files.filter { it.path !in sourceFiles }) {
+        for (file in files.filter { it.path !in sourceFiles }) {
             if (!api("$prefix/contents/${file.path.value}?ref=${base.value}", token = token, optional = true).isNull) {
                 throw IntegrationFailure("OUTPUT_PATH_EXISTS")
             }
         }
-        if (!checkBranch(branch, generated.files, base, token)) {
+        if (!checkBranch(branch, files, base, token)) {
             val baseTree = sha(api("$prefix/git/commits/${base.value}", token = token).path("tree"))
             val tree = sha(api(
                 "$prefix/git/trees", HttpMethod.Post,
-                mapOf("base_tree" to baseTree.value, "tree" to generated.files.map { mapOf("path" to it.path.value, "mode" to "100644", "type" to "blob", "content" to it.content) }), token,
+                mapOf("base_tree" to baseTree.value, "tree" to files.map { mapOf("path" to it.path.value, "mode" to "100644", "type" to "blob", "content" to it.content) }), token,
             ))
             val commit = sha(api(
                 "$prefix/git/commits", HttpMethod.Post,
@@ -227,6 +235,9 @@ class GitHubPr(
                 }
             }.execute { response ->
                 if (optional && response.status == HttpStatusCode.NotFound) return@execute draftObjectMapper.nullNode()
+                if (response.status == HttpStatusCode.Forbidden &&
+                    (response.headers["X-RateLimit-Remaining"] == "0" || response.headers[HttpHeaders.RetryAfter] != null)
+                ) throw IntegrationFailure("GITHUB_429")
                 if (!response.status.isSuccess()) throw IntegrationFailure("GITHUB_${response.status.value}")
                 val maxBytes = if (path.startsWith("$prefix/git/trees/")) 8 * 1024 * 1024 else 1024 * 1024
                 val bytes = response.bodyAsChannel().readBuffer(maxBytes.toLong() + 1).readByteArray()
@@ -243,6 +254,9 @@ class GitHubPr(
             currentCoroutineContext().ensureActive()
             throw IntegrationFailure("GITHUB_TIMEOUT")
         } catch (_: IOException) {
+            currentCoroutineContext().ensureActive()
+            throw IntegrationFailure("GITHUB_UNAVAILABLE")
+        } catch (_: UnresolvedAddressException) {
             currentCoroutineContext().ensureActive()
             throw IntegrationFailure("GITHUB_UNAVAILABLE")
         }

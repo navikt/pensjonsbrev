@@ -64,9 +64,11 @@ class KotlinDraftGenerator(private val catalogue: BuildSourceCatalogue) : DraftG
         entry.files.filterKeys { it != entry.templatePath && it in entry.reference.files && it in dtoPaths && it.value.endsWith(".kt") }
             .toSortedMap(compareBy { it.value }).forEach { (path, content) -> files.add(GeneratedFile(path, content)) }
         val profile = moduleProfile(draft.metadata.targetModule)
-        files.add(GeneratedFile(RepositoryPath("${profile.templateRoot}/src/test/kotlin/${entry.templatePackage?.replace('.', '/')}/${draft.metadata.name}AuthoringTest.kt"),
-            importedTest(draft, requireNotNull(entry.templatePackage))))
-        files.add(GeneratedFile(RepositoryPath("${profile.templateRoot}/src/test/resources/brevoppskrift/${draft.metadata.name}-sjekkliste.md"), checklist(draft, imported = true)))
+        // Source-versioned helpers avoid overwriting existing tests and checklists on reimport.
+        val helperName = "${draft.metadata.name}${entry.reference.commit.value}"
+        files.add(GeneratedFile(RepositoryPath("${profile.templateRoot}/src/test/kotlin/${entry.templatePackage?.replace('.', '/')}/${helperName}AuthoringTest.kt"),
+            importedTest(draft, requireNotNull(entry.templatePackage), helperName)))
+        files.add(GeneratedFile(RepositoryPath("${profile.templateRoot}/src/test/resources/brevoppskrift/$helperName-sjekkliste.md"), checklist(draft, imported = true)))
         return GenerationResult(files.sortedBy { it.path.value }, emptyList())
     }
 
@@ -150,7 +152,7 @@ class KotlinDraftGenerator(private val catalogue: BuildSourceCatalogue) : DraftG
         return GenerationResult(files.distinctBy { it.path }.sortedBy { it.path.value }, emptyList())
     }
 
-    private fun importedTest(draft: Draft, pkg: String): String = """
+    private fun importedTest(draft: Draft, pkg: String, helperName: String): String = """
         package $pkg
 
         import org.junit.jupiter.api.Test
@@ -161,7 +163,7 @@ class KotlinDraftGenerator(private val catalogue: BuildSourceCatalogue) : DraftG
         import ${fixturePackage(draft.metadata.targetModule)}.Fixtures
         import no.nav.pensjon.brev.template.Language.*
 
-        class ${draft.metadata.name}AuthoringTest {
+        class ${helperName}AuthoringTest {
             @Test
             fun `source identity and all languages are preserved`() {
                 assertThat(${draft.metadata.name}.kode.kode()).isEqualTo(${kotlinString(requireNotNull(draft.metadata.brevkode))})

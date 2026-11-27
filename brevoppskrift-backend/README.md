@@ -76,9 +76,12 @@ Importerte utkast beholder den betrodde
 opprinnelige kildecommitten; vedlegg fra andre commits krever at deres
 kildefiler er identiske i valgt base. Rekursive treoppslag avvises ved
 avkorting og begrenses til 8 MiB før parsing. Øvrige svar begrenses til
-1 MiB. Bare avgrensede Kotlin-stier i målmodulene og utviklersjekklister
-kan eksporteres, og eksisterende filer utenfor importgrunnlaget overskrives
-ikke.
+1 MiB. PR-en skriver bare til avgrensede Kotlin-stier i målmodulene og
+utviklersjekklister. Uendrede delte avhengigheter utenfor disse stiene
+utelates bare når innholdshashen matcher den betrodde importen.
+Importerte malers hjelpetester og sjekklister får kildecommit i navnet,
+slik at gjenimport ikke overskriver eksisterende hjelpefiler.
+Eksisterende filer utenfor importgrunnlaget overskrives ikke.
 
 Branchen er stabil per utkast/revisjon. En eksisterende branch må ha
 samme eksportinnhold uten andre filendringer; referanser force-oppdateres

@@ -13,6 +13,9 @@ import no.nav.pensjon.brev.brevoppskrift.GitHubConfig
 import no.nav.pensjon.brev.brevoppskrift.api.*
 import no.nav.pensjon.brev.brevoppskrift.createMetrics
 import no.nav.pensjon.brev.brevoppskrift.draftObjectMapper
+import no.nav.pensjon.brev.brevoppskrift.katalog.BuildSourceCatalogue
+import no.nav.pensjon.brev.brevoppskrift.katalog.CatalogueSnapshot
+import no.nav.pensjon.brev.brevoppskrift.kotlin.KotlinDraftGenerator
 import no.nav.pensjon.brev.brevoppskrift.model.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -20,6 +23,7 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.io.IOException
+import java.nio.channels.UnresolvedAddressException
 import java.security.KeyPairGenerator
 import java.security.interfaces.RSAPublicKey
 import java.util.Base64
@@ -234,6 +238,90 @@ class GitHubPrTest {
     }
 
     @Test
+    fun `imported root keeps unchanged shared dependencies out of the PR write set`(): Unit = runBlocking {
+        val catalogue = BuildSourceCatalogue()
+        val draft = requireNotNull(catalogue.import(catalogue.list().single { it.id.value.contains("AdhocFeilEtteroppgjoer2023") }.id))
+        val generator = KotlinDraftGenerator(catalogue)
+        val generated = generator.generate(draft)
+        assertThat(generated.issues).isEmpty()
+        assertThat(generated.files).anyMatch { it.path.value.startsWith("brevbaker/brevdata/") }
+        val api = FakeGitHub()
+        api.engine().use { engine ->
+            GitHubPr(engine, metrics, appConfig, generator, catalogue).use { service ->
+                assertThat(service.create(ticket(draft)).value).isEqualTo(prUrl)
+            }
+        }
+        val written = payload(api.requests.single { it.url.encodedPath.endsWith("/git/trees") })["tree"].map { it["path"].asText() }
+        assertThat(written).noneMatch { it.startsWith("brevbaker/") }
+        assertThat(written).contains(requireNotNull(catalogue.trustedEntry(requireNotNull(draft.source))).templatePath.value)
+        val shared = generated.files.first { it.path.value.startsWith("brevbaker/brevdata/") }
+        MockEngine { error("No transport expected") }.use { engine ->
+            adapter(engine, generated = listOf(shared.copy(content = shared.content + "\nchanged"))).use { service ->
+                assertThat(failure { service.create(ticket(draft)) }).isEqualTo("INVALID_OUTPUT_PATH")
+            }
+        }
+    }
+
+    @Test
+    fun `reimported roots use distinct helper paths without overwriting existing helpers`(): Unit = runBlocking {
+        val catalogue = BuildSourceCatalogue()
+        val first = requireNotNull(catalogue.import(catalogue.list().single { it.id.value.contains("AdhocFeilEtteroppgjoer2023") }.id))
+        val originalFiles = KotlinDraftGenerator(catalogue).generate(first).files
+        val entry = requireNotNull(catalogue.trustedEntry(requireNotNull(first.source)))
+        val reference = entry.reference.copy(commit = GitCommit("b".repeat(40)))
+        val draft = first.copy(source = reference)
+        val reimported = BuildSourceCatalogue.fromResource(
+            draftObjectMapper.writeValueAsBytes(CatalogueSnapshot(reference.commit, listOf(entry.copy(reference = reference, draft = draft)))).inputStream(),
+        )
+        val api = FakeGitHub().apply { existingFiles = originalFiles.associate { it.path to it.content } }
+        api.engine().use { engine ->
+            GitHubPr(engine, metrics, appConfig, KotlinDraftGenerator(reimported), reimported).use { service ->
+                assertThat(service.create(ticket(draft)).value).isEqualTo(prUrl)
+            }
+        }
+        val helpers = originalFiles.filter { "/src/test/" in it.path.value }.map { it.path.value }
+        val written = payload(api.requests.single { it.url.encodedPath.endsWith("/git/trees") })["tree"]
+        assertThat(written.map { it["path"].asText() }).doesNotContainAnyElementsOf(helpers)
+        val test = written.single { it["path"].asText().endsWith("AuthoringTest.kt") }
+        assertThat(test["content"].asText()).contains("class ${test["path"].asText().substringAfterLast('/').removeSuffix(".kt")}")
+        val collision = FakeGitHub().apply {
+            existingFiles = KotlinDraftGenerator(reimported).generate(draft).files.associate { it.path to "unrelated existing file" }
+        }
+        collision.engine().use { engine ->
+            GitHubPr(engine, metrics, appConfig, KotlinDraftGenerator(reimported), reimported).use { service ->
+                assertThat(failure { service.create(ticket(draft)) }).isEqualTo("OUTPUT_PATH_EXISTS")
+            }
+        }
+        assertThat(collision.repositoryRequests).allMatch { it.method == HttpMethod.Get }
+    }
+
+    @Test
+    fun `rate limited forbidden responses are retryable but ordinary authorization failures are not`(): Unit = runBlocking {
+        val cases = listOf(
+            headersOf("X-RateLimit-Remaining", "0") to "GITHUB_429",
+            headersOf(HttpHeaders.RetryAfter, "60") to "GITHUB_429",
+            headersOf("X-RateLimit-Remaining", "1") to "GITHUB_403",
+            headersOf() to "GITHUB_403",
+        )
+        for (case in cases) {
+            var calls = 0
+            MockEngine { calls++; respond("synthetic-private-details", HttpStatusCode.Forbidden, case.first) }.use { engine ->
+                adapter(engine).use { service -> assertThat(failure { service.create(ticket()) }).isEqualTo(case.second) }
+            }
+            assertThat(calls).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun `address resolution failures are retryable without retrying transport itself`(): Unit = runBlocking {
+        var calls = 0
+        MockEngine { calls++; throw UnresolvedAddressException() }.use { engine ->
+            adapter(engine).use { service -> assertThat(failure { service.create(ticket()) }).isEqualTo("GITHUB_UNAVAILABLE") }
+        }
+        assertThat(calls).isEqualTo(1)
+    }
+
+    @Test
     fun `upstream auth redirects malformed responses and response limits are sanitized without retries`(): Unit = runBlocking {
         for (status in listOf(HttpStatusCode.Unauthorized, HttpStatusCode.Found, HttpStatusCode.TooManyRequests, HttpStatusCode.BadGateway)) {
             var calls = 0
@@ -324,6 +412,7 @@ class GitHubPrTest {
         var branchExists = false
         var pullExists = false
         var existingOutput = false
+        var existingFiles: Map<RepositoryPath, String> = emptyMap()
         var refConflict = false
         var pullFailure: String? = null
         var branchContent = "synthetic output"
@@ -357,8 +446,13 @@ class GitHubPrTest {
                     if (request.url.parameters["ref"] == branchCommit) {
                         """{"encoding":"base64","content":"${Base64.getEncoder().encodeToString(branchContent.toByteArray())}"}"""
                     } else {
-                        if (!existingOutput) return@MockEngine respond("{}", HttpStatusCode.NotFound)
-                        "{}"
+                        val existing = existingFiles[RepositoryPath(path.substringAfter("/contents/"))]
+                        if (existing != null) {
+                            draftObjectMapper.writeValueAsString(mapOf("encoding" to "base64", "content" to Base64.getEncoder().encodeToString(existing.toByteArray())))
+                        } else {
+                            if (!existingOutput) return@MockEngine respond("{}", HttpStatusCode.NotFound)
+                            "{}"
+                        }
                     }
                 }
                 path.contains("/compare/") -> compare
