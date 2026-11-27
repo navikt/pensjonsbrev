@@ -47,10 +47,12 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.month
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.text
+import java.time.Period
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object OktBunnfradragNesteAr {
@@ -103,15 +105,15 @@ object OktBunnfradragNesteAr {
                 showIf(sokerMottarApIlaAret) {
                     paragraph {
                         text(
-                            bokmal { +"Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + ", er inntekten og bunnfradraget justert ut fra antall måneder du får uføretrygd." },
-                            nynorsk { +"Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er inntekta og botnfrådraget justert ut frå talet på månader du får uføretrygd." }
+                            bokmal { +"Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + ", er bunnfradraget og inntektstaket justert ut fra antall måneder du får uføretrygd. Inntekten vi bruker i beregningen for " + vedtakVirkFom.year.format() + " er den faktiske inntekten du har i " + vedtakVirkFom.year.format() + " til og med " + datoForNormertPensjonsalder.plus(Period.ofMonths(-1)).month.format() + ". " },
+                            nynorsk { +"Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er botnfrådraget og inntektstaket justert ut frå talet på månader du får uføretrygd. Inntekta vi brukar i berekninga for " + vedtakVirkFom.year.format() + " er den faktiske inntekta du har i " + vedtakVirkFom.year.format() + " til og med " + datoForNormertPensjonsalder.plus(Period.ofMonths(-1)).month.format() + ". " }
                         )
                     }
                 }.orIfNotNull(opphorsdato) { dato ->
                     paragraph {
                         text(
-                            bokmal { +"Fordi uføretrygden din opphører fra " + dato.format() + ", er inntekten og bunnfradraget justert ut fra antall måneder du får uføretrygd. " },
-                            nynorsk { +"Fordi uføretrygda di opphøyrer frå " + dato.format() + ", er inntekta og botnfrådraget justert ut frå talet på månader du får uføretrygd." }
+                            bokmal { +"Fordi uføretrygden din opphører fra " + dato.format() + ", er bunnfradraget og inntektstaket justert ut fra antall måneder du får uføretrygd. Inntekten vi bruker i beregningen for " + vedtakVirkFom.year.format() + " er den faktiske inntekten du har i " + vedtakVirkFom.year.format() + " til og med " + dato.plus(Period.ofMonths(-1)).month.format() + ". " },
+                            nynorsk { +"Fordi uføretrygda di opphøyrer frå " + dato.format() + ", er botnfrådraget og inntektstaket justert ut frå talet på månader du får uføretrygd. Inntekta vi brukar i berekninga for " + vedtakVirkFom.year.format() + " er den faktiske inntekta du har i " + vedtakVirkFom.year.format() + " til og med " + dato.plus(Period.ofMonths(-1)).month.format() + ". " }
                         )
                     }
                 }

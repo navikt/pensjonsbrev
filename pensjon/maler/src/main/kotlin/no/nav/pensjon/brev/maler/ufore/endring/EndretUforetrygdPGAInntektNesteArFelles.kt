@@ -39,6 +39,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
+import java.time.Period
 
 object EndretUforetrygdPGAInntektNesteArFelles {
 
@@ -218,15 +219,15 @@ object EndretUforetrygdPGAInntektNesteArFelles {
             showIf(data.sokerMottarApIlaAret) {
                 paragraph {
                     text(
-                        bokmal { +"Fordi du får alderspensjon fra " + data.datoForNormertPensjonsalder.format() + ", er inntekten og bunnfradraget justert ut fra antall måneder du får uføretrygd." },
-                        nynorsk { +"Fordi du får alderspensjon frå " + data.datoForNormertPensjonsalder.format() + ", er inntekta og botnfrådraget justert ut frå talet på månader du får uføretrygd." }
+                        bokmal { +"Fordi du får alderspensjon fra " + data.datoForNormertPensjonsalder.format() + ", er bunnfradraget og inntektstaket justert ut fra antall måneder du får uføretrygd. Inntekten vi bruker i beregningen for " + data.virkningFom.year.format() + " er den faktiske inntekten du har i " + data.virkningFom.year.format() + " til og med " + data.datoForNormertPensjonsalder.plus(Period.ofMonths(-1)).month.format() + ". " },
+                        nynorsk { +"Fordi du får alderspensjon frå " + data.datoForNormertPensjonsalder.format() + ", er botnfrådraget og inntektstaket justert ut frå talet på månader du får uføretrygd. Inntekta vi brukar i berekninga for " + data.virkningFom.year.format() + " er den faktiske inntekta du har i " + data.virkningFom.year.format() + " til og med " + data.datoForNormertPensjonsalder.plus(Period.ofMonths(-1)).month.format() + ". " }
                     )
                 }
             }.orIfNotNull(data.opphorDato) { dato ->
                 paragraph {
                     text(
-                        bokmal { +"Fordi uføretrygden din opphører fra " + dato.format() + ", er inntekten og bunnfradraget justert ut fra antall måneder du får uføretrygd. " },
-                        nynorsk { +"Fordi uføretrygda di opphøyrer frå " + dato.format() + ", er inntekta og botnfrådraget justert ut frå talet på månader du får uføretrygd." }
+                        bokmal { +"Fordi uføretrygden din opphører fra " + dato.format() + ", er bunnfradraget og inntektstaket justert ut fra antall måneder du får uføretrygd. Inntekten vi bruker i beregningen for " + data.virkningFom.year.format() + " er den faktiske inntekten du har i " + data.virkningFom.year.format() + " til og med " + dato.plus(Period.ofMonths(-1)).month.format() + ". " },
+                        nynorsk { +"Fordi uføretrygda di opphøyrer frå " + dato.format() + ", er botnfrådraget og inntektstaket justert ut frå talet på månader du får uføretrygd. Inntekta vi brukar i berekninga for " + data.virkningFom.year.format() + " er den faktiske inntekta du har i " + data.virkningFom.year.format() + " til og med " + dato.plus(Period.ofMonths(-1)).month.format() + ". " }
                     )
                 }
             }
@@ -823,17 +824,19 @@ object EndretUforetrygdPGAInntektNesteArFelles {
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
 
 
-            title1 {
-                text(
-                    bokmal { +"Sjekk utbetalingene dine" },
-                    nynorsk { +"Sjekk utbetalingane dine" }
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." },
-                    nynorsk { +"Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. Du kan sjå alle utbetalingane du har motteke på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." }
-                )
+            showIf(data.totalNetto.greaterThan(0)) {
+                title1 {
+                    text(
+                        bokmal { +"Sjekk utbetalingene dine" },
+                        nynorsk { +"Sjekk utbetalingane dine" }
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." },
+                        nynorsk { +"Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. Du kan sjå alle utbetalingane du har motteke på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." }
+                    )
+                }
             }
             title1 {
                 text(
