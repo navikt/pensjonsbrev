@@ -13,7 +13,9 @@ import no.nav.pensjon.brev.brevoppskrift.model.DraftLanguage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertTimeoutPreemptively
 import java.io.IOException
+import java.time.Duration
 
 class ExternalServicesTest {
     private val metrics = createMetrics()
@@ -42,6 +44,29 @@ class ExternalServicesTest {
                         val result = runCatching { service.suggest(request, true) }
                         if (text == request.text) assertThat(result.getOrThrow().text).isEqualTo(text)
                         else assertThat((result.exceptionOrNull() as IntegrationFailure).code).isEqualTo("INVALID_AI_RESPONSE")
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `AI validates long unmatched markup suffixes within a bounded time`() {
+        assertTimeoutPreemptively(Duration.ofSeconds(5)) {
+            runBlocking {
+                for (prefix in listOf("", "<b>synthetic</b>")) {
+                    val suggested = prefix + "<".repeat(200_000 - prefix.length)
+                    MockEngine { call ->
+                        respond(
+                            if (call.url.host == "metadata.google.internal") {
+                                draftObjectMapper.writeValueAsString(mapOf("access_token" to "synthetic-token"))
+                            } else aiResponse(suggested),
+                        )
+                    }.use { engine ->
+                        VertexAi(engine, metrics, vertex).use { service ->
+                            val request = AiRequest(prefix.ifEmpty { "synthetic" }, DraftLanguage.NB)
+                            assertThat(service.suggest(request, false).text).isEqualTo(suggested)
+                        }
+                    }
                 }
             }
         }

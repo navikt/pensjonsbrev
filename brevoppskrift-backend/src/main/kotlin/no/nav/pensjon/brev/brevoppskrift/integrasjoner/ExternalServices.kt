@@ -73,7 +73,7 @@ class VertexAi(engine: HttpClientEngine, metrics: MeterRegistry, private val con
             val suggested = response.path("candidates").path(0).path("content").path("parts").path(0).path("text")
                 .takeIf { it.isTextual }?.asText() ?: throw IntegrationFailure("INVALID_AI_RESPONSE")
             if (suggested.isBlank() || suggested.length > 200_000 || markers(request.text) != markers(suggested) || !balanced(suggested) ||
-                Regex("</?[^>]+>").findAll(suggested).any { it.value !in setOf("<b>", "</b>", "<i>", "</i>") }
+                Regex("</?[^>]+>").findAll(suggested.take(suggested.lastIndexOf('>') + 1)).any { it.value !in setOf("<b>", "</b>", "<i>", "</i>") }
             ) throw IntegrationFailure("INVALID_AI_RESPONSE")
             return AiResult(suggested)
         } catch (_: IOException) {
