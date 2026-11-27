@@ -143,10 +143,6 @@ object EditV2 {
         }
 
         @JsonIgnore
-        fun isPendingMissingFromTemplate(): Boolean =
-            decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED && decision?.status == DecisionRequest.Decision.PENDING
-
-        @JsonIgnore
         fun isChangedType(): Boolean = type != (originalType ?: type)
 
         sealed class TextBlock(type: Type) : Block(type) {

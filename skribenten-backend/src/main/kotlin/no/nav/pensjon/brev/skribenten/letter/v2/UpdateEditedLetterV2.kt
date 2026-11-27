@@ -134,7 +134,8 @@ internal class UpdateEditedLetterV2(private val variableValues: VariableValuesUp
 
     // A block missing from the template keeps its decision request until Saksbehandler decides to keep or remove it.
     private fun mergeDecision(edited: Block, rendered: Block): Block.DecisionRequest? =
-        edited.decision.takeIf { edited.isPendingMissingFromTemplate() } ?: rendered.decision
+        edited.decision.takeIf { it?.type == Block.DecisionRequest.Type.MISSING_FROM_RENDERED && it.status == Block.DecisionRequest.Decision.PENDING }
+            ?: rendered.decision
 
     /**
      * Marks blocks in the fresh render that were not present in [previousRender] with a pending

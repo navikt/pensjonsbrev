@@ -41,7 +41,12 @@ class FerdigRedigertPolicy {
                         decision.status == Edit.Block.DecisionRequest.Decision.PENDING
             } == true
         }
-        is VersjonertBrev.V2 -> brev.blocks.none { it.isPendingMissingFromTemplate() }
+        is VersjonertBrev.V2 -> brev.blocks.none { block ->
+            block.decision?.let { decision ->
+                decision.type == EditV2.Block.DecisionRequest.Type.MISSING_FROM_RENDERED &&
+                        decision.status == EditV2.Block.DecisionRequest.Decision.PENDING
+            } == true
+        }
     }
 }
 
