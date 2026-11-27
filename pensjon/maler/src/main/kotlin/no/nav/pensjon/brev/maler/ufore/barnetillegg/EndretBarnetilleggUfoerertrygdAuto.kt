@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUf
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUfoeretrygdDto.pe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.fraser.Barnetillegg
@@ -96,7 +95,15 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
             }
 
             showIf( btsbInnvilget and not(btfbInnvilget)) {
-                includePhrase(TBU2338_Generated(pe))
+                includePhrase(
+                    Barnetillegg.InntektensBetydningForSaerkullstillegg(
+                        visFribeloepsforklaring = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0),
+                        visAtEpsInntektIkkePaavirkerTillegget = pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and
+                            pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"),
+                        epsBokmal = pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
+                        epsNynorsk = pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall(),
+                    )
+                )
                 paragraph {
                     showIf(btsbNetto.greaterThan(0) and btsbJusteringsbelopperAr.equalTo(0)) {
                         text(bokmal { + "Inntekten din på " + btsbInntektbruktiavkorning.format() + " er " + ifElse(btsbInntektbruktiavkorning.greaterThan(btsbFribelop), "høyere".expr(), "lavere".expr()) + " enn fribeløpet ditt på " + btsbFribelop.format() + ". Barnetillegget ditt er derfor " })

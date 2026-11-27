@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektB
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Institusjonsopphold.JustertPeriodeCode
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Grunnlag
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Kravhode.Arsak
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Reduksjonsgrunnlag.BarnetilleggRegelverkTypeCode
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarResultat
@@ -44,8 +45,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.BarnetilleggFlereBarnFormatter
 import no.nav.pensjon.brev.maler.legacy.BarnetilleggFormatter
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated_Ny
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
@@ -1065,10 +1064,12 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
                         showIf(sb.innvilget and not(barnetillegg.fellesbarnInnvilget())) {
                             includePhrase(
-                                TBU2338_Generated_Ny(
-                                    btsbNetto = sb.netto,
-                                    beregningSivilstandAnvendt = grunnlag.anvendtSivilstand,
-                                    epsBorMed = grunnlag.epsBrukerBorMed,
+                                Barnetillegg.InntektensBetydningForSaerkullstillegg(
+                                    visFribeloepsforklaring = sb.netto.notEqualTo(0),
+                                    visAtEpsInntektIkkePaavirkerTillegget = grunnlag.anvendtSivilstand.notEqualTo(Grunnlag.AnvendtSivilstandCode.ENSLIG) and
+                                        grunnlag.anvendtSivilstand.notEqualTo(Grunnlag.AnvendtSivilstandCode.ENSLIG_SEPARERT),
+                                    epsBokmal = grunnlag.epsBorMedBmEntall(),
+                                    epsNynorsk = grunnlag.epsBorMedNnEntall(),
                                 )
                             )
                         }
@@ -1077,12 +1078,12 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     ifNotNull(barnetillegg.btFellesbarn) { fb ->
                         showIf(fb.innvilget) {
                             includePhrase(
-                                TBU2339_Generated_Ny(
-                                    btfbNetto = fb.netto,
-                                    btsbInnvilget = barnetillegg.serkullsbarnInnvilget(),
-                                    btfbInnvilget = fb.innvilget,
-                                    btMedFlereBarn = fb.antallBarn.greaterThan(1),
-                                    epsBorMed = grunnlag.epsBrukerBorMed,
+                                Barnetillegg.InntektensBetydningForFellesbarnstillegg(
+                                    visFribeloepsforklaring = fb.netto.notEqualTo(0),
+                                    harBeggeTyperBarnetillegg = barnetillegg.serkullsbarnInnvilget() and fb.innvilget,
+                                    fellesbarnOmtale = ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet"),
+                                    epsBokmal = grunnlag.epsBorMedBmEntall(),
+                                    epsNynorsk = grunnlag.epsBorMedNnEntall(),
                                 )
                             )
                         }

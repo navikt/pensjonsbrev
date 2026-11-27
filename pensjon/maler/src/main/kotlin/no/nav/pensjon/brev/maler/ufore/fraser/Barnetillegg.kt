@@ -35,6 +35,63 @@ import java.time.LocalDate
 
 object Barnetillegg {
 
+    data class InntektensBetydningForSaerkullstillegg(
+        val visFribeloepsforklaring: Expression<Boolean>,
+        val visAtEpsInntektIkkePaavirkerTillegget: Expression<Boolean>,
+        val epsBokmal: Expression<String>,
+        val epsNynorsk: Expression<String>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal { +"Inntekten din har betydning for hva du får i barnetillegg. Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. " },
+                    nynorsk { +"Inntekta di har noko å seie for kva du får i barnetillegg. Er inntekta di over grensa for å få utbetalt fullt barnetillegg, blir tillegget redusert. " },
+                )
+                showIf(visFribeloepsforklaring) {
+                    text(
+                        bokmal { +"Denne grensen kaller vi for fribeløp. " },
+                        nynorsk { +"Denne grensa kallar vi for fribeløp. " },
+                    )
+                }
+                showIf(visAtEpsInntektIkkePaavirkerTillegget) {
+                    text(
+                        bokmal { +"Inntekten til din " + epsBokmal + " har ikke betydning for størrelsen på barnetillegget." },
+                        nynorsk { +"Inntekta til " + epsNynorsk + " din har ikkje noko å seie for storleiken på barnetillegget. " },
+                    )
+                }
+            }
+        }
+    }
+
+    data class InntektensBetydningForFellesbarnstillegg(
+        val visFribeloepsforklaring: Expression<Boolean>,
+        val harBeggeTyperBarnetillegg: Expression<Boolean>,
+        val fellesbarnOmtale: Expression<String>,
+        val epsBokmal: Expression<String>,
+        val epsNynorsk: Expression<String>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal { +"Inntekten til deg og din " + epsBokmal + " har betydning for hva du får i barnetillegg. Er inntektene over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. " },
+                    nynorsk { +"Inntekta til deg og " + epsNynorsk + " din har noko å seie for kva du får i barnetillegg. Er den samla inntekta over grensa for å få utbetalt fullt barnetillegg, blir tillegget ditt redusert. " },
+                )
+                showIf(visFribeloepsforklaring) {
+                    text(
+                        bokmal { +"Denne grensen kaller vi for fribeløp. " },
+                        nynorsk { +"Denne grensa kallar vi for fribeløp. " },
+                    )
+                }
+                showIf(harBeggeTyperBarnetillegg) {
+                    text(
+                        bokmal { +"Inntekten til din " + epsBokmal + " har kun betydning for størrelsen på barnetillegget til " + fellesbarnOmtale + " som bor sammen med begge sine foreldre." },
+                        nynorsk { +"Inntekta til " + epsNynorsk + " din har berre betydning for storleiken på barnetillegget til " + fellesbarnOmtale + " som bur saman med begge foreldra sine. " },
+                    )
+                }
+            }
+        }
+    }
+
     // TBU2339
     data class InntektHarBetydningForFellesbarnTillegg(
         val faarUtbetaltBarnetilleggFellesbarn: Expression<Boolean>,
@@ -734,6 +791,5 @@ private fun Expression<Int>.prosentBT(): Expression<Int> {
         )
     )
 }
-
 
 
