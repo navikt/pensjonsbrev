@@ -33,6 +33,7 @@ export const brevResponse = ({
   saksbehandlerValg,
   propertyUsage: null,
   valgteVedlegg,
+  kanFletteEndringer: true,
 });
 
 export const editedLetter = ({

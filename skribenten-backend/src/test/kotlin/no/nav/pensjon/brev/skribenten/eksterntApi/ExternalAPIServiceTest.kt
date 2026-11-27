@@ -92,7 +92,8 @@ class ExternalAPIServiceTest {
                 redigertBrevHash = TODO(),
                 saksbehandlerValg = TODO(),
                 propertyUsage = TODO(),
-                valgteVedlegg = TODO()
+                valgteVedlegg = TODO(),
+                kanFletteEndringer = true,
             ))
         }
     )

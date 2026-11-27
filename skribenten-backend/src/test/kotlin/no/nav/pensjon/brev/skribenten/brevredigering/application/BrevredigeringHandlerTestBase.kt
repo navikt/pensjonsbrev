@@ -83,6 +83,7 @@ abstract class BrevredigeringHandlerTestBase {
     @BeforeEach
     fun clearMocks() {
         brevbakerService.renderMarkupKall.clear()
+        brevbakerService.renderMarkupStableHashCode = StableHashCode(123)
         brevbakerService.renderMarkupV2Resultat = { notYetStubbed("Mangler renderMarkupV2 stub") }
         brevbakerService.renderMarkupResultat = {
             letter.medSignatur(
@@ -620,6 +621,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
+        var renderMarkupStableHashCode = StableHashCode(123)
         lateinit var renderMarkupV2Resultat: suspend ((f: BrevbakerFelles) -> MarkupV2)
         lateinit var renderPdfResultat: LetterResponse
         var modelSpecificationResultat: TemplateModelSpecification? = null
@@ -647,7 +649,7 @@ abstract class BrevredigeringHandlerTestBase {
                     markup = it,
                     letterDataUsage = emptySet(),
                     brevtype = if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV,
-                    stableHashCode = StableHashCode(123),
+                    stableHashCode = renderMarkupStableHashCode,
                 ) }
 
         override suspend fun renderMarkupV2(

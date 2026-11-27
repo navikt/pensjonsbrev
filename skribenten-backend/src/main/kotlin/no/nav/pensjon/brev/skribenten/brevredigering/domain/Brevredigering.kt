@@ -80,10 +80,16 @@ interface Brevredigering {
     fun mergeRendretBrev(rendretBrev: VersjonertMarkup)
     fun settRendretBrev(rendretBrev: VersjonertMarkup)
     fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>)
+    fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>)
+    fun harUendretBrevmal(rendretBrevmalHash: StableHashCode): Boolean
     fun oppdaterSakspartOgSignatur(rendretBrev: VersjonertMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
-    fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
+    fun toDto(
+        brevreservasjonPolicy: BrevreservasjonPolicy,
+        coverage: Set<LetterMarkupWithDataUsage.Property>?,
+        kanFletteEndringer: Boolean = true,
+    ): Dto.Brevredigering
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
 }
 
@@ -297,11 +303,24 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         redigertBrev = redigertBrev.oppdaterSakspartOgSignatur(rendretBrev)
     }
 
+    override fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>) {
+        mergeRendredeVedlegg(
+            rendredeVedlegg.filter { (vedleggId, rendretVedlegg) -> harUendretVedleggmal(vedleggId, rendretVedlegg.stableHashCode) }
+        )
+    }
     private fun sjekkMarkupVersjon(versjon: MarkupVersjon) {
         if (versjon != markupVersjon) {
             throw FeilMarkupVersjonException(markupVersjon, versjon)
         }
     }
+
+    fun harUendretVedleggmal(vedleggId: VedleggId, rendretVedleggHash: StableHashCode?): Boolean {
+        val lagretHash = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }?.rendretVedleggHash
+        return lagretHash == null || lagretHash == rendretVedleggHash
+    }
+
+    override fun harUendretBrevmal(rendretBrevmalHash: StableHashCode): Boolean =
+        brevmalHash == null || rendretBrev == null || brevmalHash == rendretBrevmalHash
 
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) {
         val types = modelSpec.types[modelSpec.letterModelTypeName]
@@ -418,14 +437,19 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         return true
     }
 
-    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
+    override fun toDto(
+        brevreservasjonPolicy: BrevreservasjonPolicy,
+        coverage: Set<LetterMarkupWithDataUsage.Property>?,
+        kanFletteEndringer: Boolean,
+    ): Dto.Brevredigering =
         Dto.Brevredigering(
             info = toBrevInfo(brevreservasjonPolicy),
             redigertBrev = redigertBrev,
             redigertBrevHash = redigertBrevHash,
             saksbehandlerValg = saksbehandlerValg,
             propertyUsage = coverage,
-            valgteVedlegg = valgteVedlegg
+            valgteVedlegg = valgteVedlegg,
+            kanFletteEndringer = kanFletteEndringer,
         )
 
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo =

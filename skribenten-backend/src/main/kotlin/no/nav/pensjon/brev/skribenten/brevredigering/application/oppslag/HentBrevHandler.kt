@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag
 
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -29,10 +30,20 @@ class HentBrevHandler(
             brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = false) {
                 val pesysdata = brevdataService.hentBrevdata(brev)
                 val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-                brev.mergeRendretBrev(rendretBrev.markup)
-                brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
 
-                success(brev.tilDto(rendretBrev.letterDataUsage))
+                val forhindreOppdateringAvKladd = Features.forhindreOppdateringAvKladd.isEnabled()
+
+                if (!forhindreOppdateringAvKladd || brev.harUendretBrevmal(rendretBrev.stableHashCode)) {
+                    brev.mergeRendretBrev(rendretBrev.markup)
+                    if (!forhindreOppdateringAvKladd) {
+                        brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+                    } else {
+                        brev.mergeRendredeVedleggMedUendretHash(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+                    }
+                    success(brev.tilDto(rendretBrev.letterDataUsage))
+                } else {
+                    success(brev.tilDto(kanFletteEndringer = false))
+                }
             }
         }
 }

@@ -88,15 +88,25 @@ class BrevPdfService(
         }
 
     // Grunnen til at vi kun sjekker blocks er at det er kun om det er endringer i selve innholdet at saksbehandler trenger å ta stilling til det.
-    private suspend fun rendretBrevErEndret(brev: BrevredigeringEntity, pesysBrevdata: BrevdataResponse.Data): Boolean =
-        brevmalService.renderMarkup(brev, pesysBrevdata).let { rendretBrev ->
-            brev.redigertBrev.innholdEndresAv(rendretBrev.markup)
-        } || rendredeVedleggErEndret(brev, pesysBrevdata)
+    // Endringer som ikke kan flettes inn fordi malen er endret, skal ikke gi beskjed om oppdatering.
+    private suspend fun rendretBrevErEndret(brev: BrevredigeringEntity, pesysBrevdata: BrevdataResponse.Data): Boolean {
+        val forhindreOppdateringAvKladd = Features.forhindreOppdateringAvKladd.isEnabled()
+        return brevmalService.renderMarkup(brev, pesysBrevdata).let { rendretBrev ->
+            (!forhindreOppdateringAvKladd || brev.harUendretBrevmal(rendretBrev.stableHashCode)) &&
+                brev.redigertBrev.innholdEndresAv(rendretBrev.markup)
+        } || rendredeVedleggErEndret(brev, pesysBrevdata, forhindreOppdateringAvKladd)
+    }
 
-    private suspend fun rendredeVedleggErEndret(brev: BrevredigeringEntity, pesysBrevdata: BrevdataResponse.Data): Boolean =
+    private suspend fun rendredeVedleggErEndret(
+        brev: BrevredigeringEntity,
+        pesysBrevdata: BrevdataResponse.Data,
+        forhindreOppdateringAvKladd: Boolean,
+    ): Boolean =
         brevmalService.renderRedigerteVedlegg(brev, pesysBrevdata).any { (vedleggId, rendretVedlegg) ->
             val lagret = brev.hentRedigertVedlegg(vedleggId)
-            lagret != null && lagret.innholdEndresAv(rendretVedlegg)
+            lagret != null &&
+                (!forhindreOppdateringAvKladd || brev.harUendretVedleggmal(vedleggId, rendretVedlegg.stableHashCode)) &&
+                lagret.innholdEndresAv(rendretVedlegg)
         }
 
     private fun leggVedPDFVedlegg(

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg
 
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggFinnesIkkeIMal
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -22,8 +23,20 @@ class RedigerbareVedleggService(
         }
 
         val pesysdata = brevdataService.hentBrevdata(brev)
-        if (mergeMotMal) {
-            brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+        val kanIkkeFlettes = if (mergeMotMal) {
+            val rendredeVedlegg = brevmalService.renderRedigerteVedlegg(brev, pesysdata)
+            if (Features.forhindreOppdateringAvKladd.isEnabled()) {
+                val endredeMaler = rendredeVedlegg
+                    .filter { (vedleggId, rendret) -> !brev.harUendretVedleggmal(vedleggId, rendret.stableHashCode) }
+                    .keys
+                brev.mergeRendredeVedleggMedUendretHash(rendredeVedlegg)
+                endredeMaler
+            } else {
+                brev.mergeRendredeVedlegg(rendredeVedlegg)
+                emptySet()
+            }
+        } else {
+            emptySet()
         }
 
         return brevmalService.hentRedigerbareVedleggTitler(brev, pesysdata)?.vedlegg
@@ -31,6 +44,7 @@ class RedigerbareVedleggService(
                 RedigerbartVedleggInfo(
                     vedleggId = vedlegg.id,
                     tittel = brev.hentRedigertVedlegg(vedlegg.id)?.tittel ?: vedlegg.tittel,
+                    kanFletteEndringer = vedlegg.id !in kanIkkeFlettes,
                 )
             }
     }
@@ -46,7 +60,11 @@ class RedigerbareVedleggService(
         }
 
         val malVedlegg = renderMal(brev, vedleggId) ?: return failure(VedleggFinnesIkkeIMal(brev.id.value, vedleggId))
-        return success(lagretVedlegg?.merge(malVedlegg) ?: malVedlegg.toEdit())
+        return when {
+            lagretVedlegg == null -> success(malVedlegg.toEdit())
+            skalFlette(brev, vedleggId, malVedlegg) -> success(lagretVedlegg.merge(malVedlegg))
+            else -> success(lagretVedlegg)
+        }
     }
 
     suspend fun lagre(
@@ -57,7 +75,11 @@ class RedigerbareVedleggService(
     ): Outcome<VersjonertVedlegg, VedleggFinnesIkkeIMal> {
         val malVedlegg = renderMal(brev, vedleggId) ?: return failure(VedleggFinnesIkkeIMal(brev.id.value, vedleggId))
 
-        val nyttVedlegg = if (mergeMotMal) redigertVedlegg.merge(malVedlegg) else redigertVedlegg
+        val nyttVedlegg = if (mergeMotMal && skalFlette(brev, vedleggId, malVedlegg)) {
+            redigertVedlegg.merge(malVedlegg)
+        } else {
+            redigertVedlegg
+        }
         val foersteLagring = brev.hentRedigertVedlegg(vedleggId) == null
         brev.settRedigertVedlegg(vedleggId, nyttVedlegg)
         if (foersteLagring) {
@@ -75,6 +97,13 @@ class RedigerbareVedleggService(
         return success(malVedlegg.toEdit())
     }
 
+    private suspend fun skalFlette(
+        brev: BrevredigeringEntity,
+        vedleggId: VedleggId,
+        malVedlegg: VersjonertVedleggMarkup,
+    ): Boolean =
+        !Features.forhindreOppdateringAvKladd.isEnabled() || brev.harUendretVedleggmal(vedleggId, malVedlegg.stableHashCode)
+
     private suspend fun renderMal(brev: BrevredigeringEntity, vedleggId: VedleggId): VersjonertVedleggMarkup? =
         brevmalService.renderRedigerbartVedlegg(brev, brevdataService.hentBrevdata(brev), vedleggId)
 }
@@ -82,4 +111,5 @@ class RedigerbareVedleggService(
 data class RedigerbartVedleggInfo(
     val vedleggId: VedleggId,
     val tittel: String,
+    val kanFletteEndringer: Boolean,
 )
