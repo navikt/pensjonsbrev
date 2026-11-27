@@ -332,6 +332,22 @@ export function ensureLineVisibleInScrollContainer(element: Element, edge: "top"
   }
 }
 
+// Centers the caret in the nearest vertical scroll container if it is outside the visible area, like the browser's
+// own caret reveal. Setting the DOM selection programmatically, or focusing with preventScroll, does not scroll.
+export function revealCaretInScrollContainer(element: Element) {
+  const scrollContainer = getVerticalScrollContainer(element);
+  const range = getRange();
+  if (!scrollContainer || !range) return;
+
+  const caretRect = range.getBoundingClientRect();
+  const rect = caretRect.height > 0 ? caretRect : closestEditableLiteralEl(range.endContainer)?.getBoundingClientRect();
+  if (!rect) return;
+
+  const containerRect = scrollContainer.getBoundingClientRect();
+  if (rect.top >= containerRect.top && rect.bottom <= containerRect.bottom) return;
+  scrollContainer.scrollTop += rect.top + rect.height / 2 - (containerRect.top + containerRect.height / 2);
+}
+
 // When the browser handles the caret move itself, and is about to move the caret outside the
 // visible area, Chrome reveals it with "center if needed" alignment. That recentring looks like a
 // half-page jump. By first scrolling into view the line the caret is about to enter, the browser

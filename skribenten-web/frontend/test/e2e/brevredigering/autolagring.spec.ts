@@ -532,6 +532,60 @@ test.describe("autolagring", () => {
     await expect(page.getByText("Søknaden din vil også bli oversendt utlandet fordi")).toBeVisible();
   });
 
+  test("tekstvalg som setter inn tekst plasserer markøren på slutten av teksten og scroller den fram", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1200, height: 500 });
+    await page.route(
+      "**/bff/skribenten-backend/brevmal/UT_ORIENTERING_OM_SAKSBEHANDLINGSTID/modelSpecification",
+      (route) =>
+        route.fulfill({
+          path: "test/e2e/fixtures/modelSpecificationOrienteringOmSaksbehandlingstid.json",
+          contentType: "application/json",
+        }),
+    );
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
+      route.fulfill({ json: orienteringOmSaksbehandlingstidResponse }),
+    );
+    await page.route(
+      (url: URL) => url.pathname.includes("/sak/123456/brev/1") && url.search.includes("frigiReservasjon"),
+      (route) =>
+        route.request().method() === "PUT"
+          ? route.fulfill({ json: orienteringOmSaksbehandlingstidResponseMedSoknadOversendesTilUtlandet })
+          : route.fallback(),
+    );
+
+    await page.goto("/saksnummer/123456/brev/1");
+    await page.locator(".editor").waitFor();
+    await page.getByRole("checkbox", { name: /oversendes til utlandet/i }).click({ force: true });
+
+    const inserted = page.locator(".inserted-flash-text");
+    await expect(inserted).toContainText("Søknaden din vil også bli oversendt utlandet fordi");
+    await expect(page.locator(".editor-surface")).toBeFocused();
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const selection = getSelection();
+          const literal = selection?.anchorNode?.parentElement?.closest(".inserted-flash-text");
+          return selection?.isCollapsed && literal ? selection.anchorOffset === literal.textContent?.length : false;
+        }),
+      )
+      .toBe(true);
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const caret = getSelection()!.getRangeAt(0).getBoundingClientRect();
+          let container = document.querySelector(".editor")?.parentElement ?? null;
+          while (container && !/auto|scroll/.test(getComputedStyle(container).overflowY)) {
+            container = container.parentElement;
+          }
+          const visible = container!.getBoundingClientRect();
+          return container!.scrollTop > 0 && caret.top >= visible.top && caret.bottom <= visible.bottom;
+        }),
+      )
+      .toBe(true);
+  });
+
   test("deaktiverer undo/redo mens tekstvalg lagres", async ({ page }) => {
     let saveResolve: (() => void) | undefined;
 

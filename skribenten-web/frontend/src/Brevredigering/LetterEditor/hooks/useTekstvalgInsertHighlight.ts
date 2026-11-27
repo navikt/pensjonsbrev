@@ -98,7 +98,7 @@ export function useTekstvalgInsertHighlight({
 
     const focus = findLastInsertedFocus(redigertBrev, newIds);
     if (focus) {
-      setEditorState((state) => ({ ...state, focus }));
+      setEditorState(({ selection: _selection, ...state }) => ({ ...state, focus }));
     }
 
     if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);

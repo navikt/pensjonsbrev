@@ -34,6 +34,7 @@ import {
   matchesDomSelectionSnapshot,
   parseLiteralIndex,
   resolveDomSelectionToModel,
+  revealCaretInScrollContainer,
   snapshotDomSelection,
   staticRangeToModelSelection,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
@@ -195,6 +196,8 @@ export function EditableSurface({
   const { diffHash, disableDiffMode } = useAttestantDiff();
   const prevFocusRef = useRef<Focus>(editorState.focus);
   const prevSelectionRef = useRef<SelectionIndex | undefined>(editorState.selection);
+  // A focus set while frozen (e.g. after a tekstvalg toggle inserts text) is applied once editing is enabled again.
+  const focusChangedWhileFrozenRef = useRef(false);
   const editorStateRef = useRef(editorState);
   editorStateRef.current = editorState;
   const freezeRef = useRef(freeze);
@@ -225,6 +228,8 @@ export function EditableSurface({
       editorState.focus !== prevFocusRef.current || editorState.selection !== prevSelectionRef.current;
     prevFocusRef.current = editorState.focus;
     prevSelectionRef.current = editorState.selection;
+    const applyFocusSetWhileFrozen = !freeze && focusChangedWhileFrozenRef.current;
+    focusChangedWhileFrozenRef.current = freeze && (focusChangedWhileFrozenRef.current || focusOrSelectionChanged);
 
     if (!freeze) {
       const { focus, selection, redigertBrev } = editorState;
@@ -249,8 +254,9 @@ export function EditableSurface({
         const effectiveTabIndex = tabIndex ?? (freeze ? -1 : 0);
         if (isInitialRender && !selection && focus.cursorPosition === undefined && effectiveTabIndex >= 0) {
           lastAppliedDomSelectionRef.current = snapshotDomSelection(globalThis.getSelection());
-        } else if (isInitialRender || hostHasFocus || focusOrSelectionChanged) {
+        } else if (isInitialRender || hostHasFocus || focusOrSelectionChanged || applyFocusSetWhileFrozen) {
           lastAppliedDomSelectionRef.current = applyModelSelectionToDom(root, focus, selection, true);
+          if (applyFocusSetWhileFrozen) revealCaretInScrollContainer(root);
         }
       }
     }
