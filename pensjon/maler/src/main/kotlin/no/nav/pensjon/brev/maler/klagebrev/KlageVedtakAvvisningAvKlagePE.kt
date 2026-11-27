@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.model.Brevkategori.KLAGE_OG_ANKE
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
@@ -53,9 +54,21 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
             paragraph {
                 text(bokmal {
                     +"Klagen av "
-                    +fritekst("dato") + " over Nav familie- og pensjonsytelser sitt vedtak av " + fritekst("dato") + " avvises fordi "
-                    +fritekst("påpek mangelen (f.eks. klagen er sent framsatt, vi ikke har mottatt nødvendig fullmakt)")
+                    +fritekst("dato") + " over Nav familie- og pensjonsytelser sitt vedtak av "
+                    +fritekst("dato") + " avvises fordi "
                 })
+
+                showIf(forSentFramsattKlage and not(manglendeRettsligKlageinteresse or manglendeUnderskrift or manglendeFullmakt or ikkePartISaken)) {
+                    text(bokmal { +"klagen er framsatt for sent." })
+                }.orShowIf(manglendeUnderskrift and not(forSentFramsattKlage or manglendeRettsligKlageinteresse or manglendeFullmakt or ikkePartISaken)) {
+                    text(bokmal { +"klagen mangler underskrift." })
+                }.orShowIf(manglendeRettsligKlageinteresse and not(manglendeUnderskrift or ikkePartISaken or manglendeFullmakt or forSentFramsattKlage)) {
+                    text(bokmal { +"klagen mangler rettslig klageinteresse." })
+                }.orShowIf(ikkePartISaken and not(forSentFramsattKlage or manglendeFullmakt or manglendeUnderskrift or manglendeRettsligKlageinteresse)) {
+                    text(bokmal { +"klageren ikke er part i saken." })
+                }.orShow {
+                    text(bokmal { +fritekst("påpek mangelen (f.eks. klagen er sent framsatt, vi ikke har mottatt nødvendig fullmakt)") })
+                }
             }
 
             title1 { text(bokmal { +"Rettslig grunnlag" }) }
@@ -66,22 +79,26 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 })
             }
 
-            title1 { text(bokmal { +"Vurdering og konklusjon" }) }
-            paragraph {
+            title1
+            { text(bokmal { +"Vurdering og konklusjon" }) }
+            paragraph
+            {
                 text(bokmal {
                     +"Nav familie- og pensjonsytelser fattet den "
                     +fritekst("dato") + " vedtak om "
                     +fritekst("kort om innholdet i vedtaket") + ". "
                 })
             }
-            paragraph {
+            paragraph
+            {
                 text(bokmal {
                     +"Den "
                     +fritekst("dato") + " mottok vi klagen over dette vedtaket."
                 })
             }
 
-            showIf(forSentFramsattKlage.equalTo(true)) {
+            showIf(forSentFramsattKlage.equalTo(true))
+            {
                 paragraph {
                     text(bokmal {
                         +"I vedtaket ble du orientert om klageadgangen og klagefristen. Klagen din er framsatt "
@@ -117,7 +134,8 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 }
             }
 
-            showIf(manglendeUnderskrift.equalTo(true)) {
+            showIf(manglendeUnderskrift.equalTo(true))
+            {
                 paragraph {
                     text(bokmal {
                         +"Det følger av forvaltningsloven § 32 første ledd bokstav a og b at klagen må være skriftlig og undertegnet, "
@@ -135,7 +153,8 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 }
             }
 
-            showIf(manglendeRettsligKlageinteresse.equalTo(true)) {
+            showIf(manglendeRettsligKlageinteresse.equalTo(true))
+            {
                 paragraph {
                     text(bokmal {
                         +"Etter forvaltningsloven § 28 første ledd må klageren ha rettslig klageinteresse. "
@@ -153,7 +172,8 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 }
             }
 
-            showIf(ikkePartISaken.equalTo(true)) {
+            showIf(ikkePartISaken.equalTo(true))
+            {
                 paragraph {
                     text(bokmal {
                         +"Etter forvaltningsloven § 28 første ledd kan et enkeltvedtak påklages av part i saken eller annen med rettslig klageinteresse. "
@@ -172,7 +192,8 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 }
             }
 
-            showIf(manglendeFullmakt.equalTo(true)) {
+            showIf(manglendeFullmakt.equalTo(true))
+            {
                 paragraph {
                     text(bokmal {
                         +"Det følger av forvaltningsloven § 12 siste ledd at en fullmektig som ikke er advokat må fremlegge skriftlig fullmakt."
@@ -185,11 +206,13 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 }
             }
 
-            paragraph {
+            paragraph
+            {
                 text(bokmal { +"Vilkårene for å behandle klagen er dermed ikke oppfylt og klagen avvises, jf. forvaltningsloven § 33 andre ledd." })
             }
 
-            showIf(not(manglendeUnderskrift or manglendeFullmakt)) {
+            showIf(forSentFramsattKlage)
+            {
                 title1 { text(bokmal { +"Informasjon om klageadgang " }) }
                 paragraph {
                     text(bokmal {
@@ -197,20 +220,19 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
                         +"Fristen for å klage er seks uker fra du mottar dette brevet. Klagen skal sendes til:"
                     })
                 }
-                    paragraph {
-                        text(bokmal {
-                            +"Nav familie- og pensjonsytelser"
-                        })
-                        newline()
-                        text(bokmal {
-                            +"Postboks 6600 Etterstad, 0607 OSLO"
-                        })
-                    }
+                paragraph {
+                    text(bokmal {
+                        +"Nav familie- og pensjonsytelser"
+                    })
+                    newline()
+                    text(bokmal {
+                        +"Postboks 6600 Etterstad, 0607 OSLO"
+                    })
                 }
-
-                includePhrase(Felles.RettTilInnsynRedigerbarebrev)
-                includePhrase(Felles.HarDuSpoersmaal.alder)
             }
+
+            includePhrase(Felles.RettTilInnsynRedigerbarebrev)
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
     }
 
