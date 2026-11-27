@@ -107,7 +107,7 @@ export const LetterEditor = ({
               focus:
                 entry.type === "DOCUMENT_SNAPSHOT"
                   ? structuredClone(entry.beforeFocus)
-                  : remapFocus(current.focus, current.redigertBrev, entry.before.redigertBrev),
+                  : remapFocus(current.focus, current.redigertBrev, entry.before.redigertBrev, "reverse"),
             }
           : applyPatches(current, entry.inversePatches);
       return {

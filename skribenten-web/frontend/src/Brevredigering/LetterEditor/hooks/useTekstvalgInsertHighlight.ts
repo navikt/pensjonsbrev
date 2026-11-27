@@ -6,7 +6,7 @@ import {
   findLastInsertedFocus,
   hasAnyTekstvalgBeenToggledOn,
 } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
-import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { type LetterEditorState, SIGNATURE_FOCUS } from "~/Brevredigering/LetterEditor/model/state";
 import { type SaksbehandlerValg } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
@@ -99,7 +99,12 @@ export function useTekstvalgInsertHighlight({
 
     const focus = findLastInsertedFocus(redigertBrev, newIds);
     if (focus) {
-      setEditorState((state) => ({ ...state, focus }));
+      setEditorState((state) =>
+        state.focus.blockIndex === SIGNATURE_FOCUS.blockIndex &&
+        state.focus.contentIndex === SIGNATURE_FOCUS.contentIndex
+          ? state
+          : { ...state, focus },
+      );
     }
 
     if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);

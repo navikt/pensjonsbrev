@@ -81,6 +81,20 @@ describe("remapFocus", () => {
     });
   });
 
+  test("følger forekomsten med samme id ved angre av en innsatt forekomst", () => {
+    const og = literal({ id: 1, text: " og " });
+    const før = editedLetter({ blocks: [paragraph({ id: 10, content: [literal({ id: 2, text: "Beløp" }), og] })] });
+    const etter = editedLetter({
+      blocks: [paragraph({ id: 10, content: [og, literal({ id: 2, text: "Beløp" }), og] })],
+    });
+
+    expect(remapFocus({ blockIndex: 0, contentIndex: 2, cursorPosition: 2 }, etter, før, "reverse")).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      cursorPosition: 2,
+    });
+  });
+
   test("beholder fokus i tittelen", () => {
     const from = editedLetter({ blocks: [avsnitt] });
     const to = editedLetter({ blocks: [flettetInn, avsnitt] });
