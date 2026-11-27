@@ -1,72 +1,210 @@
 import { type Draft } from "immer";
 
-import {
-  type Cell,
-  type Content,
-  type EditedDocument,
-  FontType,
-  type ItemList,
-  type LiteralValue,
-  type ParagraphBlock,
-  type Row,
-  type TextContent,
-  type VariableValue,
-} from "~/types/brevbakerTypes";
-import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
+import { type Content, type EditedDocument, FontType, type LiteralValue } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import { type LetterEditorState, type LiteralIndex, type SelectionIndex } from "../model/state";
+import { type Focus, type LetterEditorState, type LiteralIndex, type SelectionIndex } from "../model/state";
 import { isItemList, isLiteral, isNewLine, isTableCellIndex, isTextContent } from "../model/utils";
-import { getCursorOffset } from "../services/caretUtils";
-import { fontTypeOf, isItemContentIndex, isTable, newLiteral, text } from "./common";
+import {
+  fontTypeOf,
+  isIndexAfter,
+  isItemContentIndex,
+  isTable,
+  mergeLiteralsIfPossible,
+  splitLiteralAtOffset,
+  text,
+  textContentAtIndex,
+} from "./common";
 
-export const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
-  const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
-  const focus = editorState.focus;
-  const blockContent = block?.content[editorState.focus.contentIndex];
+/** Whether all, none or only some of the text a formatting button acts on has its style. */
+export type FormattingState = "on" | "off" | "mixed";
 
-  let textContent: TextContent | undefined;
-
-  if (isTable(blockContent) && isTableCellIndex(focus)) {
-    const cell =
-      focus.rowIndex === -1
-        ? blockContent.header.colSpec[focus.cellIndex]?.headerContent
-        : blockContent.rows[focus.rowIndex]?.cells[focus.cellIndex];
-
-    textContent = cell?.text?.at(focus.cellContentIndex);
-  } else if (isItemList(blockContent) && isItemContentIndex(focus)) {
-    textContent = blockContent?.items[focus.itemIndex]?.content[focus.itemContentIndex];
-  } else if (isTextContent(blockContent)) {
-    textContent = blockContent;
-  }
-
-  return isTextContent(textContent) ? fontTypeOf(textContent) : FontType.PLAIN;
-};
+/** The selected characters of one literal. */
+type Segment = { container: Content[]; literal: LiteralValue; from: number; to: number };
 
 /**
- * Formatting splits and rebuilds literals, so the selection is kept as character offsets within the text it is in
- * (a paragraph, list item or table cell) and mapped back onto the new literals. The selection is part of the undo
- * step, so undo and redo restore the selection that matches the text.
+ * Bold and italic act on the selected text, or the word around the caret. The decision is made once for the whole
+ * range: if all of it already has the style, the style is removed, otherwise all of it gets the style. A literal can
+ * be either bold or italic, so applying one replaces the other.
+ *
+ * Literals are split at the range boundaries, so the selection or caret is kept as character offsets within the text
+ * it is in (a paragraph, list item or table cell) and mapped back onto the new literals.
  */
-export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = withPatches((draft, fontType) => {
-  const selection = draft.selection;
-  const offsets = selection && {
-    start: offsetInText(draft.redigertBrev, selection.start),
-    end: offsetInText(draft.redigertBrev, selection.end),
-  };
+export const switchFontType: Action<LetterEditorState, [style: FontType]> = withPatches((draft, style) => {
+  if (style === FontType.PLAIN) return;
+  const segments = formattingSegments(draft);
+  if (segments.length === 0) return;
 
-  if (!switchFontTypeRecipe(draft, fontType) || !selection || !offsets) return;
+  const target = segments.every((segment) => fontTypeOf(segment.literal) === style) ? FontType.PLAIN : style;
+  const { selection, focus } = draft;
+  const focusAtStart = selection !== undefined && isSamePosition(focus, selection.start);
+  const startOffset = offsetInText(draft.redigertBrev, selection?.start ?? focus);
+  const endOffset = selection && offsetInText(draft.redigertBrev, selection.end);
 
-  const start =
-    (offsets.start === undefined
-      ? undefined
-      : endpointAt(draft.redigertBrev, selection.start, offsets.start, "start")) ?? selection.start;
-  const end =
-    (offsets.end === undefined ? undefined : endpointAt(draft.redigertBrev, selection.end, offsets.end, "end")) ??
-    selection.end;
-  draft.selection = { start, end };
-  draft.focus = { ...start };
+  const touched = new Map<Content[], Set<Content>>();
+  for (const segment of segments.toReversed()) {
+    if (fontTypeOf(segment.literal) === target) continue;
+    const changed = applyFontType(segment, target);
+    touched.set(segment.container, new Set([...(touched.get(segment.container) ?? []), ...changed]));
+  }
+  if (touched.size === 0) return;
+  for (const [container, literals] of touched) mergeTouchedLiterals(container, literals);
+  draft.saveStatus = "DIRTY";
+
+  const mapBack = (index: LiteralIndex, offset: number | undefined, side: "start" | "end") =>
+    offset === undefined ? undefined : endpointAt(draft.redigertBrev, index, offset, side);
+  if (selection) {
+    const start = mapBack(selection.start, startOffset, "start") ?? selection.start;
+    const end = mapBack(selection.end, endOffset, "end") ?? selection.end;
+    draft.selection = { start, end };
+    draft.focus = { ...(focusAtStart ? start : end) };
+  } else {
+    // A caret after formatted text stays with it, so typing continues in the same formatting.
+    draft.focus = mapBack(focus, startOffset, focus.cursorPosition === 0 ? "start" : "end") ?? focus;
+  }
 });
+
+/** The toolbar state of a style for the selection, or the word around the caret. */
+export function formattingStateOf(state: LetterEditorState, style: FontType): FormattingState {
+  const segments = formattingSegments(state);
+  if (segments.length === 0) {
+    // Outside a word, show the formatting of the text the caret is in.
+    const content = textContentAtIndex(state.redigertBrev, state.focus);
+    return content && fontTypeOf(content) === style ? "on" : "off";
+  }
+  const withStyle = segments.filter((segment) => fontTypeOf(segment.literal) === style).length;
+  return withStyle === segments.length ? "on" : withStyle === 0 ? "off" : "mixed";
+}
+
+/** The literal characters formatting acts on: the selection, or the word around a caret. */
+function formattingSegments(state: LetterEditorState): Segment[] {
+  const { selection, focus, redigertBrev } = state;
+  if (selection) {
+    const [start, end] = isIndexAfter(selection.end, selection.start)
+      ? [selection.end, selection.start]
+      : [selection.start, selection.end];
+    return segmentsBetween(redigertBrev, start, end);
+  }
+  return wordAround(redigertBrev, focus);
+}
+
+/** Literals in paragraphs, list items and table cells. Headings, the letter title and variables can't be formatted. */
+function segmentsBetween(document: EditedDocument, start: SelectionIndex["start"], end: SelectionIndex["end"]) {
+  const segments: Segment[] = [];
+  for (let blockIndex = Math.max(0, start.blockIndex); blockIndex <= end.blockIndex; blockIndex++) {
+    const block = document.blocks[blockIndex];
+    if (block?.type !== "PARAGRAPH") continue;
+    for (const { container, index } of textContainersOf(block.content, blockIndex)) {
+      for (const [position, literal] of container.entries()) {
+        if (!isLiteral(literal)) continue;
+        const literalIndex = withPositionInText(index, position);
+        const fromStart = compareLiterals(literalIndex, start);
+        const toEnd = compareLiterals(literalIndex, end);
+        if (fromStart < 0 || toEnd > 0) continue;
+        const from = fromStart === 0 ? start.cursorPosition : 0;
+        const to = toEnd === 0 ? end.cursorPosition : text(literal).length;
+        if (from < to) segments.push({ container, literal, from, to });
+      }
+    }
+  }
+  return segments;
+}
+
+/** A paragraph's own content, and the content of each list item and table cell in it. */
+function* textContainersOf(content: Content[], blockIndex: number) {
+  yield { container: content, index: { blockIndex, contentIndex: 0 } as LiteralIndex };
+  for (const [contentIndex, element] of content.entries()) {
+    if (isItemList(element)) {
+      for (const [itemIndex, item] of element.items.entries()) {
+        yield { container: item.content, index: { blockIndex, contentIndex, itemIndex, itemContentIndex: 0 } };
+      }
+    } else if (isTable(element)) {
+      const cells = [
+        ...element.header.colSpec.map((column, cellIndex) => ({ cell: column.headerContent, rowIndex: -1, cellIndex })),
+        ...element.rows.flatMap((row, rowIndex) => row.cells.map((cell, cellIndex) => ({ cell, rowIndex, cellIndex }))),
+      ];
+      for (const { cell, rowIndex, cellIndex } of cells) {
+        yield { container: cell.text, index: { blockIndex, contentIndex, rowIndex, cellIndex, cellContentIndex: 0 } };
+      }
+    }
+  }
+}
+
+/**
+ * The word around the caret, also when it spans literals with different formatting. A word is delimited by whitespace
+ * and by anything that isn't a literal. A caret on or right before whitespace is not in a word.
+ */
+function wordAround(document: EditedDocument, focus: Focus): Segment[] {
+  if (document.blocks[focus.blockIndex]?.type !== "PARAGRAPH") return [];
+  const container = textOf(document, focus);
+  const position = positionInText(focus);
+  if (!container || !isLiteral(container[position])) return [];
+
+  let first = position;
+  while (isLiteral(container[first - 1])) first--;
+  let last = position;
+  while (isLiteral(container[last + 1])) last++;
+  const run = container.slice(first, last + 1) as LiteralValue[];
+  const runText = run.map((literal) => text(literal)).join("");
+  const before = run.slice(0, position - first).reduce((sum, literal) => sum + text(literal).length, 0);
+  const caret = before + Math.min(Math.max(focus.cursorPosition ?? 0, 0), text(container[position]).length);
+
+  if (/\s/.test(runText[caret] ?? "")) return [];
+  let wordStart = caret;
+  while (wordStart > 0 && !/\s/.test(runText[wordStart - 1])) wordStart--;
+  let wordEnd = caret;
+  while (wordEnd < runText.length && !/\s/.test(runText[wordEnd])) wordEnd++;
+
+  const segments: Segment[] = [];
+  let start = 0;
+  for (const literal of run) {
+    const end = start + text(literal).length;
+    const from = Math.max(wordStart, start) - start;
+    const to = Math.min(wordEnd, end) - start;
+    if (from < to) segments.push({ container, literal, from, to });
+    start = end;
+  }
+  return segments;
+}
+
+/** Gives the segment's characters the font type, splitting the literal if only part of it is formatted. */
+function applyFontType({ container, literal, from, to }: Draft<Segment>, fontType: FontType): Draft<Content>[] {
+  const length = text(literal).length;
+  const inserted: Draft<LiteralValue>[] = [];
+  if (to < length) inserted.unshift(splitLiteralAtOffset(literal, to));
+  const formatted = from > 0 ? splitLiteralAtOffset(literal, from) : literal;
+  if (formatted !== literal) inserted.unshift(formatted);
+
+  // The literal keeps its id and the split-off parts are new, like when a paragraph is split.
+  formatted.editedFontType = fontType === formatted.fontType ? null : fontType;
+  container.splice(container.indexOf(literal) + 1, 0, ...inserted);
+  return [literal, ...inserted];
+}
+
+/** Merges formatted literals with neighbours of the same font type, so repeated formatting doesn't fragment text. */
+function mergeTouchedLiterals(container: Draft<Content[]>, touched: Set<Draft<Content>>) {
+  for (let index = container.length - 1; index > 0; index--) {
+    const first = container[index - 1];
+    const second = container[index];
+    if (!touched.has(first) && !touched.has(second)) continue;
+    const merged = mergeLiteralsIfPossible(first, second);
+    if (merged.length === 1) {
+      container.splice(index - 1, 2, merged[0]);
+      touched.add(merged[0]);
+    }
+  }
+}
+
+/** Orders literals by position, ignoring the cursor: negative if `a` comes first, 0 for the same literal. */
+function compareLiterals(a: LiteralIndex, b: LiteralIndex) {
+  const atStart = (index: LiteralIndex) => ({ ...index, cursorPosition: 0 });
+  if (isIndexAfter(atStart(a), atStart(b))) return -1;
+  return isIndexAfter(atStart(b), atStart(a)) ? 1 : 0;
+}
+
+function isSamePosition(focus: Focus, endpoint: SelectionIndex["start"]) {
+  return compareLiterals(focus, endpoint) === 0 && focus.cursorPosition === endpoint.cursorPosition;
+}
 
 type SelectionEndpoint = SelectionIndex["start"];
 
@@ -104,9 +242,9 @@ function withPositionInText(index: LiteralIndex, position: number): LiteralIndex
 // Lists and tables inside a paragraph count as one character, so offsets on either side of them stay apart.
 const lengthOf = (content: Content) => (isTextContent(content) && !isNewLine(content) ? text(content).length : 1);
 
-function offsetInText(document: EditedDocument, endpoint: SelectionEndpoint): number | undefined {
+function offsetInText(document: EditedDocument, endpoint: Focus): number | undefined {
   const content = textOf(document, endpoint);
-  if (!content) return undefined;
+  if (!content || endpoint.cursorPosition === undefined) return undefined;
   const preceding = content.slice(0, positionInText(endpoint)).reduce((sum, item) => sum + lengthOf(item), 0);
   return preceding + endpoint.cursorPosition;
 }
@@ -135,369 +273,3 @@ function endpointAt(
   }
   return fallback;
 }
-
-// TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
-/** Returns whether the letter was changed. */
-function switchFontTypeRecipe(draft: Draft<LetterEditorState>, fontType: FontType): boolean {
-  const literalIndex = draft.focus;
-  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-  let changed = false;
-
-  if (block?.type !== "PARAGRAPH") {
-    return false;
-  }
-
-  if (fontType === getCurrentActiveFontTypeAtCursor(draft)) {
-    fontType = FontType.PLAIN;
-  }
-
-  const contentAtFocus = block.content[literalIndex.contentIndex];
-  if (isTable(contentAtFocus) && isTableCellIndex(literalIndex)) {
-    const table = contentAtFocus;
-
-    const TABLE_HEADER_INDEX = -1;
-    if (literalIndex.rowIndex === TABLE_HEADER_INDEX) {
-      const colSpec = table.header.colSpec[literalIndex.cellIndex];
-      const headerLiteral = colSpec.headerContent.text[literalIndex.cellContentIndex];
-
-      if (isLiteral(headerLiteral)) {
-        headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? undefined : fontType;
-      }
-      draft.focus = { ...draft.focus, cursorPosition: 0 };
-      draft.saveStatus = "DIRTY";
-      return true;
-    }
-
-    const row: Draft<Row> = table.rows[literalIndex.rowIndex];
-    const cell: Draft<Cell> = row.cells[literalIndex.cellIndex];
-
-    const textContent = cell.text[literalIndex.cellContentIndex];
-
-    if (isLiteral(textContent)) {
-      textContent.editedFontType = textContent.editedFontType === fontType ? undefined : fontType;
-    }
-
-    draft.focus = { ...draft.focus, cursorPosition: 0 };
-    draft.saveStatus = "DIRTY";
-    return true;
-  }
-
-  draft.saveStatus = "DIRTY";
-
-  const contentBeforeTheLiteralWeAreOn = block.content.slice(0, literalIndex.contentIndex);
-  const theContentWeAreOn = block.content[literalIndex.contentIndex];
-  const contentAfterTheLiteralWeAreOn = block.content.slice(literalIndex.contentIndex + 1);
-
-  handleSwitchContent({
-    content: theContentWeAreOn,
-    onLiteral: (literal) => {
-      const result = switchFontTypeForLiteral({
-        draft: draft,
-        thisBlock: block,
-        literalIndex: literalIndex,
-        contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
-        contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
-        literal: literal,
-        fonttype: fontType,
-      });
-
-      if (!result) {
-        return;
-      }
-
-      draft.focus = {
-        ...draft.focus,
-        blockIndex: literalIndex.blockIndex,
-        contentIndex:
-          block.content.slice(0, literalIndex.contentIndex).length + result.newThisLiteralPositionInNewContent,
-        cursorPosition: result.updatedCursorPosition,
-      };
-      block.content = [...contentBeforeTheLiteralWeAreOn, ...result.resultingContent, ...contentAfterTheLiteralWeAreOn];
-      changed = true;
-      block.deletedContent = [...block.deletedContent, ...(result.deletedContent ? [result.deletedContent] : [])];
-    },
-    onVariable: (variable) => {
-      const newVariable = switchFontTypeForVariable({
-        fonttype: fontType,
-        variable,
-      });
-
-      block.content = [...contentBeforeTheLiteralWeAreOn, newVariable, ...contentAfterTheLiteralWeAreOn];
-      changed = true;
-    },
-    onNewLine: () => void 0,
-    onItemList: (itemList) => {
-      if (!isItemContentIndex(literalIndex)) {
-        return;
-      }
-
-      const item = itemList.items[literalIndex.itemIndex];
-      const itemContent = item.content[literalIndex.itemContentIndex];
-
-      return handleSwitchTextContent({
-        content: itemContent,
-        onLiteral: (literal) => {
-          const result = switchFontTypeForLiteral({
-            draft: draft,
-            thisBlock: block,
-            literalIndex: literalIndex,
-            contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
-            contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
-            literal: literal,
-            fonttype: fontType,
-          });
-
-          if (!result) {
-            return;
-          }
-
-          const newItemContent = [
-            ...item.content.slice(0, literalIndex.itemContentIndex),
-            ...result.resultingContent,
-            ...item.content.slice(literalIndex.itemContentIndex + 1),
-          ];
-
-          draft.focus = {
-            ...draft.focus,
-            blockIndex: literalIndex.blockIndex,
-            cursorPosition: result.updatedCursorPosition,
-            itemContentIndex:
-              item.content.slice(0, literalIndex.itemContentIndex).length + result.newThisLiteralPositionInNewContent,
-          };
-          (
-            draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
-          ).items[literalIndex.itemIndex].content = newItemContent;
-          (
-            draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
-          ).items[literalIndex.itemIndex].deletedContent = [
-            ...item.deletedContent,
-            ...(result.deletedContent ? [result.deletedContent] : []),
-          ];
-          changed = true;
-        },
-        onVariable: (variable) => {
-          const newVariable = switchFontTypeForVariable({
-            fonttype: fontType,
-            variable,
-          });
-
-          const newItemContent = [
-            ...item.content.slice(0, literalIndex.itemContentIndex),
-            newVariable,
-            ...item.content.slice(literalIndex.itemContentIndex + 1),
-          ];
-
-          (
-            draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
-          ).items[literalIndex.itemIndex].content = newItemContent;
-          changed = true;
-        },
-        onNewLine: () => void 0,
-      });
-    },
-  });
-  return changed;
-}
-
-const matchesLiteralTarget = (a: LiteralIndex, b: LiteralIndex): boolean => {
-  if (isItemContentIndex(a) && isItemContentIndex(b)) {
-    return (
-      a.blockIndex === b.blockIndex &&
-      a.contentIndex === b.contentIndex &&
-      a.itemIndex === b.itemIndex &&
-      a.itemContentIndex === b.itemContentIndex
-    );
-  }
-  return (
-    !isItemContentIndex(a) &&
-    !isItemContentIndex(b) &&
-    !isTableCellIndex(a) &&
-    !isTableCellIndex(b) &&
-    a.blockIndex === b.blockIndex &&
-    a.contentIndex === b.contentIndex
-  );
-};
-
-const switchFontTypeForLiteral = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
-  contentBeforeTheLiteralWeAreOn: Content[];
-  contentAfterTheLiteralWeAreOn: Content[];
-  literal: Draft<LiteralValue>;
-  fonttype: FontType;
-}) => {
-  const modelSel = args.draft.selection;
-  const hasModelMarkedText =
-    !!modelSel &&
-    matchesLiteralTarget(modelSel.start, args.literalIndex) &&
-    matchesLiteralTarget(modelSel.end, args.literalIndex) &&
-    modelSel.end.cursorPosition > modelSel.start.cursorPosition;
-
-  const selection = globalThis.getSelection();
-  const hasDomMarkedText = !modelSel && !!selection && (selection.toString?.()?.length ?? 0) > 0;
-
-  return hasModelMarkedText || hasDomMarkedText
-    ? switchFontTypeOfMarkedText(
-        args,
-        hasModelMarkedText
-          ? { startOffset: modelSel.start.cursorPosition, endOffset: modelSel.end.cursorPosition }
-          : undefined,
-      )
-    : switchFontTypeOfCurrentWord(args);
-};
-
-const switchFontTypeForVariable = (args: { fonttype: FontType; variable: Draft<VariableValue> }) => {
-  return args.variable;
-  //TODO: Implement this - her trenger vi editedFontType, på samme måte som literals
-  // return newVariable({
-  //   id: args.variable.id,
-  //   text: args.variable.text,
-  //   editedFontType: args.fonttype,
-  // });
-};
-
-const switchFontTypeOfMarkedText = (
-  args: {
-    draft: Draft<LetterEditorState>;
-    thisBlock: ParagraphBlock;
-    literalIndex: LiteralIndex;
-    literal: Draft<LiteralValue>;
-    fonttype: FontType;
-  },
-  offsets?: { startOffset: number; endOffset: number },
-) => {
-  const resolvedOffsets =
-    offsets ??
-    (() => {
-      const selection = globalThis.getSelection()!;
-      const range = selection.getRangeAt(0);
-      return { startOffset: range.startOffset, endOffset: range.endOffset };
-    })();
-
-  const textBeforeTheSelection = (args.literal.editedText ?? args.literal.text).slice(0, resolvedOffsets.startOffset);
-  const hasTextBeforeTheSelection = textBeforeTheSelection.length > 0;
-  const textInSelection = (args.literal.editedText ?? args.literal.text).slice(
-    resolvedOffsets.startOffset,
-    resolvedOffsets.endOffset,
-  );
-  const textAfterTheSelection = (args.literal.editedText ?? args.literal.text).slice(resolvedOffsets.endOffset);
-  const hasTextAfterTheSelection = textAfterTheSelection.length > 0;
-
-  const changesTheWholeLiteral = textBeforeTheSelection.length === 0 && textAfterTheSelection.length === 0;
-
-  const newPreviousLiteral = newLiteral({
-    text: args.literal.text,
-    editedText: textBeforeTheSelection,
-    editedFontType: args.literal.editedFontType,
-  });
-  // INTENTIONAL ID COPY when changesTheWholeLiteral: the replacement literal takes the original's
-  // id so the backend continues to track this element — the caller passes deletedContent: null in
-  // this branch, meaning the original is NOT recorded as deleted. addElements will un-delete the
-  // id if it was in deletedContent. Rule 1 exception: ID preservation during merge (see SKILL.md).
-  const newThisLiteral = newLiteral({
-    id: changesTheWholeLiteral ? args.literal.id : null,
-    text: args.literal.text,
-    editedText: changesTheWholeLiteral && args.literal.editedText === null ? null : textInSelection,
-    editedFontType: args.fonttype,
-    tags: changesTheWholeLiteral ? args.literal.tags : [],
-  });
-  const newNextLiteral = newLiteral({
-    text: args.literal.text,
-    editedText: textAfterTheSelection,
-    editedFontType: args.literal.editedFontType,
-  });
-
-  const newContent = [
-    ...(hasTextBeforeTheSelection ? [newPreviousLiteral] : []),
-    newThisLiteral,
-    ...(hasTextAfterTheSelection ? [newNextLiteral] : []),
-  ];
-
-  return {
-    resultingContent: newContent,
-    updatedCursorPosition: newThisLiteral.editedText?.length ?? 0,
-    newThisLiteralPositionInNewContent: hasTextBeforeTheSelection ? 1 : 0,
-    deletedContent: changesTheWholeLiteral ? null : args.literal.id,
-  };
-};
-
-/**
- * Eksempel case er når dem har caret i midten av et ord, og vil bytte fonttypen på dette ordet.
- */
-const switchFontTypeOfCurrentWord = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
-  literal: Draft<LiteralValue>;
-  fonttype: FontType;
-}) => {
-  const domCursorPosition = getCursorOffset();
-  const cursorPosition =
-    domCursorPosition >= 0
-      ? domCursorPosition
-      : args.draft.focus.cursorPosition !== undefined && args.draft.focus.cursorPosition >= 0
-        ? args.draft.focus.cursorPosition
-        : -1;
-
-  if (cursorPosition < 0) {
-    return;
-  }
-
-  const text = args.literal.editedText ?? args.literal.text;
-
-  const isWhiteSpace = text[cursorPosition] === " ";
-
-  if (isWhiteSpace) {
-    return;
-  }
-
-  let wordStartPosition = cursorPosition;
-  while (wordStartPosition > 0 && text[wordStartPosition - 1]?.trim() !== "") {
-    wordStartPosition--;
-  }
-
-  let wordEndPosition = cursorPosition;
-  while (wordEndPosition < text.length && text[wordEndPosition]?.trim() !== "") {
-    wordEndPosition++;
-  }
-
-  const textBeforeTheWord = text.slice(0, wordStartPosition);
-  const hasTextBeforeTheWord = textBeforeTheWord.length > 0;
-  const theWord = text.slice(wordStartPosition, wordEndPosition);
-  const textAfterTheWord = text.slice(wordEndPosition);
-  const hasTextAfterTheWord = textAfterTheWord.length > 0;
-  const changesTheWholeLiteral = textBeforeTheWord.length === 0 && textAfterTheWord.length === 0;
-
-  const newPreviousLiteral = newLiteral({
-    text: args.literal.text,
-    editedText: textBeforeTheWord,
-    editedFontType: args.literal.editedFontType,
-  });
-  // INTENTIONAL ID COPY — same rationale as in switchFontTypeOfMarkedText above.
-  // Rule 1 exception: ID preservation during merge (see letter-editor-actions SKILL.md).
-  const newThisLiteral = newLiteral({
-    id: changesTheWholeLiteral ? args.literal.id : null,
-    text: args.literal.text,
-    editedText: changesTheWholeLiteral && args.literal.editedText === null ? null : theWord,
-    editedFontType: args.fonttype,
-  });
-  const newNextLiteral = newLiteral({
-    text: args.literal.text,
-    editedText: textAfterTheWord,
-    editedFontType: args.literal.editedFontType,
-  });
-
-  const newContent = [
-    ...(hasTextBeforeTheWord ? [newPreviousLiteral] : []),
-    newThisLiteral,
-    ...(hasTextAfterTheWord ? [newNextLiteral] : []),
-  ];
-
-  return {
-    resultingContent: newContent,
-    updatedCursorPosition: cursorPosition - wordStartPosition,
-    newThisLiteralPositionInNewContent: hasTextBeforeTheWord ? 1 : 0,
-    deletedContent: changesTheWholeLiteral ? null : args.literal.id,
-  };
-};
