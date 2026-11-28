@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.felles.Kravtype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.BrukersNavnDto
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.info.OpphorUforetrygdDto
@@ -189,6 +190,7 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagEnkelDto() = UforeAvslagEnkelDto(
         pesysData = UforeAvslagEnkelDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
+            kravtype = Kravtype.ANNET,
             vurdering = "Vurdering 1"
         ),
         saksbehandlerValg = lagSaksbehandlervalg(
@@ -210,7 +212,7 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagUtlandDto() = UforeAvslagUtlandDto(
         pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
             kravMottattDato = LocalDate.now(),
-            kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
+            kravtype = Kravtype.ANNET,
             eosNordisk = false,
             avtaletype = "USA",
             artikkel = "8",

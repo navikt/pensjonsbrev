@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.ufore.api.model.maler.felles.Kravtype
 import java.time.LocalDate
 
 data class UforeAvslagUtlandDto(
@@ -12,18 +13,12 @@ data class UforeAvslagUtlandDto(
 
     data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,
-        val kravGjelder: KravGjelder,
+        val kravtype: Kravtype,
         val eosNordisk: Boolean = false,
         val avtaletype: String? = null,
         val artikkel: String? = null,
         val trygdetidListe: List<Trygdetid>
     ) : FagsystemBrevdata
-
-    enum class KravGjelder {
-        MELLOMBH,
-        F_BH_BO_UTL,
-        SLUTT_BH_UTL
-    }
 
     data class Trygdetid(
         val land: String,

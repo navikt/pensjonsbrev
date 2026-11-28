@@ -42,7 +42,6 @@ data class InnvilgelseUfoeretrygdTrygdeavtaleDto(
         val fom: LocalDate,
         val tom: LocalDate,
     )
-
     enum class KravType {
         ANNET,
         MELLOMBEHANDLING,
